@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	package="de.rwth"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="15" />
+
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true"
+		tools:ignore="HardcodedDebugMode">
+        <activity android:name=".DemoMain">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".chooser"
+                  android:label="@string/app_name">
+        </activity>
+
+        <activity android:name=".Settings"
+                  android:label="@string/app_name">
+        </activity>
+    
+		<activity android:label="@string/app_name"
+			android:screenOrientation="landscape" android:configChanges="keyboardHidden|orientation"
+			android:name="system.ArActivity">
+		</activity>
+
+		<!-- Custom List is used to easily display lists of any type of object -->
+		<activity android:name="gui.CustomListActivity"></activity>
+
+		<!-- the error handler will be automatically displayed when an error appears -->
+		<activity android:name="system.ErrorHandler" android:process=":myexeptionprocess"
+			android:taskAffinity="system.ErrorHandler">
+			<intent-filter>
+				<category android:name="android.intent.category.DEFAULT" />
+				<action android:name="android.intent.action.VIEW" />
+				<data android:mimeType="errors/myUnhandleCatcher" />
+			</intent-filter>
+		</activity>
+
+		<!-- is needed to display information on application startup -->
+		<activity android:theme="@android:style/Theme.Dialog"
+			android:name="gui.InfoScreen"></activity>
+
+		<!-- an activity to easily display any kind of ui -->
+		<!--<activity android:theme="@android:style/Theme.Translucent"
+			android:name="gui.simpleUI.SimpleUI"></activity>-->
+		<activity android:theme="@android:style/Theme.Translucent"
+				  android:name="gui.simpleUI.SimpleUIv1"></activity>
+
+		<activity android:name=".Splash" android:theme="@android:style/Theme.Wallpaper.NoTitleBar"></activity>
+
+		<activity android:name=".Login" android:theme="@android:style/Theme.NoTitleBar" />
+
+		<activity android:name=".Face" android:theme="@android:style/Theme.NoTitleBar" />
+
+		<activity android:name=".Swipes" android:theme="@android:style/Theme.NoTitleBar" />
+
+	</application>
+
+	<!-- The minimum sdk version is set to 3 because all the methods should 
+		work for devices with android 1.5 as well. The development version is set 
+		to 1.6 to get access to stuff like high res. screens (eg samsung galaxy tab) -->
+	<!--<uses-sdk android:minSdkVersion="3" />-->
+
+
+
+	<!-- IMPORTANT: The following permissions should also be added to each project 
+		which uses the DroidAR Library -->
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
+	<uses-permission android:name="android.permission.READ_FRAME_BUFFER" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-feature android:name="android.hardware.camera" />
+	<uses-feature android:name="android.hardware.camera.autofocus" />
+
+	<!-- This should be added to to allow the fullscreen mode to big screen 
+		devices like the samsung galaxy tab -->
+	<supports-screens android:smallScreens="true"
+		android:normalScreens="true" android:largeScreens="true"
+		android:anyDensity="true" />
+    <meta-data
+        android:name="com.google.android.maps.v2.API_KEY"
+        android:value="AIzaSyDxTRLwKpESrhklayMhsoAd5L5iarjBMjo" />
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
+</manifest>
