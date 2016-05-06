@@ -32,8 +32,8 @@ public class ScreenSlidePageFragment extends Fragment {
         TextView tvPrvi = (TextView) rootView.findViewById(R.id.tvPrvi);
 
         Typeface type = Typeface.createFromAsset(getActivity().getAssets(),"fonts/ACTOPOLIS.otf");
-
         if(tvPrvi != null) tvPrvi.setTypeface(type);
+
         return rootView;
     }
 }

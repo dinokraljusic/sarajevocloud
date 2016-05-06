@@ -80,9 +80,11 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
         } catch (org.json.JSONException je) {
             Log.d(LOG_TAG, "Error parsing response to JSONArray.", je);
             _lista.add(new Piktogram(-1,
-                    "STOLIC",
+                    "kutija",
                     "put_piktogram.obj",
                     "put_tekstura.jpg"));
+            Par par = new Par("kutija",  "put_piktogram.obj", "put_tekstura.jpg");
+            mapaPiktogrami.add(par);
             n++;
         } catch (Throwable ex) {
             Log.d(LOG_TAG, ex.getMessage(), ex);
@@ -92,6 +94,8 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                             "put_piktogram.obj",
                             "put_tekstura.jpg")
             );
+            Par par = new Par("kutija",  "put_piktogram.obj", "put_tekstura.jpg");
+            mapaPiktogrami.add(par);
             n++;
         }
         return null;
