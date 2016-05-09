@@ -11,7 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 10 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 15 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="droidar" exported="" />
     <orderEntry type="module-library" exported="">
@@ -33,39 +33,18 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library>
+      <library name="google-play-services">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/extensions/gdx-jnigen/gdx-jnigen.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES />
-        <JAVADOC />
-        <NATIVE>
-          <root url="jar://$MODULE_DIR$/libs/gdx-natives.jar!/" />
-        </NATIVE>
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/support/v4/android-support-v4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module" module-name="droidar" />
-    <orderEntry type="module" module-name="ARMarker" />
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/support/v7/appcompat/libs/android-support-v7-appcompat.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

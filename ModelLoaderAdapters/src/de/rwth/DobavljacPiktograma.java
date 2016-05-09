@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import org.json.JSONArray;
@@ -66,11 +67,14 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                 String tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_piktogram"));
                 final String finalFileName = Utility.downloadAndSaveFile(_context, set.getInt("id"), false, tmp, LOG_TAG);
 
+
                 tmp = set.getString("naziv") + "."+Utility.getEkstension(set.getString("put_tekstura"));
                 final String finalTextureName = Utility.downloadAndSaveFile(_context, set.getInt("id"), true, tmp, LOG_TAG);
 
+
                 Par par = new Par(set.getString("naziv"),  finalFileName, finalTextureName);
                 mapaPiktogrami.add(par);
+
             }
         } catch (org.json.JSONException je) {
             Log.d(LOG_TAG, "Error parsing response to JSONArray.", je);
@@ -86,6 +90,8 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
             final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
 
             Par par = new Par("kutija",  finalFileName, finalTextureName);
+            mapaPiktogrami.add(par);
+            Par par = new Par("kutija",  "put_piktogram.obj", "put_tekstura.jpg");
             mapaPiktogrami.add(par);
             n++;
         } catch (Throwable ex) {
@@ -104,6 +110,8 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
             final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
 
             Par par = new Par("kutija",  finalFileName, finalTextureName);
+            mapaPiktogrami.add(par);
+            Par par = new Par("kutija",  "put_piktogram.obj", "put_tekstura.jpg");
             mapaPiktogrami.add(par);
             n++;
         }
@@ -135,6 +143,7 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                 @Override
                 public void onClick(View view) {
                     try {
+
 
                         Spremnik.getInstance().setObjekatPut(mapaPiktogrami.get(j).Value);
                         Spremnik.getInstance().setTeksturaPut(mapaPiktogrami.get(j).Tekstura);
