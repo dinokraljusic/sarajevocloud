@@ -11,6 +11,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,7 +48,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class DemoMain extends Activity {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;/* */
+
+public class DemoMain extends Activity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 	/** Called when the activity is first created. */
 	//private String _url = "http://192.168.0.112:33";
 	//private String _url = "http://192.168.1.6:33";
@@ -55,7 +66,13 @@ public class DemoMain extends Activity {
 	private String _url = "http://192.168.1.5";
 	public static String LOG_TAG = "ModelLoader";
 
-	@Override
+
+    private TextView tvFusedLocation;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;/*  */
+
+
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -68,6 +85,7 @@ public class DemoMain extends Activity {
         Button btnLogin = (Button)findViewById(R.id.btnLogin);
         Button btnFace = (Button) findViewById(R.id.btnFace);
         Button btnSwipes = (Button) findViewById(R.id.btnSwipes);
+        tvFusedLocation = (TextView) findViewById(R.id.fused_location);
 
         btnStart.setOnClickListener(new OnClickListener() {
                                         @Override
@@ -116,6 +134,14 @@ public class DemoMain extends Activity {
             }
         });
 
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+
         Location l1=null;
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -134,4 +160,39 @@ public class DemoMain extends Activity {
         }
         Log.i("location", Double.toString(l1.getLatitude()));
 	}
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Connect the client.
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(500);
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        //LocationServices.FusedLocationApi.re
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        tvFusedLocation.setText("Location: " + location.toString());
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
 }

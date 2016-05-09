@@ -59,6 +59,8 @@
 
 		<activity android:name=".Swipes" android:theme="@android:style/Theme.NoTitleBar" />
 
+		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+
 	</application>
 
 	<!-- The minimum sdk version is set to 3 because all the methods should 

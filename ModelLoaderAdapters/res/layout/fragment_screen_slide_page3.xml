@@ -1,119 +1,112 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/content"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_marginLeft="16sp"
+    android:layout_marginRight="16sp"
+    android:weightSum="100"
+    android:layout_height="match_parent"
     android:background="@color/zuta"
-    android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_marginLeft="16sp"
-        android:layout_marginRight="16sp"
-        android:weightSum="100"
-        android:layout_height="match_parent"
-        android:background="@color/zuta"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_weight="20"
+        android:src="@drawable/empty"
+        android:layout_height="0dp" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="25"
+        android:paddingTop="25dp"
+        android:orientation="horizontal"
+        android:layout_height="0dp">
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_weight="25"
-            android:src="@drawable/empty"
-            android:layout_height="0dp" />
+            android:src="@drawable/cam_yellow"
+            android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_weight="25"
-            android:paddingTop="25dp"
-            android:orientation="horizontal"
-            android:layout_height="0dp">
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="25"
-                android:src="@drawable/cam_yellow"
-                android:layout_height="wrap_content" />
-
-            <TextView style="?android:textAppearanceMedium"
-                android:padding="16dp"
-                android:lineSpacingMultiplier="1.2"
-                android:layout_width="0sp"
-                android:textColor="@color/black"
-                android:layout_weight="70"
-                android:textSize="20sp"
-                android:id="@+id/tvFotografisanje"
-                android:layout_height="wrap_content"
-                android:text="FOTOGRAFISANJE" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_weight="25"
-            android:orientation="horizontal"
-            android:layout_marginTop="15sp"
-            android:layout_height="0dp">
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="25"
-                android:src="@drawable/plus"
-                android:layout_height="wrap_content" />
-
-            <TextView style="?android:textAppearanceMedium"
-                android:paddingLeft="16dp"
-                android:lineSpacingMultiplier="1.2"
-                android:layout_width="0sp"
-                android:layout_weight="70"
-                android:layout_marginTop="20dp"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvDodavanjeObjekta"
-                android:text="DODAVANJE OBJEKTA" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_weight="25"
-            android:orientation="horizontal"
-            android:layout_marginTop="25sp"
-            android:layout_height="0dp">
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="25"
-                android:src="@drawable/minus"
-                android:layout_height="wrap_content" />
-
-            <TextView style="?android:textAppearanceMedium"
-                android:padding="16dp"
-                android:lineSpacingMultiplier="1.2"
-                android:layout_width="0sp"
-                android:layout_weight="70"
-                android:layout_marginTop="10dp"
-                android:textSize="19sp"
-                android:textColor="@color/black"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvUklanjanjeObjekata"
-                android:text="UKLANJANJE OBJEKATA" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:src="@drawable/empty"
-            android:layout_height="50dp" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="80dp">
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="70"
-                android:src="@drawable/empty"
-                android:layout_height="match_parent" />
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="30"
-                android:src="@drawable/yes"
-                android:gravity="right"
-                android:layout_height="80dp" />
-        </LinearLayout>
-
-
+        <TextView style="?android:textAppearanceMedium"
+            android:padding="16dp"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_width="0sp"
+            android:textColor="@color/black"
+            android:layout_weight="70"
+            android:textSize="20sp"
+            android:id="@+id/tvFotografisanje"
+            android:layout_height="wrap_content"
+            android:text="FOTOGRAFISANJE" />
     </LinearLayout>
-</ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="25"
+        android:orientation="horizontal"
+        android:layout_marginTop="15sp"
+        android:layout_height="0dp">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:src="@drawable/plus"
+            android:layout_height="wrap_content" />
+
+        <TextView style="?android:textAppearanceMedium"
+            android:paddingLeft="16dp"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_width="0sp"
+            android:layout_weight="70"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDodavanjeObjekta"
+            android:text="DODAVANJE OBJEKTA" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="25"
+        android:orientation="horizontal"
+        android:layout_marginTop="25sp"
+        android:layout_height="0dp">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:src="@drawable/minus"
+            android:layout_height="wrap_content" />
+
+        <TextView style="?android:textAppearanceMedium"
+            android:padding="16dp"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_width="0sp"
+            android:layout_weight="70"
+            android:layout_marginTop="10dp"
+            android:textSize="19sp"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvUklanjanjeObjekata"
+            android:text="UKLANJANJE OBJEKATA" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:src="@drawable/empty"
+        android:layout_height="50dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="80dp">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="70"
+            android:src="@drawable/empty"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="30"
+            android:src="@drawable/yes"
+            android:gravity="right"
+            android:layout_height="80dp" />
+    </LinearLayout>
+
+
+</LinearLayout>
