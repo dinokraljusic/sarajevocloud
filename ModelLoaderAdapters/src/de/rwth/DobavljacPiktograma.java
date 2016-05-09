@@ -6,14 +6,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by MiniP on 3/27/2016.
@@ -68,21 +66,27 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                 String tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_piktogram"));
                 final String finalFileName = Utility.downloadAndSaveFile(_context, set.getInt("id"), false, tmp, LOG_TAG);
 
-
                 tmp = set.getString("naziv") + "."+Utility.getEkstension(set.getString("put_tekstura"));
                 final String finalTextureName = Utility.downloadAndSaveFile(_context, set.getInt("id"), true, tmp, LOG_TAG);
 
-
                 Par par = new Par(set.getString("naziv"),  finalFileName, finalTextureName);
                 mapaPiktogrami.add(par);
-
             }
         } catch (org.json.JSONException je) {
             Log.d(LOG_TAG, "Error parsing response to JSONArray.", je);
             _lista.add(new Piktogram(-1,
-                    "STOLIC",
+                    "kutija",
                     "put_piktogram.obj",
                     "put_tekstura.jpg"));
+
+            String tmp = "kutija.obj";
+            final String finalFileName = Utility.downloadAndSaveFile(_context, 1, false, tmp, LOG_TAG);
+
+            tmp = "kutija.jpg";
+            final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
+
+            Par par = new Par("kutija",  finalFileName, finalTextureName);
+            mapaPiktogrami.add(par);
             n++;
         } catch (Throwable ex) {
             Log.d(LOG_TAG, ex.getMessage(), ex);
@@ -92,6 +96,15 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                             "put_piktogram.obj",
                             "put_tekstura.jpg")
             );
+
+            String tmp = "kutija.obj";
+            final String finalFileName = Utility.downloadAndSaveFile(_context, 1, false, tmp, LOG_TAG);
+
+            tmp = "kutija.jpg";
+            final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
+
+            Par par = new Par("kutija",  finalFileName, finalTextureName);
+            mapaPiktogrami.add(par);
             n++;
         }
         return null;
@@ -122,7 +135,6 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                 @Override
                 public void onClick(View view) {
                     try {
-
 
                         Spremnik.getInstance().setObjekatPut(mapaPiktogrami.get(j).Value);
                         Spremnik.getInstance().setTeksturaPut(mapaPiktogrami.get(j).Tekstura);
