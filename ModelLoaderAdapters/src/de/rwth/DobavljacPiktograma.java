@@ -83,8 +83,14 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                     "kutija",
                     "put_piktogram.obj",
                     "put_tekstura.jpg"));
-            Par par = new Par("kutija",  "put_piktogram.obj", "put_tekstura.jpg");
+            String tmp = "kutija.obj";
+
+            final String finalFileName = Utility.downloadAndSaveFile(_context, 1, false, tmp, LOG_TAG);
+            tmp = "kutija.jpg";
+            final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
+            Par par = new Par("kutija",  finalFileName, finalTextureName);
             mapaPiktogrami.add(par);
+
             n++;
         } catch (Throwable ex) {
             Log.d(LOG_TAG, ex.getMessage(), ex);
@@ -94,8 +100,16 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                             "put_piktogram.obj",
                             "put_tekstura.jpg")
             );
-            Par par = new Par("kutija",  "put_piktogram.obj", "put_tekstura.jpg");
+
+            String tmp = "kutija.obj";
+
+            final String finalFileName = Utility.downloadAndSaveFile(_context, 1, false, tmp, LOG_TAG);
+            tmp = "kutija.jpg";
+            final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
+            Par par = new Par("kutija",  finalFileName, finalTextureName);
             mapaPiktogrami.add(par);
+
+
             n++;
         }
         return null;

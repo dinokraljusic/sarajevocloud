@@ -71,6 +71,8 @@ public class DemoMain extends Activity implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;/*  */
 
+    private Location l1;
+
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -142,7 +144,12 @@ public class DemoMain extends Activity implements
                 .build();
 
 
-        Location l1=null;
+        l1=null;
+        updateL1();
+        //Log.i("locationw", Double.toString(l1.getLatitude()));
+	}
+
+    public void updateL1(){
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         try {
@@ -159,8 +166,7 @@ public class DemoMain extends Activity implements
             e.printStackTrace();
         }
         Log.i("location", Double.toString(l1.getLatitude()));
-	}
-
+    }
 
     @Override
     protected void onStart() {
@@ -173,7 +179,7 @@ public class DemoMain extends Activity implements
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(500);
+        mLocationRequest.setInterval(400);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         //LocationServices.FusedLocationApi.re
@@ -187,7 +193,10 @@ public class DemoMain extends Activity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        tvFusedLocation.setText("Location: " + location.toString());
+        updateL1();
+        tvFusedLocation.setText(location.toString());
+        String added = "location acc: " + location.getAccuracy() + "\nl1 acc: " + l1.getAccuracy();
+        tvFusedLocation.setText(tvFusedLocation.getText() + added);
     }
 
     @Override
