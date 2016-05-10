@@ -1,6 +1,8 @@
 package de.rwth;
 
 import system.ArActivity;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -197,11 +199,12 @@ public class DemoMain extends Activity implements
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onLocationChanged(Location location) {
         updateL1();
-        tvFusedLocation.setText(location.toString());
-        String added = "location acc: " + location.getAccuracy() + "\nl1 acc: " + l1.getAccuracy();
+        tvFusedLocation.setText("loc: " + location.getLatitude() + ", " + location.getLongitude() + "; "+ location.getAccuracy() + " " + location.getProvider());
+        String added = "\nl1: " + l1.getLatitude() + ", " + l1.getLongitude() + "; "+ l1.getAccuracy() + " " + l1.getProvider();
         tvFusedLocation.setText(tvFusedLocation.getText() + added);
     }
 
