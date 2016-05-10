@@ -158,7 +158,13 @@ public class DemoMain extends Activity implements
             if (l1 == null) {
                 l1 = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }
+            else if(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER).getAccuracy() < l1.getAccuracy())
+                l1 = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
             if (l1 == null)
+                l1 = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            else if(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getAccuracy() < l1.getAccuracy())
                 l1 = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         }
         catch (Exception e)
