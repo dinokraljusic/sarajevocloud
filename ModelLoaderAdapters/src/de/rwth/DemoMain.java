@@ -148,7 +148,9 @@ public class DemoMain extends Activity implements
 
         l1=null;
         updateL1();
-        //Log.i("locationw", Double.toString(l1.getLatitude()));
+        //Location loc = new Location(LocationManager.PASSIVE_PROVIDER);
+        //onLocationChanged(loc);
+        //Log.i("location", Double.toString(l1.getLatitude()));
 	}
 
     public void updateL1(){
@@ -173,7 +175,7 @@ public class DemoMain extends Activity implements
         {
             e.printStackTrace();
         }
-        Log.i("location", Double.toString(l1.getLatitude()));
+        //Log.i("location l1:", Double.toString(l1.getLatitude()) + "; " + Double.toString(l1.getLongitude()));
     }
 
     @Override
@@ -204,7 +206,8 @@ public class DemoMain extends Activity implements
     public void onLocationChanged(Location location) {
         updateL1();
         tvFusedLocation.setText("loc: " + location.getLatitude() + ", " + location.getLongitude() + "; "+ location.getAccuracy() + " " + location.getProvider());
-        String added = "\nl1: " + l1.getLatitude() + ", " + l1.getLongitude() + "; "+ l1.getAccuracy() + " " + l1.getProvider();
+        String added = "\nl1: " + l1.getLatitude() + ", " + l1.getLongitude() + "; "+ l1.getAccuracy() + " " + l1.getProvider() +
+                "\nloc alt: " + location.getAltitude() + " l1 alt: " + l1.getAltitude() + "\nloc speed: " + location.getSpeed() + " l1 speed: " + l1.getSpeed();
         tvFusedLocation.setText(tvFusedLocation.getText() + added);
     }
 
