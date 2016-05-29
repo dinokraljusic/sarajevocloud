@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class Spremnik {
     private static Spremnik _instance = new Spremnik();
-    private static AtomicReference<String> _url = new AtomicReference<>("http://192.168.1.100:8080"),
+    private static AtomicReference<String> _url = new AtomicReference<>("http://192.168.0.100:8080"),
             _downloadServiceAddress = new AtomicReference<>("download.php"),
             _piktogramServiceAddress = new AtomicReference<>("piktogram.php"),
             _setServiceAddress = new AtomicReference<>("set.php"),

@@ -224,7 +224,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
         eventManager.registerLocationUpdates();
 
-        ActionWaitForAccuracy _minAccuracyAction = new ActionWaitForAccuracy(getActivity(), 20.0f, 25) {
+        ActionWaitForAccuracy _minAccuracyAction = new ActionWaitForAccuracy(getActivity(), 15.0f, 25) {
             @Override
             public void minAccuracyReachedFirstTime(Location l,
                                                     ActionWaitForAccuracy a) {

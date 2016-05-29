@@ -2,10 +2,12 @@ package de.rwth;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.Loader;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,24 +46,35 @@ public class Splash extends Activity {
 
 
 
-        Location l1=null;
-        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        tvWelcome.setText("DOBRODOSLI");
 
-        try {
-            l1 = lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-
-            if (l1 == null) {
-                l1 = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-            if (l1 == null)
-                l1 = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        Log.i("location", Double.toString(l1.getLatitude()));
+        /**
+         * ovdje provjera je li logovan - if logged tvWelcom.setText(tvWelcome.getText()+"\n"+Ime)
+         */
         //ArActivity.startWithSetup(DemoMain.this, new ModelLoaderSetup("STOLIC.obj", "STOLIC.jpeg"));
+
+        final Handler mHandler = new Handler();
+        final Runnable wait3sec = new Runnable() {
+            public void run() {
+                ArActivity.startWithSetup(Splash.this, new ModelLoaderSetup());
+            }
+        };
+
+        //if not logged in:
+        /*
+        final Runnable wait3secSignup = new Runnable() {
+            public void run() {
+                Intent i = new Intent(Splash.this, Login.class);
+                startActivity(i);
+            }
+        };*/
+
+
+        //if(loggedin)
+        mHandler.postDelayed(wait3sec, 3000);
+        //else mHandler.postDelayed(waait3secSignup, )
+
+
 
 
     }

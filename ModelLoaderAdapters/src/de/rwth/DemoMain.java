@@ -52,9 +52,11 @@ import java.net.URLConnection;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;/* */
+import com.google.android.gms.location.LocationServices;
 
 public class DemoMain extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -65,7 +67,7 @@ public class DemoMain extends Activity implements
 	//private String _url = "http://192.168.1.6:33";
 	//private String _url = "http://192.168.0.110";
 	//private String _url = "http://192.168.137.14";
-	private String _url = "http://192.168.1.5";
+	private String _url = "http://192.168.0.100";
 	public static String LOG_TAG = "ModelLoader";
 
 
@@ -201,7 +203,7 @@ public class DemoMain extends Activity implements
 
     }
 
-    @SuppressLint("SetTextI18n")
+
     @Override
     public void onLocationChanged(Location location) {
         updateL1();
