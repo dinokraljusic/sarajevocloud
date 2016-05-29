@@ -3,6 +3,7 @@ package de.rwth;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
@@ -35,6 +36,8 @@ public class Splash extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         TextView tvSarajevo = (TextView)findViewById(R.id.tvSarajevo);
         TextView tvCloud = (TextView)findViewById(R.id.tvCloud);
         TextView tvWelcome = (TextView)findViewById(R.id.tvWelcome);
@@ -54,25 +57,25 @@ public class Splash extends Activity {
         //ArActivity.startWithSetup(DemoMain.this, new ModelLoaderSetup("STOLIC.obj", "STOLIC.jpeg"));
 
         final Handler mHandler = new Handler();
-        final Runnable wait3sec = new Runnable() {
+        /*final Runnable wait3sec = new Runnable() {
             public void run() {
                 ArActivity.startWithSetup(Splash.this, new ModelLoaderSetup());
             }
-        };
+        };*/
 
         //if not logged in:
-        /*
+
         final Runnable wait3secSignup = new Runnable() {
             public void run() {
-                Intent i = new Intent(Splash.this, Login.class);
+                Intent i = new Intent(Splash.this, Swipes.class);
                 startActivity(i);
             }
-        };*/
+        };/**/
 
 
         //if(loggedin)
-        mHandler.postDelayed(wait3sec, 3000);
-        //else mHandler.postDelayed(waait3secSignup, )
+        //mHandler.postDelayed(wait3sec, 3000);
+        /*else*/ mHandler.postDelayed(wait3secSignup,2000 );
 
 
 

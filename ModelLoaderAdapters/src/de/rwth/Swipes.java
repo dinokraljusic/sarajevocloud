@@ -1,6 +1,7 @@
 package de.rwth;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -44,13 +45,15 @@ public class Swipes extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.swipes);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         PagerTabStrip ptsMain = (PagerTabStrip)findViewById(R.id.pts_main);
         ptsMain.setDrawFullUnderline(false);
-        ptsMain.setTabIndicatorColorResource(R.color.zuta);
+        ptsMain.setTabIndicatorColorResource(R.color.black);
         //mPager.setPressed(true);
     }
 
