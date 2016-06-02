@@ -667,6 +667,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         new ModelLoader(_localRenderer, newObjectFilename, newObjectTexturename) {
             @Override
             public void modelLoaded(MeshComponent gdxMesh) {
+                gdxMesh.setColor(gl.Color.blueTransparent());
                 newObject.setComp(gdxMesh);
             }
         };
@@ -680,6 +681,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         final ModelLoader model = new ModelLoader(_localRenderer, newObjectFilename, newObjectTexturename) {
             @Override
             public void modelLoaded(MeshComponent gdxMesh) {
+                gdxMesh.setColor(gl.Color.blueTransparent());
                 x.setComp(gdxMesh);
             }
         };

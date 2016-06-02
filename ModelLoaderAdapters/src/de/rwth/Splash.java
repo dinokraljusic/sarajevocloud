@@ -55,12 +55,13 @@ public class Splash extends Activity {
         final Handler mHandler = new Handler();
         final Runnable wait3secSignup = new Runnable() {
             public void run() {
-                Intent i = new Intent(Splash.this, Swipes.class);
+                Intent i = new Intent(Splash.this, Login.class);
                 startActivity(i);
+                finish();
             }
         };
 
-        mHandler.postDelayed(wait3secSignup,2000 );
+        mHandler.postDelayed(wait3secSignup,2500 );
 
         Location l1=null;
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);

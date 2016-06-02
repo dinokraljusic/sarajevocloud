@@ -35,9 +35,9 @@ public class ScreenSlidePageFragment3 extends Fragment {
         ivOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup());
-                Intent i = new Intent(getContext(), Login.class);
-                startActivity(i);
+                ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup());
+                //Intent i = new Intent(getContext(), Login.class);
+                //startActivity(i);
             }
         });
 

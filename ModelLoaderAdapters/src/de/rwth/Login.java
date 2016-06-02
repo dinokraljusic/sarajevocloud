@@ -1,6 +1,8 @@
 package de.rwth;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,6 +39,9 @@ public class Login extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         final  String userName = Spremnik.getInstance().getUserName();
         if(userName != null && !userName.equals("")) {
             String userId = "";
@@ -84,7 +89,10 @@ public class Login extends Activity {
                         Spremnik.getInstance().setUserId(userId);
                         Spremnik.getInstance().setUserName(userName);
 
-                        ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
+                        Intent i = new Intent(Login.this, Swipes.class);
+                        startActivity(i);
+
+                        //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
                     }
                 }
             }
