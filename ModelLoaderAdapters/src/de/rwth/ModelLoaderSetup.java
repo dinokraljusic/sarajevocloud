@@ -85,6 +85,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
     ImageView _messageBox_yesButton,
             _messageBox_noButton;
     View _cameraButton;
+    View _about;
 
     Typeface defaultFont;
 
@@ -428,6 +429,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
         });*/
         //endregion
 
+
+        /*_about = create*/
+
         _cameraButton = createButtonImageWithTransparentBackground(getActivity().getApplicationContext(),
                 R.drawable.cam_yellow, R.drawable.cam_green, new Command() {
                     @Override
@@ -476,13 +480,18 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
                             _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
                             _cameraButton.setVisibility(View.GONE);
+                            _messageBox.setVisibility(View.VISIBLE);
+                            _messageBox_TextView.setVisibility(View.VISIBLE);
+                            _messageBox_TextView.setText("LIJEVI TEXT");
                         }else {
                             visible = true;
                             guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
                             _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
                             _cameraButton.setVisibility(View.VISIBLE);
+                            _messageBox_TextView.setVisibility(View.GONE);
+                            _messageBox.setVisibility(View.GONE);
                         }
-                        return false;
+                        return true;
                     }
                 });
         lijeviMeni.setPadding(15, 15, 15, 15);
@@ -498,7 +507,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     @Override
                     public boolean execute() {
 
-                        return false;
+                        return true;
                     }
                 });
         desniMeni.setRight((int) getScreenHeigth() - 15);

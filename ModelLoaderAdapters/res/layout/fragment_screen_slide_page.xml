@@ -20,6 +20,7 @@
 
         <TextView style="?android:textAppearanceMedium"
             android:padding="16dp"
+            android:layout_marginTop="30dp"
             android:lineSpacingMultiplier="1.2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +43,7 @@ GPS-A.\n\nPOSMATRANJEM OKRUZENJA\nKROZ KAMERU, MOZETE FOTOGRAFISATI I\nHODATI KR
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/finfo_status"
+        android:src="@drawable/sinfo_status"
         android:id="@id/statusImage"
         android:layout_alignParentLeft="false"
         android:layout_alignParentRight="false"

@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import system.ArActivity;
+
 /**
  * Created by MiniP on 4/3/2016.
  */
@@ -25,6 +27,7 @@ public class Settings extends Activity {
             public void onClick(View view) {
                 if(txtURL.getText().toString().trim().length() > 0)
                     Spremnik.getInstance().setURL(txtURL.getText().toString());
+                ArActivity.startWithSetup(Settings.this, new ModelLoaderSetup());
                 finish();
             }
         });

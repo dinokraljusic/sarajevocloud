@@ -93,12 +93,19 @@
         android:layout_height="50dp" />
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_height="80dp">
-        <ImageView
+        <TextView
             android:layout_width="0dp"
             android:layout_weight="70"
             android:src="@drawable/empty"
+            android:text=" "
             android:layout_height="match_parent" />
         <ImageView
             android:layout_width="0dp"
@@ -108,6 +115,15 @@
             android:gravity="right"
             android:layout_height="80dp" />
     </LinearLayout>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/tinfo_status"
+            android:id="@id/statusImage"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="11dp" />
+    </LinearLayout>
 
 </LinearLayout>

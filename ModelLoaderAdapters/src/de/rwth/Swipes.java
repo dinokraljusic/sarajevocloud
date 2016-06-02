@@ -3,6 +3,8 @@ package de.rwth;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -12,6 +14,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +42,7 @@ public class Swipes extends FragmentActivity {
      * The pager adapter, which provides the pages to the view pager widget.
      */
     private PagerAdapter mPagerAdapter;
+    private Location l1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +57,36 @@ public class Swipes extends FragmentActivity {
         mPager.setAdapter(mPagerAdapter);
         PagerTabStrip ptsMain = (PagerTabStrip)findViewById(R.id.pts_main);
         ptsMain.setDrawFullUnderline(false);
-        ptsMain.setTabIndicatorColorResource(R.color.black);
+        ptsMain.setTabIndicatorColorResource(R.color.zuta);
         //mPager.setPressed(true);
+        l1=null;
+        updateL1();
+        Log.i("L1", l1.getLatitude() + " " + l1.getLongitude());
+    }
+
+    public void updateL1(){
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        try {
+            l1 = lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+            if (l1 == null) {
+                l1 = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            else if(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER).getAccuracy() < l1.getAccuracy())
+                l1 = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            if (l1 == null)
+                l1 = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            else if(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getAccuracy() < l1.getAccuracy())
+                l1 = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        //Log.i("location l1:", Double.toString(l1.getLatitude()) + "; " + Double.toString(l1.getLongitude()));
     }
 
     @Override
@@ -81,16 +113,22 @@ public class Swipes extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position){
-                case 0:
+                case 0:{
                     return new ScreenSlidePageFragment();
-                case 1:
+                }
+                case 1:{
+                    updateL1();
                     return new ScreenSlidePageFragment2();
-                case 2:
+                }
+                case 2:{
+                    updateL1();
                     return new ScreenSlidePageFragment3();
-                default:
+                }
+                default:{
+                    updateL1();
                     return new ScreenSlidePageFragment();
+                }
             }
-
         }
 
         @Override
