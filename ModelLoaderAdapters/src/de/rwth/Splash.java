@@ -1,17 +1,22 @@
 package de.rwth;
 
+//import android.app.Activity;
 import android.app.Activity;
+import android.support.v4.content.ContextCompat;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 /**
@@ -33,6 +38,7 @@ public class Splash extends Activity {
         setContentView(R.layout.splash);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 
         TextView tvSarajevo = (TextView)findViewById(R.id.tvSarajevo);
         TextView tvCloud = (TextView)findViewById(R.id.tvCloud);

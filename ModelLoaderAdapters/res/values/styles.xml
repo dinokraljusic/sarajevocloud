@@ -9,4 +9,8 @@
     <style name="AppTheme.AppBarOverlay" parent="@android:style/Theme.DeviceDefault.Light.DarkActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="@android:style/Theme.DeviceDefault.Light" />
+
+    <style name="SplashTheme" parent="@android:style/Theme.Wallpaper.NoTitleBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>
