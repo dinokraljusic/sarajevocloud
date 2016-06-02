@@ -61,13 +61,13 @@ public class Login extends Activity {
 
         final EditText etIme = (EditText) findViewById(R.id.etIme);
         Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
-        Button btnFacebook = (Button) findViewById(R.id.btnFacebook);
+       // Button btnFacebook = (Button) findViewById(R.id.btnFacebook);
 
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/ACTOPOLIS.otf");
 
         etIme.setTypeface(type);
         btnSignIn.setTypeface(type);
-        btnFacebook.setTypeface(type);
+//        btnFacebook.setTypeface(type);
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
