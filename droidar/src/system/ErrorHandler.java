@@ -20,22 +20,22 @@ import de.rwth.R;
 
 /**
  * use the {@link tools.ErrorHandler} instead </br></br></br></br></br></br>
- * 
+ *
  * Register the {@link ErrorHandler} like this: </br>
  * Thread.setDefaultUncaughtExceptionHandler(new ErrorHandler(currentActivity));
  * </br></br>
- * 
+ *
  * Or use the {@link ErrorHandler#registerNewErrorHandler(Activity)}
  * method.</br></br>
- * 
+ *
  * To add email support, call
  * {@link ErrorHandler#enableEmailReports(String, String)} </br></br>
- * 
+ *
  * And dont forget to add the ErrorReports.xml Layout file to your res/layout
  * folder!</br></br>
- * 
+ *
  * The ErrorHandler has to be registered in the AndroidManifest.xml like this:
- * 
+ *
  * <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height: normal;mso-layout-grid-align:none;text-autospace:none'>
  * <span style='font-size: 10.0pt;font-family:"Courier New";color:teal;mso-ansi
  * -language:DE'>&lt;</span><span class=SpellE><span
@@ -50,7 +50,7 @@ import de.rwth.R;
  * style='color:black'>=</span><i><span style='color:#2A00FF'>&quot;:<span
  * class=SpellE>myexeptionprocess</span>&quot;</span></i><o:p></o:p></span>
  * </p>
- * 
+ *
  * <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height: normal;mso-layout-grid-align:none;text-autospace:none'>
  * <span style='font-size:
  * 10.0pt;font-family:"Courier New";mso-ansi-language:DE'><span
@@ -60,7 +60,7 @@ import de.rwth.R;
  * class=SpellE>system.ErrorHandler</span>&quot;</span></i><span style='color:
  * teal'>&gt;</span><o:p></o:p></span>
  * </p>
- * 
+ *
  * <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height: normal;mso-layout-grid-align:none;text-autospace:none'>
  * <span style='font-size:
  * 10.0pt;font-family:"Courier New";color:black;mso-ansi-language:DE'><span
@@ -74,7 +74,7 @@ import de.rwth.R;
  * style='font-size:10.0pt;font-family:"Courier New";
  * mso-ansi-language:DE'><o:p></o:p></span>
  * </p>
- * 
+ *
  * <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height: normal;mso-layout-grid-align:none;text-autospace:none'>
  * <span style='font-size:
  * 10.0pt;font-family:"Courier New";color:black;mso-ansi-language:DE'><span
@@ -90,7 +90,7 @@ import de.rwth.R;
  * class=SpellE>android.intent.category.DEFAULT</span>&quot;</span></i> <span
  * style='color:teal'>/&gt;</span><o:p></o:p></span>
  * </p>
- * 
+ *
  * <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height: normal;mso-layout-grid-align:none;text-autospace:none'>
  * <span style='font-size:
  * 10.0pt;font-family:"Courier New";color:black;mso-ansi-language:DE'><span
@@ -106,7 +106,7 @@ import de.rwth.R;
  * class=SpellE>android.intent.action.VIEW</span>&quot;</span></i> <span
  * style='color:teal'>/&gt;</span><o:p></o:p></span>
  * </p>
- * 
+ *
  * <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height: normal;mso-layout-grid-align:none;text-autospace:none'>
  * <span style='font-size:
  * 10.0pt;font-family:"Courier New";color:black;mso-ansi-language:DE'><span
@@ -123,7 +123,7 @@ import de.rwth.R;
  * class=SpellE>myUnhandleCatcher</span>&quot;</span></i> <span
  * style='color:teal'>/&gt;</span><o:p></o:p></span>
  * </p>
- * 
+ *
  * <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height: normal;mso-layout-grid-align:none;text-autospace:none'>
  * <span style='font-size:
  * 10.0pt;font-family:"Courier New";color:black;mso-ansi-language:DE'><span
@@ -137,7 +137,7 @@ import de.rwth.R;
  * style='font-size:10.0pt;font-family:"Courier New";
  * mso-ansi-language:DE'><o:p></o:p></span>
  * </p>
- * 
+ *
  * <p class=MsoNormal>
  * <span style='font-size:10.0pt;line-height:115%;font-family:
  * "Courier New";color:teal;mso-ansi-language:DE'>&lt;/</span><span
@@ -147,17 +147,17 @@ import de.rwth.R;
  * style='font-size:10.0pt; line-height:115%;font-family:"Courier New";color:
  * teal;mso-ansi-language:DE'>&gt;</span>
  * </p>
- * 
+ *
  * @author Spobo
- * 
+ *
  */
 @Deprecated
 public class ErrorHandler extends Activity implements UncaughtExceptionHandler {
 
 	/**
 	 * must be the same "x/y" string as in the AndroidManifest. </br></br>
-	 * 
-	 * 
+	 *
+	 *
 	 * see {@link ErrorHandler} to understand where this is defined in the
 	 * manifest
 	 */
@@ -193,7 +193,7 @@ public class ErrorHandler extends Activity implements UncaughtExceptionHandler {
 
 	/**
 	 * See {@link ErrorHandler} for details
-	 * 
+	 *
 	 * @param a
 	 */
 	public ErrorHandler(Activity a) {
@@ -333,7 +333,7 @@ public class ErrorHandler extends Activity implements UncaughtExceptionHandler {
 		String key = "";
 		while (keys.hasMoreElements()) {
 			key = (String) keys.nextElement();
-			s += "\n > " + key + " = " + (String) p.get(key);
+			s += "\n > " + key + " = " + p.get(key);
 		}
 
 		s += " \n \n [You can add a description of what you were doing here]:";

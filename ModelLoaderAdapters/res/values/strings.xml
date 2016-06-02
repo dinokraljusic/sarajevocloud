@@ -3,4 +3,6 @@
     <string name="hello">Hello World, DemoMain!</string>
     <string name="app_name">ModelLoaders</string>
     <string name="sarajevocloud"><![CDATA[<a href=sarajevocloud.com>SARAJEVOCLOUD.COM</a>]]></string>
+    <string name="accessToken">pk.eyJ1IjoibWluaXByb2dyYW1tZXIiLCJhIjoiY2lvNzk5cnRxMDA3NXVta25zcThnb2oyciJ9.bUzGvvibm6z4UDYBMkg7Yg</string>
+    <string name="action_settings">Settings</string>
 </resources>

@@ -1,9 +1,8 @@
 package gl.scenegraph;
 
-import gl.Renderable;
-
 import javax.microedition.khronos.opengles.GL10;
 
+import gl.Renderable;
 import system.Container;
 import util.EfficientList;
 import util.Log;
@@ -47,9 +46,7 @@ public class RenderList implements RenderableEntity,
 				myItems.remove(myItems.get(i));
 			}
 		}
-		if (myItems.myLength == 0)
-			return false;
-		return true;
+		return myItems.myLength != 0;
 	}
 
 	@Override

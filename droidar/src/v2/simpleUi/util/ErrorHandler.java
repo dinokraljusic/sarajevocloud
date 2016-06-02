@@ -507,7 +507,7 @@ public class ErrorHandler extends Activity implements UncaughtExceptionHandler {
 		String key = "";
 		while (keys.hasMoreElements()) {
 			key = (String) keys.nextElement();
-			s += "\n > " + key + " = " + (String) p.get(key);
+			s += "\n > " + key + " = " + p.get(key);
 		}
 
 		return s;

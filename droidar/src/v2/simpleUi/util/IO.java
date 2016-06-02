@@ -197,22 +197,22 @@ public class IO {
 	 * @throws StreamCorruptedException
 	 */
 	public static Object loadSerializableFromExternalStorage(String filename)
-			throws StreamCorruptedException, OptionalDataException,
+			throws
 			IOException, ClassNotFoundException {
 		FileInputStream fiStream = new FileInputStream(filename);
 		return loadSerializableFromStream(fiStream);
 	}
 
 	public static Object loadSerializableFromPrivateStorage(Context context,
-			String filename) throws StreamCorruptedException,
-			OptionalDataException, IOException, ClassNotFoundException {
+			String filename) throws
+			IOException, ClassNotFoundException {
 		FileInputStream fiStream = context.getApplicationContext()
 				.openFileInput(filename);
 		return loadSerializableFromStream(fiStream);
 	}
 
 	private static Object loadSerializableFromStream(FileInputStream fiStream)
-			throws IOException, StreamCorruptedException,
+			throws IOException,
 			OptionalDataException, ClassNotFoundException {
 		GZIPInputStream gzipStream = new GZIPInputStream(fiStream);
 		ObjectInputStream inStream = new ObjectInputStream(gzipStream);

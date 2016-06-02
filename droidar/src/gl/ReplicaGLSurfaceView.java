@@ -1637,10 +1637,7 @@ public class ReplicaGLSurfaceView extends SurfaceView implements
 				return true;
 			}
 			checkGLESVersion();
-			if (mMultipleGLESContextsAllowed) {
-				return true;
-			}
-			return false;
+			return mMultipleGLESContextsAllowed;
 		}
 
 		/*

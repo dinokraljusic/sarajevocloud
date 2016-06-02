@@ -1,11 +1,13 @@
 package actions;
 
+import android.location.Location;
+
 import geo.GeoCalcer;
+import geo.GeoObj;
 import gl.GLCamera;
 import system.EventManager;
 import util.Log;
 import worldData.World;
-import android.location.Location;
 
 /**
  * This action is the basic action for virtual camera movement in relation to
@@ -100,9 +102,12 @@ public class ActionCalcRelativePos extends Action {
 					 */
 					final double relativeHeight = location.getAltitude()
 							- nullAltitude;
-					myCamera.setNewPosition((float) longitudeDistInMeters,
-							(float) latitudeDistInMeters,
-							(float) relativeHeight);
+					//myCamera.setNewPosition((float) longitudeDistInMeters,
+					//		(float) latitudeDistInMeters,
+					//		(float) relativeHeight);
+					myCamera.setGpsPos(new GeoObj((float) location.getLatitude()
+							, (float) location.getLongitude()
+							, (float) location.getAltitude()));
 				} else {
 					// else dont change the z value
 					myCamera.setNewPosition((float) longitudeDistInMeters,
@@ -122,9 +127,7 @@ public class ActionCalcRelativePos extends Action {
 	private boolean worldShouldBeRecalced(double latDistMet, double longDistMet) {
 		if (Math.abs(latDistMet) > MAX_METER_DISTANCE)
 			return true;
-		if (Math.abs(longDistMet) > MAX_METER_DISTANCE)
-			return true;
-		return false;
+		return Math.abs(longDistMet) > MAX_METER_DISTANCE;
 	}
 
 	public void resetWorldZeroPositions(Location location) {

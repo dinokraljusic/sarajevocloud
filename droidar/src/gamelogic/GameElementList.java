@@ -1,13 +1,13 @@
 package gamelogic;
 
-import gui.simpleUI.ModifierGroup;
+import android.util.Log;
 
 import java.util.HashMap;
 
+import gui.simpleUI.ModifierGroup;
 import system.Container;
 import util.EfficientList;
 import worldData.Updateable;
-import android.util.Log;
 
 public abstract class GameElementList<T extends GameElement> implements
 		Updateable, Container<T> {
@@ -98,7 +98,7 @@ public abstract class GameElementList<T extends GameElement> implements
 	@Override
 	public boolean insert(int pos, T item) {
 		return myList.insert(pos, item);
-	};
+	}
 
 	public void generateEditGUI(ModifierGroup s) {
 		for (int i = 0; i < myList.myLength; i++) {

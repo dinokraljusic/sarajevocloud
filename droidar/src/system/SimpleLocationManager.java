@@ -1,17 +1,18 @@
 package system;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import listeners.eventManagerListeners.LocationEventListener;
-import system.StepManager.OnStepListener;
-import util.Log;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import listeners.eventManagerListeners.LocationEventListener;
+import system.StepManager.OnStepListener;
+import util.Log;
 
 public abstract class SimpleLocationManager {
 
@@ -24,7 +25,7 @@ public abstract class SimpleLocationManager {
 	 * This is needed to use step detection only if the accuracy from the other
 	 * location providers is not to bad
 	 */
-	private static float minimumAverageAccuracy = 200;
+	private static float minimumAverageAccuracy = 10;
 
 	private static SimpleLocationManager instance;
 

@@ -11,9 +11,9 @@ import android.widget.ScrollView;
 public class ModifierGroup extends AbstractModifier {
 
 	public interface SaveListener {
-		public void onSaveSuccessfull();
+		void onSaveSuccessfull();
 
-		public void onSaveFailed(ModifierInterface modifierThatRejectedSave);
+		void onSaveFailed(ModifierInterface modifierThatRejectedSave);
 	}
 
 	private ArrayList<ModifierInterface> myList = new ArrayList<ModifierInterface>();

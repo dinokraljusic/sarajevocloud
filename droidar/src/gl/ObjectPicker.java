@@ -265,9 +265,7 @@ public class ObjectPicker {
 	private boolean isAlreadyTaken(Color c) {
 		byte[] b = getByteArrayFromColor(c);
 		String key = "" + b[0] + b[1] + b[2];
-		if (myObjectLookUpTable.get(key) != null)
-			return true;
-		return false;
+		return myObjectLookUpTable.get(key) != null;
 	}
 
 	public static byte[] getByteArrayFromColor(Color c) {

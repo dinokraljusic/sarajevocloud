@@ -34,9 +34,7 @@ public abstract class AbstractObj implements HasInfosInterface, ListItem,
 
 	@Override
 	public boolean HasInfoObject() {
-		if (myInfoObj != null)
-			return true;
-		return false;
+		return myInfoObj != null;
 	}
 
 	@Override

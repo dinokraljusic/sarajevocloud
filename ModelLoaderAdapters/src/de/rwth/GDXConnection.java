@@ -57,9 +57,7 @@ public class GDXConnection implements Renderable {
 
 			@Override
 			public boolean isGL11Available() {
-				if (Gdx.gl instanceof javax.microedition.khronos.opengles.GL11)
-					return true;
-				return false;
+				return Gdx.gl instanceof javax.microedition.khronos.opengles.GL11;
 			}
 
 			@Override
@@ -209,7 +207,7 @@ public class GDXConnection implements Renderable {
 									.contains("Behold"))) {
 					if (gl instanceof javax.microedition.khronos.opengles.GL11) {
 						Gdx.gl11 = new AndroidGL11(
-								(javax.microedition.khronos.opengles.GL11) gl);
+								gl);
 					}
 					Gdx.gl10 = Gdx.gl11;
 				}

@@ -1,15 +1,5 @@
 package gl;
 
-import gui.CustomGestureListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import listeners.eventManagerListeners.TouchMoveListener;
-import system.EventManager;
-import system.Setup;
-import system.TouchEventInterface;
-import util.Log;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
@@ -18,7 +8,16 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.Surface;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import commands.Command;
+import gui.CustomGestureListener;
+import listeners.eventManagerListeners.TouchMoveListener;
+import system.EventManager;
+import system.Setup;
+import system.TouchEventInterface;
+import util.Log;
 
 /**
  * This is the custom {@link GLSurfaceView} which is used to render the OpenGL
@@ -69,12 +68,8 @@ public class CustomGLSurfaceView extends GLSurfaceView implements
 		}
 
 		int screenOrientation = Setup.getScreenOrientation();
-		if (screenOrientation == Surface.ROTATION_90
-				|| screenOrientation == Surface.ROTATION_270) {
-			LANDSCAPE_MODE = true;
-		} else {
-			LANDSCAPE_MODE = false;
-		}
+		LANDSCAPE_MODE = screenOrientation == Surface.ROTATION_90
+				|| screenOrientation == Surface.ROTATION_270;
 
 		this.setFocusableInTouchMode(true);
 		myGestureDetector = new GestureDetector(context,

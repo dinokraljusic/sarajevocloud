@@ -1,6 +1,11 @@
 package gl;
 
-import gl.textures.TextureManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.opengl.GLU;
+import android.os.Environment;
+import android.os.SystemClock;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,24 +14,18 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.security.PrivateKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import gl.textures.TextureManager;
 import system.CameraView;
 import util.Log;
 import util.Vec;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.opengl.GLU;
-import android.os.Environment;
-import android.os.SystemClock;
 
 /**
  * This is the OpenGL renderer used for the {@link CustomGLSurfaceView}
@@ -42,6 +41,7 @@ public class GL1Renderer extends GLRenderer {
 	private boolean switchLightning = false;
     boolean screenshot = false;
     private CameraView _cameraView = null;
+	private AtomicReference<String> _picturePath = null;
 
     public void setUseLightning(boolean useLightning) {
 		this.switchLightning = true;
@@ -184,8 +184,8 @@ public class GL1Renderer extends GLRenderer {
                 sb.rewind();
                 bitmap.copyPixelsFromBuffer(sb);
                 //lastScreenshot = bitmap;
-                if (!_cameraView.equals(null))
-                    _cameraView.takePhoto(bitmap);
+                if (_cameraView != null)
+                    _cameraView.takePhoto(bitmap, _picturePath);
             }catch (Throwable t){
                 t.printStackTrace();
             }
@@ -193,10 +193,12 @@ public class GL1Renderer extends GLRenderer {
         }
 	}
 
-    public void takeScreenShot(CameraView cw){
-        _cameraView = cw;
-        screenshot = true;
-    }
+    public void takeScreenShot(CameraView cw, AtomicReference<String> picturePath) {
+		_cameraView = cw;
+		screenshot = true;
+		if (_picturePath == (null))
+			_picturePath = picturePath;
+	}
 
 	/**
 	 * do not kill the rendering thread, instead pause it this way because
@@ -364,7 +366,7 @@ public class GL1Renderer extends GLRenderer {
 	}
 
 
-    public static boolean SaveBitmap(Bitmap bitmap){
+    public static String SaveBitmap(Bitmap bitmap){
         Log.d(LOG_TAG, "Entering SaveBitmap");
 
         //String extStorageDirectory = Environment.getExternalStorageDirectory().toString() + "//Android//data//";
@@ -386,18 +388,19 @@ public class GL1Renderer extends GLRenderer {
         File file = new File(extStorageDirectory, timeStamp);
         try {
             outStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            //bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
             outStream.flush();
             outStream.close();
             Log.d(LOG_TAG, "stream closed");
+			return  file.toString();
         }
         catch(Exception e)
         {
             Log.d(LOG_TAG, "Fail to write screenshot");
             e.printStackTrace();
-            return  false;
+            return  "";
         }
-        return  true;
     }
 
     public static Bitmap MergeBitmaps(Bitmap bmp1, Bitmap bmp2) {

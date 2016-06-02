@@ -14,8 +14,8 @@ import java.util.Enumeration;
 
 public class TCP {
 
-	public static interface ResponseListener {
-		public void onResponse(String responseMessage);
+	public interface ResponseListener {
+		void onResponse(String responseMessage);
 	}
 
 	public static class Client {
@@ -65,8 +65,8 @@ public class TCP {
 
 	}
 
-	public static interface MessageListener {
-		public void onMessage(String message, Responder response);
+	public interface MessageListener {
+		void onMessage(String message, Responder response);
 	}
 
 	public static class Responder {

@@ -13,8 +13,8 @@ import util.Log;
 
 public class UDP {
 
-	public static interface ReceiveListener {
-		public void onReceive(String message);
+	public interface ReceiveListener {
+		void onReceive(String message);
 	}
 
 	public static class Server implements Runnable {

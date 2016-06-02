@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
-import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.Surface;
@@ -14,12 +13,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 import gl.GL1Renderer;
 import util.Log;
@@ -166,7 +161,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 
-    public void takePhoto(final Bitmap foreLayer){
+    public void takePhoto(final Bitmap foreLayer, final AtomicReference<String> savePath){
         myCamera.takePicture(
                 new Camera.ShutterCallback() {
                     @Override
@@ -195,10 +190,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
                         Log.d(LOG_TAG, "BitmapFactory.decodeByteArray done");
                         //SaveBitmap(bitmap);
-                        GL1Renderer.SaveBitmap(GL1Renderer.MergeBitmaps(bitmapPicture, foreLayer));
+						Bitmap finalBitmap = GL1Renderer.MergeBitmaps(bitmapPicture, foreLayer);
+                        String responsePath = GL1Renderer.SaveBitmap(finalBitmap);
                         //GL1Renderer.SaveBitmap(GL1Renderer.MergeBitmaps(foreLayer, bitmapPicture));
 
-                        GL1Renderer.SaveBitmap(bitmapPicture);
+						savePath.getAndSet(responsePath);
+
+                        //GL1Renderer.SaveBitmap(bitmapPicture);
                         Log.d(LOG_TAG, "Exiting SaveBitmap");
                         myCamera.startPreview();
                     }

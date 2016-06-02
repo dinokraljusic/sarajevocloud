@@ -6,14 +6,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by MiniP on 3/27/2016.
@@ -73,7 +71,7 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                 final String finalTextureName = Utility.downloadAndSaveFile(_context, set.getInt("id"), true, tmp, LOG_TAG);
 
 
-                Par par = new Par(set.getString("naziv"),  finalFileName, finalTextureName);
+                Par par = new Par(set.getString("naziv"),  finalFileName, finalTextureName, set.getString("id"));
                 mapaPiktogrami.add(par);
 
             }
@@ -88,7 +86,7 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
             final String finalFileName = Utility.downloadAndSaveFile(_context, 1, false, tmp, LOG_TAG);
             tmp = "kutija.jpg";
             final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
-            Par par = new Par("kutija",  finalFileName, finalTextureName);
+            Par par = new Par("kutija",  finalFileName, finalTextureName, "1");
             mapaPiktogrami.add(par);
 
             n++;
@@ -106,7 +104,7 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
             final String finalFileName = Utility.downloadAndSaveFile(_context, 1, false, tmp, LOG_TAG);
             tmp = "kutija.jpg";
             final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
-            Par par = new Par("kutija",  finalFileName, finalTextureName);
+            Par par = new Par("kutija",  finalFileName, finalTextureName, "1");
             mapaPiktogrami.add(par);
 
 
@@ -121,8 +119,9 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
         public String Key;
         public String Value;
         public String Tekstura;
+        public String ID;
 
-        Par(String key, String value, String tekstura){
+        Par(String key, String value, String tekstura, String ID){
             Key= key;
             Value=value;
             Tekstura = tekstura;
@@ -141,7 +140,7 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                 public void onClick(View view) {
                     try {
 
-
+                        Spremnik.getInstance().setCurrId(mapaPiktogrami.get(j).ID);
                         Spremnik.getInstance().setObjekatPut(mapaPiktogrami.get(j).Value);
                         Spremnik.getInstance().setTeksturaPut(mapaPiktogrami.get(j).Tekstura);
                         //Log.i(LOG_TAG, "final names :" + finalFileName + ", " + finalTextureName);

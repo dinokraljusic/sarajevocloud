@@ -1,12 +1,11 @@
 package geo;
 
-import gl.Renderable;
-import gl.scenegraph.MeshComponent;
-
 import java.util.Arrays;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import gl.Renderable;
+import gl.scenegraph.MeshComponent;
 import system.Container;
 import system.EventManager;
 import util.EfficientList;
@@ -609,10 +608,7 @@ public class GeoGraph extends AbstractObj implements Container<GeoObj> {
 
 	@Override
 	public boolean isCleared() {
-		if (getAllItems().myLength == 0 && isClearedAtLeastOneTime) {
-			return true;
-		}
-		return false;
+		return getAllItems().myLength == 0 && isClearedAtLeastOneTime;
 	}
 
 	@Override
@@ -641,9 +637,7 @@ public class GeoGraph extends AbstractObj implements Container<GeoObj> {
 	}
 
 	public boolean hasEdges() {
-		if (myEdges != null && myEdges.myLength > 0)
-			return true;
-		return false;
+		return myEdges != null && myEdges.myLength > 0;
 	}
 
 	public EfficientList<GeoObj> getConnectedNodesOf(GeoObj obj) {

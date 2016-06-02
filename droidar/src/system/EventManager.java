@@ -1,17 +1,5 @@
 package system;
 
-import geo.GeoObj;
-import geo.GeoUtils;
-import gl.GLCamera;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import listeners.eventManagerListeners.LocationEventListener;
-import listeners.eventManagerListeners.OrientationChangedListener;
-import listeners.eventManagerListeners.TrackBallEventListener;
-import util.Log;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -25,14 +13,25 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import commands.Command;
+import geo.GeoObj;
+import geo.GeoUtils;
+import gl.GLCamera;
+import listeners.eventManagerListeners.LocationEventListener;
+import listeners.eventManagerListeners.OrientationChangedListener;
+import listeners.eventManagerListeners.TrackBallEventListener;
+import util.Log;
 
 /**
  * this EventManager is attached to the main {@link Thread} and should react on
  * any kind of event or input
- * 
+ *
  * @author Spobo
- * 
+ *
  */
 
 public class EventManager implements LocationListener, SensorEventListener {
@@ -91,7 +90,7 @@ public class EventManager implements LocationListener, SensorEventListener {
 	}
 
 	public void registerListeners(Activity targetActivity,
-			boolean useAccelAndMagnetoSensors) {
+								  boolean useAccelAndMagnetoSensors) {
 		myTargetActivity = targetActivity;
 		registerSensorUpdates(targetActivity, useAccelAndMagnetoSensors);
 		registerLocationUpdates();
@@ -99,7 +98,7 @@ public class EventManager implements LocationListener, SensorEventListener {
 	}
 
 	protected void registerSensorUpdates(Activity myTargetActivity,
-			boolean useAccelAndMagnetoSensors) {
+										 boolean useAccelAndMagnetoSensors) {
 		SensorManager sensorManager = (SensorManager) myTargetActivity
 				.getSystemService(Context.SENSOR_SERVICE);
 
@@ -135,7 +134,7 @@ public class EventManager implements LocationListener, SensorEventListener {
 	 * This method will try to find the best location source available (probably
 	 * GPS if enabled). Remember to wait some seconds before calling this if you
 	 * activated GPS programmatically using {@link GeoUtils#enableGPS(Activity)}
-	 * 
+	 *
 	 * @return true if the Eventmanager was registered correctly
 	 */
 	public boolean registerLocationUpdates() {
@@ -274,18 +273,18 @@ public class EventManager implements LocationListener, SensorEventListener {
 				final float stepLength = 0.3f;
 				float x = 0, y = 0;
 				switch (keyCode) {
-				case 19:
-					y = -stepLength;
-					break;
-				case 20:
-					y = stepLength;
-					break;
-				case 21:
-					x = -stepLength;
-					break;
-				case 22:
-					x = stepLength;
-					break;
+					case 19:
+						y = -stepLength;
+						break;
+					case 20:
+						y = stepLength;
+						break;
+					case 21:
+						x = -stepLength;
+						break;
+					case 22:
+						x = stepLength;
+						break;
 				}
 				boolean result = true;
 
@@ -315,11 +314,11 @@ public class EventManager implements LocationListener, SensorEventListener {
 	/**
 	 * This will return the current position of the device according to the
 	 * Android system values.
-	 * 
+	 *
 	 * The resulting coordinates can differ from
 	 * {@link GLCamera#getGPSLocation()} if the camera was not moved according
 	 * to the GPS input (eg moved via trackball).
-	 * 
+	 *
 	 * Also check the {@link EventManager#getZeroPositionLocationObject()}
 	 * method, if you want to know where the virtual zero position (of the
 	 * OpenGL world) is.
@@ -354,14 +353,14 @@ public class EventManager implements LocationListener, SensorEventListener {
 	 * includes also the last known position of the device if no current
 	 * position sources can't be accessed so the returned position might be
 	 * outdated
-	 * 
+	 *
 	 * Uses {@link GeoUtils#getCurrentLocation(Context)}. <br>
 	 * <br>
 	 * If you need permanent location updates better create a
 	 * {@link LocationEventListener} and register it at
 	 * {@link EventManager#addOnLocationChangedAction(LocationEventListener)}
 	 * instead of calling this method here frequently.
-	 * 
+	 *
 	 * @return
 	 */
 	@Deprecated
@@ -401,7 +400,7 @@ public class EventManager implements LocationListener, SensorEventListener {
 	/**
 	 * This method returns true if the device is a tablet, can be used to handle
 	 * the different default orientation
-	 * 
+	 *
 	 * @param c
 	 * @return
 	 */
@@ -420,7 +419,7 @@ public class EventManager implements LocationListener, SensorEventListener {
 	 * the geoPos of the virtual (0,0,0) position. The other method would return
 	 * the current device position (and because of this also the current camera
 	 * position)
-	 * 
+	 *
 	 * @return the zero position. This will NOT be a copy so do not modify it!
 	 */
 	public GeoObj getZeroPositionLocationObject() {
@@ -442,7 +441,7 @@ public class EventManager implements LocationListener, SensorEventListener {
 	}
 
 	public void resumeEventListeners(Activity targetActivity,
-			boolean useAccelAndMagnetoSensors) {
+									 boolean useAccelAndMagnetoSensors) {
 		registerListeners(targetActivity, useAccelAndMagnetoSensors);
 	}
 
@@ -457,7 +456,7 @@ public class EventManager implements LocationListener, SensorEventListener {
 
 	/**
 	 * see {@link SimpleLocationManager#setMaxNrOfBufferedLocations(int)}
-	 * 
+	 *
 	 * @param maxNrOfBufferedLocations
 	 */
 	public void setMaxNrOfBufferedLocations(int maxNrOfBufferedLocations) {

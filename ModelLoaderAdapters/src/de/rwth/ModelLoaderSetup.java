@@ -2,13 +2,22 @@ package de.rwth;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -26,7 +35,6 @@ import gl.GL1Renderer;
 import gl.GLFactory;
 import gl.LightSource;
 import gl.scenegraph.MeshComponent;
-import gl.scenegraph.Shape;
 import gui.GuiSetup;
 import gui.InfoScreenSettings;
 import listeners.eventManagerListeners.LocationEventListener;
@@ -39,6 +47,7 @@ import util.Wrapper;
 import v2.simpleUi.util.ErrorHandler;
 import worldData.MoveComp;
 import worldData.Obj;
+import worldData.RenderableEntity;
 import worldData.SystemUpdater;
 import worldData.World;
 
@@ -62,34 +71,26 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     private Wrapper _targetMoveWrapper;
 
-    private String textureName;
-    private String fileName;
+    //private String textureName;
+    //private String fileName;
     private ViewPosCalcerComp _viewPosCalcer;
     private Obj _selectedObj;
     private MoveComp _moveComp;
 
     private Button _lokacijaLabel;
+    private LinearLayout _messageBox;
+    private LinearLayout _titleBar;
+    private TextView _messageBox_TextView;
+    private LinearLayout _messageBox_buttons;
+    ImageView _messageBox_yesButton,
+            _messageBox_noButton;
+    View _cameraButton;
+
+    Typeface defaultFont;
 
     //endregion
 
     //region CONSTRUCTORS
-
-    public ModelLoaderSetup(String fileName, String textureName) {
-        this.fileName = fileName;
-        this.textureName = textureName;
-        _targetMoveWrapper = new Wrapper();
-
-        //instantiated light here, since the method _a2_initLightning() is no longer overridden
-        spotLight = LightSource.newDefaultDefuseLight(GL10.GL_LIGHT1, new Vec(0, 0, 0));
-
-        try {
-            Log.d(LOG_TAG,
-                    "Trying to enable vibration feedback for UI actions");
-            vibrateCommand = new CommandDeviceVibrate(getActivity().getApplicationContext(), VIBRATION_DURATION_IN_MS);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public ModelLoaderSetup() {
         _targetMoveWrapper = new Wrapper();
@@ -196,7 +197,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
         eventManager.addOnOrientationChangedAction(rotateGLCameraAction);
         eventManager.addOnLocationChangedAction(
-                new ActionCalcRelativePos(super.world, camera));
+                new ActionCalcRelativePos(world, camera));
 
         updater.addObjectToUpdateCycle(rotateGLCameraAction);
         updater.addObjectToUpdateCycle(rot2);
@@ -222,9 +223,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
             }
         });
 
-        eventManager.registerLocationUpdates();
-
-        ActionWaitForAccuracy _minAccuracyAction = new ActionWaitForAccuracy(getActivity(), 15.0f, 25) {
+        ActionWaitForAccuracy _minAccuracyAction = new ActionWaitForAccuracy(getActivity(), 20.0f, 10) {
             @Override
             public void minAccuracyReachedFirstTime(Location l,
                                                     ActionWaitForAccuracy a) {
@@ -239,13 +238,22 @@ public class ModelLoaderSetup extends DefaultARSetup {
         eventManager.addOnLocationChangedAction(new LocationEventListener() {
             @Override
             public boolean onLocationChanged(Location location) {
-                _lokacijaLabel.setText(IspisLokacije(location) + " VS " +
-                        IspisLokacije(camera.getGPSLocation()));
+                String locationParams = "{ " + location.getAccuracy() + " } " + IspisLokacije(location) + " VS " +
+                        IspisLokacije(camera.getGPSLocation());
+                _lokacijaLabel.setText(locationParams);
+
+                //new Refresh().execute(locationParams);
+                for (int i = 0; i< world.length(); i++) {
+                    RenderableEntity go = world.getAllItems().get(i);
+                    if(go instanceof  GeoObj) {
+                        ((GeoObj) go).refreshVirtualPosition();
+                        Log.i("MoldelLoaders", "geoObject refreshed");
+                    }
+                }
+
                 return true;
             }
         });
-
-
         //super._c_addActionsToEvents(eventManager, arView, updater);
 
         //eventManager.addOnLocationChangedAction(new ActionMoveCameraBuffered(camera, 25, 5));
@@ -259,18 +267,57 @@ public class ModelLoaderSetup extends DefaultARSetup {
         //eventManager.addOnTrackballAction(new ActionMoveObject(
         //			_targetMoveWrapper, getCamera(), 10, 200));
 
+        eventManager.registerLocationUpdates();
         callAddObjectsToWorldIfNotCalledAlready();
     }
 
+    private class Refresh extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String val = params[0];
+            try{
+                Utility.SaveLog(Spremnik.getInstance().getUrl() + "/logujLokaciju.php", val);
+            }catch (Exception ex) {
+                Log.d("URL", ex.toString());
+            }
+            return null;
+        }
+    }
+
     @Override
-    public void _e2_addElementsToGuiSetup(GuiSetup guiSetup, Activity activity) {
-        super._e2_addElementsToGuiSetup(guiSetup, activity);
+    public void _e2_addElementsToGuiSetup(final GuiSetup guiSetup, Activity activity) {
+        //super._e2_addElementsToGuiSetup(guiSetup, activity);
         Log.i(LOG_TAG, "entering _e2_addElementsToGuiSetup");
+        try {
+            Log.d(LOG_TAG,
+                    "Trying to enable vibration feedback for UI actions");
+            vibrateCommand = new CommandDeviceVibrate(getActivity(), VIBRATION_DURATION_IN_MS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        defaultFont = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/ACTOPOLIS.otf");
 
         _lokacijaLabel = new Button(getActivity().getApplicationContext());
-        guiSetup.addViewToTop(_lokacijaLabel);
+        _messageBox_TextView = new TextView(getActivity());
+        _messageBox_buttons = new LinearLayout(getActivity());
 
-        guiSetup.addButtonToBottomView(new Command() {
+        _messageBox = guiSetup.getBottomView();
+        _messageBox.setVisibility(View.GONE);
+        _messageBox.setOrientation(LinearLayout.VERTICAL);
+        _messageBox.setBackgroundColor(android.graphics.Color.argb(128, 0, 0, 0));
+        _messageBox.addView(_messageBox_TextView);
+        _messageBox.addView(_messageBox_buttons);
+
+        _titleBar = guiSetup.getTopView();
+        _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+        _titleBar.setMinimumWidth((int) getScreenHeigth());
+        _titleBar.setTop(0);
+
+        //guiSetup.addViewToTop(_lokacijaLabel);
+
+        //region --- old code ---
+        /*guiSetup.addButtonToBottomView(new Command() {
             @Override
             public boolean execute() {
                 if (_targetMoveWrapper.getObject() instanceof Obj) {
@@ -293,7 +340,6 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 return false;
             }
         }, "Obj up");
-
         guiSetup.addButtonToBottomView(new Command() {
 
             @Override
@@ -340,34 +386,32 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 return false;
             }
         }, " > ");
+        */
+        //endregion
+
 
         guiSetup.addButtonToLeftView(new Command() {
 
             @Override
             public boolean execute() {
-                //world.add(newObject());
                 Intent intent = new Intent(getActivity().getApplicationContext(), chooser.class);
-                //startActivity(getActivity().getApplicationContext(), intent);
                 getActivity().startActivityForResult(intent, 0);
-                /*String _url = "http://192.168.0.105";
-
-                ArrayList<View> _listSetovi = new ArrayList<View>();
-                ArrayAdapter<View> _adapterSetovi;
-                ListView _listViewSetovi= new ListView(getActivity().getApplicationContext());
-
-                _adapterSetovi = new ArrayAdapter<View>(getActivity().getApplicationContext(),
-                        android.R.layout.simple_list_item_single_choice,
-                        _listSetovi);
-                _listViewSetovi.setAdapter(_adapterSetovi);
-
-                new DobavljacSetova( getActivity().getApplicationContext(), _adapterSetovi).execute(_url, "1", "2");
-
-                getActivity().setContentView(_listViewSetovi);
-*/
                 return true;
             }
 
         }, " + ");
+
+        //region --- old code ---
+        /*guiSetup.addButtonToBottomView(new Command() {
+
+               @Override
+               public boolean execute() {
+                   Intent intent = new Intent(getActivity().getApplicationContext(), MapView.class);
+                   getActivity().startActivityForResult(intent, 0);
+                   return  true;
+               }
+           }, "-"
+        );*/
 
 /*        guiSetup.addImangeButtonToRightView(R.drawable.cam_yellow, new Command() {
             @Override
@@ -382,21 +426,202 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 return true;
             }
         });*/
+        //endregion
 
-        guiSetup.addViewToRight(createButtonImageWithTransparentBackground(getActivity().getApplicationContext(),
+        _cameraButton = createButtonImageWithTransparentBackground(getActivity().getApplicationContext(),
                 R.drawable.cam_yellow, R.drawable.cam_green, new Command() {
                     @Override
                     public boolean execute() {
-                        try {
-                            //myCameraView.takePhoto();
-                            getMyRenderer().takeScreenShot(myCameraView);
-                        } catch (Throwable t) {
-                            t.printStackTrace();
-                            return  true;
-                        }
-                        return  false;
+                        showDialog("POSALJI FOTOGRAFIJU NA SARAJEVO CLOUD FACEBOOK?",
+                                new Command() {
+                                    @Override
+                                    public boolean execute() {
+                                        try {
+                                            getMyRenderer().takeScreenShot(myCameraView, Spremnik.getInstance().get_slikaPath());
+                                            showMessage("POSTAVLjANjE NA FACEBOOK JOS NIJE IMPLEMENTIRANO.");
+                                            pictureHandler.postDelayed(pictureRunnable, 100);
+                                        } catch (Throwable t) {
+                                            t.printStackTrace();
+                                            return true;
+                                        }
+                                        return false;
+                                    }
+                                },
+                                new Command() {
+                                    @Override
+                                    public boolean execute() {
+                                        try {
+                                            getMyRenderer().takeScreenShot(myCameraView, Spremnik.getInstance().get_slikaPath());
+                                            pictureHandler.postDelayed(pictureRunnable, 100);
+                                        } catch (Throwable t) {
+                                            t.printStackTrace();
+                                            return true;
+                                        }
+                                        return false;
+                                    }
+                                });
+                        return  true;
                     }
-                }));
+                });
+        guiSetup.addViewToRight(_cameraButton);
+
+        View lijeviMeni = createButtonImageWithTransparentBackground(getActivity(),
+                R.drawable.gornji_lijevi_button_zuto, R.drawable.gornji_lijevi_button_zeleno,
+                new Command() {
+                    boolean visible = true;
+                    @Override
+                    public boolean execute() {
+                        if(visible){
+                            visible = false;
+                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
+                            _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
+                            _cameraButton.setVisibility(View.GONE);
+                        }else {
+                            visible = true;
+                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                            _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+                            _cameraButton.setVisibility(View.VISIBLE);
+                        }
+                        return false;
+                    }
+                });
+        lijeviMeni.setPadding(15, 15, 15, 15);
+        TextView naslov = new TextView(getActivity());
+        naslov.setPadding(0, 15, 0, 15);
+        naslov.setTypeface(defaultFont);
+        naslov.setTextColor(Color.rgb(242, 229, 0));
+        naslov.setTextSize(19);
+        naslov.setText("SARAJEVO CLOUD");
+        View desniMeni = createImageWithTransparentBackground(getActivity(),
+                R.drawable.gornji_desni_meni_zuto, R.drawable.gornji_desni_meni_zelen,
+                new Command() {
+                    @Override
+                    public boolean execute() {
+
+                        return false;
+                    }
+                });
+        desniMeni.setRight((int) getScreenHeigth() - 15);
+        desniMeni.setPadding(15, 15, 15, 15);
+
+        // Creating a new RelativeLayout
+        RelativeLayout relativeLayout = new RelativeLayout(getActivity());
+
+        // Defining the RelativeLayout layout parameters.
+        // In this case I want to fill its parent
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
+
+        // Defining the layout parameters of the TextView
+        RelativeLayout.LayoutParams lp_l = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp_c = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
+        lp_c.addRule(RelativeLayout.CENTER_IN_PARENT);
+        lp_d.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        lp_d.addRule(RelativeLayout.CENTER_VERTICAL);
+
+        // Setting the parameters on the TextView
+        lijeviMeni.setLayoutParams(lp_l);
+        naslov.setLayoutParams(lp_c);
+        desniMeni.setLayoutParams(lp_d);
+
+        // Adding the TextView to the RelativeLayout as a child
+        relativeLayout.addView(lijeviMeni);
+        relativeLayout.addView(naslov);
+        relativeLayout.addView(desniMeni);
+        relativeLayout.setMinimumWidth((int) getScreenHeigth());
+
+        _titleBar.addView(relativeLayout, rlp);
+
+        _messageBox_TextView.setPadding(0, 13, 0, 17);
+        _messageBox_TextView.setTypeface(defaultFont);
+        _messageBox_TextView.setWidth((int) getScreenHeigth());
+
+        _messageBox_yesButton = new ImageView(getActivity());
+        _messageBox_yesButton.setImageResource(R.drawable.yes_first);
+        _messageBox_yesButton.setPadding(25, 25, 35, 30);
+        _messageBox_noButton = new ImageView(getActivity());
+        _messageBox_noButton.setImageResource(R.drawable.no_first);
+        _messageBox_noButton.setPadding(35,25,25,30);
+
+        _messageBox_buttons.addView(_messageBox_yesButton);
+        _messageBox_buttons.addView(_messageBox_noButton);
+
+        showMessage("Dobro dosao " + Spremnik.getInstance().getUserName());
+    }
+
+    public void showMessage(String text) {
+        _messageBox_TextView.setText(text);
+        _messageBox.setVisibility(View.VISIBLE);
+        _messageBox_buttons.setVisibility(View.GONE);
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                _messageBox.setVisibility(View.GONE);
+            }
+        }, 5000);
+    }
+
+    public void showDialog(String text, final Command yesCallback, final Command noCallback){
+        _messageBox_TextView.setText(text);
+        _messageBox.setVisibility(View.VISIBLE);
+        _messageBox_buttons.setVisibility(View.VISIBLE);
+        _messageBox_yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _messageBox_yesButton.setImageResource(R.drawable.yes_second);
+                if (vibrateCommand != null)
+                    vibrateCommand.execute();
+                if (yesCallback != null)
+                    yesCallback.execute();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                getActivity().runOnUiThread(
+                                        new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                _messageBox_yesButton.setImageResource(R.drawable.yes_first);
+                                                _messageBox.setVisibility(View.GONE);
+                                            }
+                                        });
+                            }
+                        }, 500);
+            }
+        });
+        _messageBox_noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _messageBox_noButton.setImageResource(R.drawable.no_second);
+                if (vibrateCommand != null)
+                    vibrateCommand.execute();
+                if (noCallback != null)
+                    noCallback.execute();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                getActivity().runOnUiThread(
+                                        new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                _messageBox_noButton.setImageResource(R.drawable.no_first);
+                                                _messageBox.setVisibility(View.GONE);
+                                            }
+                                        });
+                            }
+                        }, 500);
+            }
+        });
     }
 
     @Override
@@ -411,7 +636,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         super._f_addInfoScreen(infoScreenData);
         Log.i(LOG_TAG, "entering _f_addInfoScreen");
 
-        infoScreenData.addText("Loading...");
+        //infoScreenData.addText("Loading...");
     }
 
     //endregion
@@ -425,52 +650,36 @@ public class ModelLoaderSetup extends DefaultARSetup {
         return "{ " + lat + "; " + lon + "; " + Double.toString(l.getAltitude()) + " }";
     }
 
-    private Obj newObject() {
-        final Obj lightObject = new Obj();
-        spotLight.setPosition(new Vec(1, 1, 1));
-        final MeshComponent lightGroup = new Shape();
-        lightGroup.addChild(spotLight);
-        lightObject.setComp(lightGroup);
-        lightObject.setComp(new MoveComp(1));
+    private Obj newObject(String newObjectFilename, String newObjectTexturename) {
+        Location loc = camera.getGPSLocation();
+        loc.setAltitude(0);
+        final Obj newObject = new GeoObj(loc);
 
-        final ModelLoader model = new ModelLoader(_localRenderer, fileName, textureName) {
+        new ModelLoader(_localRenderer, newObjectFilename, newObjectTexturename) {
             @Override
             public void modelLoaded(MeshComponent gdxMesh) {
-                Log.d(LOG_TAG, "Loaded mesh component from GDX");
-                lightObject.setComp(gdxMesh);
-                Log.d(LOG_TAG, "CAMERA LOCATION: " + camera.getGPSLocation().toString());
-                world.add(lightObject);
-                _targetMoveWrapper.setTo(lightObject);
-
-                final MeshComponent finalGdxMesh = gdxMesh;
-				gdxMesh.setOnClickCommand(new Command() {
-					@Override
-					public boolean execute() {
-                        Vec v_loc = lightObject.getPosition();
-                        Location loc = camera.getGPSLocation();//TODO:check
-                        Log.d(LOG_TAG, "v_loc: " + v_loc.toString());
-                        Log.d(LOG_TAG, "loc: " + loc.toString());
-                        final GeoObj final3Dobj = new GeoObj(true);
-                        final3Dobj.setLocation(loc);
-                        final3Dobj.setVirtualPosition(v_loc);
-
-                        final MeshComponent lightGroup = new Shape();
-                        lightGroup.addChild(spotLight);
-                        final3Dobj.setComp(lightGroup);
-                        final3Dobj.setComp(finalGdxMesh);
-                        //final3Dobj.setComp(new MoveComp(1));
-                        world.add(final3Dobj);
-                        world.remove(lightObject);
-
-                        //_targetMoveWrapper.setTo(final3Dobj);
-						//setStatic(lightObject);
-                        Log.d(LOG_TAG, final3Dobj.getVirtualPosition().toString());
-						return true;
-					}
-				});
+                newObject.setComp(gdxMesh);
             }
         };
-        return lightObject;
+        Utility.SaveThisPiktogram(loc);
+        return newObject;
+    }
+
+    private Obj loadedObject(String newObjectFilename, String newObjectTexturename, final Location location) {
+        final GeoObj x = new GeoObj(location);
+
+        final ModelLoader model = new ModelLoader(_localRenderer, newObjectFilename, newObjectTexturename) {
+            @Override
+            public void modelLoaded(MeshComponent gdxMesh) {
+                x.setComp(gdxMesh);
+            }
+        };
+        world.add(x);
+        return x;
+    }
+
+    private boolean savePiktogramToDb(){
+        return  false;
     }
 
     private void setComps(Obj obj) {
@@ -502,6 +711,38 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     //endregion
 
+    Handler checkNewPiktogramHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            List<Piktogram> noviPiktogrami = Utility.GetNewPiktograms(getActivity());
+
+            if(noviPiktogrami!=null && noviPiktogrami.size() > 0){
+                for (Piktogram p : noviPiktogrami) {
+                    //loadedObject(p.getPutPiktogram(), p.getPutTekstura(), p.);
+                }
+            }
+
+            checkNewPiktogramHandler.postDelayed(this, 1000);
+        }
+    };
+
+    Handler pictureHandler = new Handler();
+    Runnable pictureRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            String slikaPath = Spremnik.getInstance().get_slikaPath().get();
+            if(slikaPath!= null && !slikaPath.equals("")){
+                Spremnik.getInstance().get_slikaPath().getAndSet("");
+                Utility.uploadScreenshoot(ModelLoaderSetup.this, slikaPath, camera.getGPSLocation());
+            }else{
+                pictureHandler.postDelayed(this, 100);
+            }
+        }
+    };
+
 
     @Override
     public void onResume(Activity a) {
@@ -513,11 +754,16 @@ public class ModelLoaderSetup extends DefaultARSetup {
             Spremnik.getInstance().setObjekatPut(null);
             Spremnik.getInstance().setTeksturaPut(null);
 
-            fileName = objPut;
-            textureName = tekPut;
-            newObject();
+            //fileName = objPut;
+            //textureName = tekPut;
+            //newObject(objPut, tekPut);
+            loadedObject(objPut, tekPut, camera.getGPSLocation());
         }
     }
+
+    @Override
+    public void onStart(Activity a) {
+        super.onStart(a);}
 
     public View createButtonImageWithTransparentBackground(Context context, final int normalImageId, final int clickedImageId,
                                                            final Command command){
@@ -530,9 +776,50 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 imgButton.setBackgroundResource(clickedImageId);
                 if (vibrateCommand != null)
                     vibrateCommand.execute();
-                if(command!=null)
+                if (command != null)
                     command.execute();
-                imgButton.setBackgroundResource(normalImageId);
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                getActivity().runOnUiThread(
+                                        new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                imgButton.setBackgroundResource(normalImageId);
+                                            }
+                                        });
+                            }
+                        }, 500);
+            }
+        });
+        return imgButton;
+    }public View createImageWithTransparentBackground(Context context, final int normalImageId, final int clickedImageId,
+                                                            final Command command){
+        final ImageView imgButton = new ImageView(context);
+        imgButton.setBackgroundColor(0);
+        imgButton.setImageResource(normalImageId);
+        imgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imgButton.setImageResource(clickedImageId);
+                if (vibrateCommand != null)
+                    vibrateCommand.execute();
+                if (command != null)
+                    command.execute();
+                new Handler().postDelayed(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                getActivity().runOnUiThread(
+                                        new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                imgButton.setImageResource(normalImageId);
+                                            }
+                                        });
+                            }
+                        }, 500);
             }
         });
         return imgButton;

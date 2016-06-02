@@ -1,5 +1,26 @@
 package de.rwth;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.LinearLayout;
+
+import commands.ui.CommandShowToast;
+import de.rwth.setups.CollectItemsSetup;
+import de.rwth.setups.DebugSetup;
+import de.rwth.setups.FastChangingTextSetup;
+import de.rwth.setups.GameDemoSetup;
+import de.rwth.setups.GeoPosTestSetup;
+import de.rwth.setups.GraphCreationSetup;
+import de.rwth.setups.GraphMovementTestSetup;
+import de.rwth.setups.LargeWorldsSetup;
+import de.rwth.setups.LightningSetup;
+import de.rwth.setups.PlaceObjectsSetup;
+import de.rwth.setups.PlaceObjectsSetupTwo;
+import de.rwth.setups.PositionTestsSetup;
+import de.rwth.setups.SensorTestSetup;
 import system.ArActivity;
 import system.ErrorHandler;
 import system.EventManager;
@@ -12,30 +33,6 @@ import tests.GlTests;
 import tests.IOTests;
 import tests.SystemTests;
 import tests.WorldTests;
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.LinearLayout;
-
-import commands.ui.CommandShowToast;
-
-import de.rwth.setups.CollectItemsSetup;
-import de.rwth.setups.DebugSetup;
-import de.rwth.setups.FarAwayPOIScenarioSetup;
-import de.rwth.setups.FastChangingTextSetup;
-import de.rwth.setups.GameDemoSetup;
-import de.rwth.setups.GeoPosTestSetup;
-import de.rwth.setups.GraphCreationSetup;
-import de.rwth.setups.GraphMovementTestSetup;
-import de.rwth.setups.LargeWorldsSetup;
-import de.rwth.setups.LightningSetup;
-import de.rwth.setups.PlaceObjectsSetup;
-import de.rwth.setups.PlaceObjectsSetupTwo;
-import de.rwth.setups.PositionTestsSetup;
-import de.rwth.setups.SensorTestSetup;
-import de.rwth.setups.StaticDemoSetup;
 
 public class TechDemoLauncher extends Activity {
 	@Override
@@ -55,10 +52,8 @@ public class TechDemoLauncher extends Activity {
 		l.removeAllViews();
 
 		showSetup("GeoPosTestSetup", new GeoPosTestSetup());
-		showSetup("Demo Setup", new StaticDemoSetup());
 		showSetup("Animation Demo", new DebugSetup());
 		showSetup("Game Demo", new GameDemoSetup());
-		showSetup("'Too far away' scenario", new FarAwayPOIScenarioSetup());
 		showSetup("Large worlds", new LargeWorldsSetup());
 		showSetup("Changing text Demo", new FastChangingTextSetup());
 		showSetup("Lightning Demo", new LightningSetup());

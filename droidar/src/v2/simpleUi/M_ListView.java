@@ -54,7 +54,7 @@ public abstract class M_ListView implements ModifierInterface {
 			public void onItemClick(AdapterView<?> myAdapter, View itemView,
 					int posInList, long mylng) {
 				if (listToDisplay != null)
-					((HasItsOwnView) listToDisplay.get(posInList)).onItemClick(
+					listToDisplay.get(posInList).onItemClick(
 							itemView, posInList);
 			}
 		});
@@ -64,7 +64,7 @@ public abstract class M_ListView implements ModifierInterface {
 			public boolean onItemLongClick(AdapterView<?> arg0, View itemView,
 					int posInList, long arg3) {
 				if (listToDisplay != null)
-					return ((HasItsOwnView) listToDisplay.get(posInList))
+					return listToDisplay.get(posInList)
 							.onItemLongClick(itemView, posInList);
 				return false;
 			}

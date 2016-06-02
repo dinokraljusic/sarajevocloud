@@ -160,16 +160,16 @@ public class ExpandableLinearLayout extends LinearLayout {
 	}
 
 	public interface OnExpandListener {
-		public void onExpandFinished(Context context, View v);
+		void onExpandFinished(Context context, View v);
 
-		public void onViewWasDrawnFirstTime(Context context,
-				ExpandableLinearLayout expandableLinearLayout);
+		void onViewWasDrawnFirstTime(Context context,
+									 ExpandableLinearLayout expandableLinearLayout);
 
-		public void onCollapseStart(Context context, ExpandableLinearLayout v);
+		void onCollapseStart(Context context, ExpandableLinearLayout v);
 
-		public void onExpandStart(Context context, ExpandableLinearLayout v);
+		void onExpandStart(Context context, ExpandableLinearLayout v);
 
-		public void onCollapseFinished(Context context, View v);
+		void onCollapseFinished(Context context, View v);
 	}
 
 }

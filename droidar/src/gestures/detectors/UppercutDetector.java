@@ -37,12 +37,12 @@ public class UppercutDetector implements PhoneGestureDetector {
 		}
 
 		Vec linearAcceleration = new Vec(
-				(float) sensorData.linearAcceleration[0],
-				(float) sensorData.linearAcceleration[1],
-				(float) sensorData.linearAcceleration[2]);
+				sensorData.linearAcceleration[0],
+				sensorData.linearAcceleration[1],
+				sensorData.linearAcceleration[2]);
 
-		Vec gravity = new Vec((float) sensorData.gravity[0],
-				(float) sensorData.gravity[1], (float) sensorData.gravity[2]);
+		Vec gravity = new Vec(sensorData.gravity[0],
+				sensorData.gravity[1], sensorData.gravity[2]);
 
 		// Integrate to obtain velocity vector. We divide by 1,000,000,000 in
 		// order to obtain the velocity in m/s instead of m/ns.

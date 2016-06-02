@@ -532,7 +532,7 @@ public class SimpleRatingBar extends TextView {
 
 				public boolean onDown(MotionEvent e) {
 					return true;
-				};
+				}
 
 				public boolean onSingleTapUp(MotionEvent e) {
 					sendClichEvent(e.getX(), e.getY());

@@ -35,7 +35,7 @@ public class SimpleUiApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		this.context = getApplicationContext();
+		context = getApplicationContext();
 	}
 
 	public static void setContext(Context context) {

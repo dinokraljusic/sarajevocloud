@@ -29,7 +29,7 @@ public class GDXMesh extends MeshComponent {
 		this.texture = texture;
 
 		try {
-			anim = (KeyframedAnimation) ((KeyframedModel) model)
+			anim = ((KeyframedModel) model)
 					.getAnimations()[0];
 		} catch (Exception e) {
 		}

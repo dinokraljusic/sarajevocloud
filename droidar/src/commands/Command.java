@@ -1,12 +1,13 @@
 package commands;
 
+import android.view.View;
+import android.view.ViewGroup;
+
 import gui.ListItem;
 import gui.MetaInfos;
 import listeners.ItemGuiListener;
 import util.Log;
 import worldData.HasInfosInterface;
-import android.view.View;
-import android.view.ViewGroup;
 
 /**
  * TODO name this Command ?
@@ -72,9 +73,7 @@ public abstract class Command implements ListItem, HasInfosInterface {
 
 	@Override
 	public boolean HasInfoObject() {
-		if (myInfoObj != null)
-			return true;
-		return false;
+		return myInfoObj != null;
 	}
 
 }

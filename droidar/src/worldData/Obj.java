@@ -152,9 +152,7 @@ public class Obj extends AbstractObj implements HasPosition, HasColor {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean hasComponent(Class componentSubclass) {
-		if (getComp(componentSubclass) != null)
-			return true;
-		return false;
+		return getComp(componentSubclass) != null;
 	}
 
 	@SuppressWarnings("unchecked")
