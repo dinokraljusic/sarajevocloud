@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="25"/>
+        android:layout_weight="40"/>
 
 
     <LinearLayout
@@ -20,7 +20,7 @@
         android:gravity="center"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:layout_weight="25">
+        android:layout_weight="30">
 
         <EditText
             android:layout_width="match_parent"
@@ -33,6 +33,7 @@
             android:textColor="@color/black"
             android:background="@drawable/rounded_edit_text"
             android:padding="10dp"
+            android:layout_marginBottom="20dp"
             android:layout_weight="1"/>
 
         <Button
@@ -51,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="15"/>
-
+<!--
     <Button
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -65,5 +66,5 @@
         android:textSize="25dp"
         android:paddingBottom="4dp"
         android:paddingTop="4dp"
-        android:layout_weight="11"/>
+        android:layout_weight="11"/>-->
 </LinearLayout>
