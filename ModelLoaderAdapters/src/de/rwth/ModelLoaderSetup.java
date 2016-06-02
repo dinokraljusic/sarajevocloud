@@ -758,6 +758,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
             //textureName = tekPut;
             //newObject(objPut, tekPut);
             loadedObject(objPut, tekPut, camera.getGPSLocation());
+            showMessage("OBJEKAT POSTAVLjEN I MEMORISAN");
         }
     }
 
