@@ -18,13 +18,13 @@ public class ScreenSlidePageFragment2 extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_screen_slide_page2, container, false);
 
         TextView tvMojCloud = (TextView) rootView.findViewById(R.id.tvMojCloud);
-        TextView tvDrugiCloudovi = (TextView) rootView.findViewById(R.id.tvDrugiCloudovi);
+        //TextView tvDrugiCloudovi = (TextView) rootView.findViewById(R.id.tvDrugiCloudovi);
         TextView tvSarajevoCloud = (TextView) rootView.findViewById(R.id.tvSarajevoCloud);
 
         Typeface type = Typeface.createFromAsset(getActivity().getAssets(),"fonts/ACTOPOLIS.otf");
 
         if(tvMojCloud != null) tvMojCloud.setTypeface(type);
-        if(tvDrugiCloudovi != null) tvDrugiCloudovi.setTypeface(type);
+        //if(tvDrugiCloudovi != null) tvDrugiCloudovi.setTypeface(type);
         if(tvSarajevoCloud != null) tvSarajevoCloud.setTypeface(type);
 
         return rootView;

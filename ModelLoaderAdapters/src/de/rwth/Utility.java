@@ -257,7 +257,7 @@ public class Utility {
                 Log.d(LOG_TAG, resp);
                 return resp;
             }
-            ;
+
         } catch (Exception e) {
             Log.d(TAG, "Exception");
             e.printStackTrace();

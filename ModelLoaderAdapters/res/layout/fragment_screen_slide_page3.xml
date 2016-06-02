@@ -8,7 +8,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_weight="20"
+        android:layout_weight="15"
         android:src="@drawable/empty"
         android:layout_height="0dp" />
 
@@ -21,6 +21,7 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_weight="25"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/cam_yellow"
             android:layout_height="wrap_content" />
 
@@ -54,6 +55,7 @@
             android:layout_width="0sp"
             android:layout_weight="70"
             android:layout_marginTop="20dp"
+            android:paddingTop="10dp"
             android:textSize="20sp"
             android:textColor="@color/black"
             android:layout_height="wrap_content"
@@ -81,6 +83,7 @@
             android:layout_marginTop="10dp"
             android:textSize="19sp"
             android:textColor="@color/black"
+            android:paddingTop="10dp"
             android:layout_height="wrap_content"
             android:id="@+id/tvUklanjanjeObjekata"
             android:text="UKLANJANJE OBJEKATA" />
