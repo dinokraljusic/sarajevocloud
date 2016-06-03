@@ -5,25 +5,24 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
+import system.ArActivity;
+
+/*import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationServices;*/
 
-import system.ArActivity;
-
-public class DemoMain extends Activity implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+public class DemoMain extends Activity // implements
+        /*GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,*/
+//        LocationListener
+{
     /** Called when the activity is first created. */
     //private String _url = "http://192.168.0.112:33";
     //private String _url = "http://192.168.1.6:33";
@@ -34,8 +33,8 @@ public class DemoMain extends Activity implements
 
 
     private TextView tvFusedLocation;
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;/*  */
+    //private GoogleApiClient mGoogleApiClient;
+    //private LocationRequest mLocationRequest;/*  */
 
     private Location l1;
 
@@ -103,11 +102,11 @@ public class DemoMain extends Activity implements
         });
 
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        /*mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .build();
+                .build();*/
 
 
         l1=null;
@@ -146,9 +145,9 @@ public class DemoMain extends Activity implements
     protected void onStart() {
         super.onStart();
         // Connect the client.
-        mGoogleApiClient.connect();
+        //mGoogleApiClient.connect();
     }
-
+/*
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = LocationRequest.create();
@@ -159,7 +158,6 @@ public class DemoMain extends Activity implements
         //LocationServices.FusedLocationApi.re
 
     }
-
     @Override
     public void onConnectionSuspended(int i) {
 
@@ -179,5 +177,5 @@ public class DemoMain extends Activity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
+    */
 }
