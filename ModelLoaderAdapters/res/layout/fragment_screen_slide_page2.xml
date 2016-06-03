@@ -20,6 +20,7 @@
             <ImageView
                 android:layout_width="0dp"
                 android:layout_weight="25"
+                android:paddingBottom="15dp"
                 android:src="@drawable/moj_cloud"
                 android:layout_height="match_parent" />
             <TextView
@@ -39,12 +40,13 @@ FOTOGRAFISANJE"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="horizontal"
-            android:layout_marginTop="40sp"
+            android:layout_marginTop="10dp"
             android:layout_weight="30">
             <ImageView
                 android:layout_width="0dp"
                 android:layout_weight="25"
                 android:src="@drawable/sarajevo_cloud"
+                android:paddingBottom="15dp"
                 android:layout_height="match_parent" />
             <TextView
                 android:layout_width="0dp"
