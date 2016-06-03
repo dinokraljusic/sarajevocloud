@@ -319,7 +319,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _titleBar.setMinimumWidth((int) getScreenHeigth());
         _titleBar.setTop(0);
 
-        _rightMenu =  guiSetup.getRightView();
+        _rightMenu =  new LinearLayout(getActivity());
+        getGuiSetup().addViewToRight(_rightMenu);
         _rightMenu.setVisibility(View.GONE);
         _rightMenu.setOrientation(LinearLayout.VERTICAL);
         _rightMenu.setBackgroundColor(android.graphics.Color.argb(128, 0, 0, 0));
@@ -881,7 +882,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         });
         return imgButton;
     }public View createImageWithTransparentBackground(Context context, final int normalImageId, final int clickedImageId,
-                                                            final Command command){
+                                                      final Command command){
         final ImageView imgButton = new ImageView(context);
         imgButton.setBackgroundColor(0);
         imgButton.setImageResource(normalImageId);
