@@ -68,7 +68,8 @@ public class Login extends Activity {
                     Log.i("LOGIN", "Korisnik nije logovan!");
                 }else{
                     Spremnik.getInstance().setUserId(userId);
-                    ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
+                    startActivity(new Intent(this, Swipes.class));
+                    //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
                 }
             }
 
