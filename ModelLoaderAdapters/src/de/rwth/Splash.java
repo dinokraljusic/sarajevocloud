@@ -52,11 +52,15 @@ public class Splash extends Activity {
 
         SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
         final String userName = settings.getString("userName", "");
+        SharedPreferences sp = getSharedPreferences("sc", 0);
+        String u = sp.getString("userName", ""), i = sp.getString("userId", "");
+
         if(userName != null && !userName.isEmpty() && !userName.equals("")){
             Spremnik.getInstance().setUserName(userName);
             tvWelcome.setText("DOBRODOSLI\nWELCOME\n" + userName);
         }else{
             tvWelcome.setText("DOBRODOSLI\nWELCOME");
+            if(u!="") tvWelcome.setText("DOBRODOSLI\nWELCOME\n" + u);
         }
 
         final Handler mHandler = new Handler();
