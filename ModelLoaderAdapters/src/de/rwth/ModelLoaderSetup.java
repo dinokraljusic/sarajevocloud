@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -78,6 +80,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
     private MoveComp _moveComp;
 
     private Button _lokacijaLabel;
+    private Button _rightInfo, _rightFotografije, _rightAbout;
+    private LinearLayout  _rightMenu;
     private LinearLayout _messageBox;
     private LinearLayout _titleBar;
     private TextView _messageBox_TextView;
@@ -315,6 +319,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _titleBar.setMinimumWidth((int) getScreenHeigth());
         _titleBar.setTop(0);
 
+        _rightMenu =  guiSetup.getRightView();
+        _rightMenu.setVisibility(View.GONE);
+        _rightMenu.setOrientation(LinearLayout.VERTICAL);
+        _rightMenu.setBackgroundColor(android.graphics.Color.argb(128, 0, 0, 0));
+
         //guiSetup.addViewToTop(_lokacijaLabel);
 
         //region --- old code ---
@@ -482,7 +491,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             _cameraButton.setVisibility(View.GONE);
                             _messageBox.setVisibility(View.VISIBLE);
                             _messageBox_TextView.setVisibility(View.VISIBLE);
-                            _messageBox_TextView.setText("LIJEVI TEXT");
+                            //_messageBox_TextView.setText("LIJEVI TEXT");
                         }else {
                             visible = true;
                             guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
@@ -513,20 +522,21 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
                             _cameraButton.setVisibility(View.GONE);
                             _messageBox.setVisibility(View.VISIBLE);
+                            _rightMenu.setVisibility(View.VISIBLE);
 
                         }else {
                             visible = true;
                             guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
                             _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
                             _cameraButton.setVisibility(View.VISIBLE);
-
+                            _rightMenu.setVisibility(View.GONE);
                         }
 
                         return true;
                     }
                 });
         desniMeni.setRight((int) getScreenHeigth() - 15);
-        desniMeni.setPadding(35, 15, 15, 15);
+        desniMeni.setPadding(55, 15, 15, 15);
 
         // Creating a new RelativeLayout
         RelativeLayout relativeLayout = new RelativeLayout(getActivity());
@@ -580,7 +590,56 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _messageBox_buttons.addView(_messageBox_yesButton);
         _messageBox_buttons.addView(_messageBox_noButton);
 
-        showMessage("Dobro dosao " + Spremnik.getInstance().getUserName());
+        _rightFotografije = new Button(getActivity());
+        _rightFotografije.setPadding(25, 25, 35, 30);
+        _rightFotografije.setText("FOTOGRAFIJE");
+        _rightFotografije.setBackgroundColor(0);
+        _rightFotografije.setTypeface(defaultFont);
+        _rightFotografije.setTextColor(Color.rgb(242, 229, 0));
+
+        _rightInfo = new Button(getActivity());
+        _rightInfo.setPadding(25, 25, 35, 30);
+        _rightInfo.setText("INFO");
+        _rightInfo.setBackgroundColor(0);
+        _rightInfo.setTypeface(defaultFont);
+        _rightInfo.setTextColor(Color.rgb(242, 229, 0));
+
+        _rightAbout = new Button(getActivity());
+        _rightAbout.setPadding(25, 25, 35, 30);
+        _rightAbout.setBackgroundColor(0);
+        _rightAbout.setText("ABOUT");
+        _rightAbout.setTypeface(defaultFont);
+        _rightAbout.setTextColor(Color.rgb(242, 229, 0));
+
+        _rightMenu.addView(_rightInfo);
+        _rightMenu.addView(_rightFotografije);
+        _rightMenu.addView(_rightAbout);
+        _rightMenu.setPadding(80,0,50,50);
+
+        _rightInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), Swipes.class);
+                getActivity().startActivity(i);
+                getActivity().finish();
+            }
+        });
+
+        _rightFotografije.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String secStore = System.getenv("SECONDARY_STORAGE");
+                File file = new File(secStore + "/DCIM");
+                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                getActivity().startActivityForResult(i, 1);//android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                /*
+                String secStore = System.getenv("SECONDARY_STORAGE");
+                File file = new File(secStore + "/DCIM");
+                 */
+            }
+        });
+
+        showMessage("Dobro dosli " + Spremnik.getInstance().getUserName());
     }
 
     public void showMessage(String text) {

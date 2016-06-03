@@ -48,9 +48,9 @@ public class Login extends Activity {
 
         SharedPreferences sp = getSharedPreferences("sc", 0);
         String u = sp.getString("userName", ""), i = sp.getString("userId", "");
-        if(u!=null && !u.equals("")){
-            Spremnik.getInstance().setUserId(u);
-            Spremnik.getInstance().setUserName(i);
+        if(u!=null && !u.equals("") && !i.equals("")){
+            Spremnik.getInstance().setUserId(i);
+            Spremnik.getInstance().setUserName(u);
             //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
             startActivity(new Intent(this, Swipes.class));
         }

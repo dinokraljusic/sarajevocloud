@@ -68,7 +68,7 @@ public class Splash extends Activity {
             }
         };
 
-        mHandler.postDelayed(wait3secSignup,2500 );
+        mHandler.postDelayed(wait3secSignup, 3000 );
 
         l1=null;
         updateL1();
