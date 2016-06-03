@@ -494,7 +494,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         return true;
                     }
                 });
-        lijeviMeni.setPadding(15, 15, 15, 15);
+        lijeviMeni.setPadding(15, 15, 45, 15);
         TextView naslov = new TextView(getActivity());
         naslov.setPadding(0, 15, 0, 15);
         naslov.setTypeface(defaultFont);
@@ -504,14 +504,29 @@ public class ModelLoaderSetup extends DefaultARSetup {
         View desniMeni = createImageWithTransparentBackground(getActivity(),
                 R.drawable.gornji_desni_meni_zuto, R.drawable.gornji_desni_meni_zelen,
                 new Command() {
+                    boolean visible = true;
                     @Override
                     public boolean execute() {
+                        if(visible){
+                            visible = false;
+                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
+                            _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
+                            _cameraButton.setVisibility(View.GONE);
+                            _messageBox.setVisibility(View.VISIBLE);
+
+                        }else {
+                            visible = true;
+                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                            _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+                            _cameraButton.setVisibility(View.VISIBLE);
+
+                        }
 
                         return true;
                     }
                 });
         desniMeni.setRight((int) getScreenHeigth() - 15);
-        desniMeni.setPadding(15, 15, 15, 15);
+        desniMeni.setPadding(35, 15, 15, 15);
 
         // Creating a new RelativeLayout
         RelativeLayout relativeLayout = new RelativeLayout(getActivity());

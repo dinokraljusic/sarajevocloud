@@ -115,11 +115,11 @@
             android:layout_gravity="bottom"
             android:src="@drawable/tinfo_status"
             android:id="@id/statusImage"
-            android:layout_marginBottom="11dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="50" />
         <ImageView
             android:layout_width="0dp"
-            android:layout_weight="30"
+            android:layout_weight="25"
             android:src="@drawable/yes"
             android:id="@+id/ivOK"
             android:gravity="right"

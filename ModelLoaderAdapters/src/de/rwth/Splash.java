@@ -31,6 +31,7 @@ public class Splash extends Activity {
     //private String _url = "http://192.168.137.14";
     //private String _url = "http://192.168.1.5";
     public static String LOG_TAG = "ModelLoader";
+    Location l1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,24 +70,8 @@ public class Splash extends Activity {
 
         mHandler.postDelayed(wait3secSignup,2500 );
 
-        Location l1=null;
-        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        try {
-            l1 = lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-
-            if (l1 == null) {
-                l1 = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-            if (l1 == null)
-                l1 = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        if(l1!=null)
-            Log.i("location", Double.toString(l1.getLatitude()));
+        l1=null;
+        updateL1();
     }
 
     @Override
@@ -95,6 +80,35 @@ public class Splash extends Activity {
         MenuItem item = menu.findItem(0);
         item.setVisible(false);
         super.onPrepareOptionsMenu(menu);
+        if (l1 != null)
+        {
+            Log.d("l1: " , Double.toString(l1.getLongitude()));
+        }
         return true;
+    }
+
+    public void updateL1(){
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        try {
+            l1 = lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+            if (l1 == null) {
+                l1 = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+            else if(lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER).getAccuracy() < l1.getAccuracy())
+                l1 = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            if (l1 == null)
+                l1 = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            else if(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getAccuracy() < l1.getAccuracy())
+                l1 = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        //Log.i("location l1:", Double.toString(l1.getLatitude()) + "; " + Double.toString(l1.getLongitude()));
     }
 }

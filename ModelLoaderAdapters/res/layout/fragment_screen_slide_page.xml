@@ -48,5 +48,5 @@ GPS-A.\n\nPOSMATRANJEM OKRUZENJA\nKROZ KAMERU, MOZETE FOTOGRAFISATI I\nHODATI KR
         android:layout_alignParentLeft="false"
         android:layout_alignParentRight="false"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="11dp" />
+        android:layout_marginBottom="8dp" />
 </RelativeLayout>

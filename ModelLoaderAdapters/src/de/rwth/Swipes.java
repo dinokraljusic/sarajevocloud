@@ -94,6 +94,7 @@ public class Swipes extends FragmentActivity {
         if (mPager.getCurrentItem() == 0) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
+            updateL1();
             super.onBackPressed();
         } else {
             // Otherwise, select the previous step.
