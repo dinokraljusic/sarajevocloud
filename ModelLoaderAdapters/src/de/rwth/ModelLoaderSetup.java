@@ -81,6 +81,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     private Button _lokacijaLabel;
     private Button _rightInfo, _rightFotografije, _rightAbout;
+    private ImageView _ivPlus, _ivReload;
+
     private LinearLayout  _rightMenu;
     private LinearLayout _messageBox;
     private LinearLayout _titleBar;
@@ -616,6 +618,18 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightMenu.addView(_rightFotografije);
         _rightMenu.addView(_rightAbout);
         _rightMenu.setPadding(80,0,50,50);
+
+        _ivPlus= new ImageView(getActivity());
+        _ivPlus.setImageResource(R.drawable.no_first);
+        _ivPlus.setRotation(45);
+        _ivPlus.setPadding(0,120,0,0);
+        getGuiSetup().addViewToRight(_ivPlus);
+
+        _ivReload = new ImageView(getActivity());
+        _ivReload.setImageResource(R.drawable.no_second);
+        _ivReload.setRotation(45);
+        _ivReload.setPadding(0,120,0,0);
+        getGuiSetup().addViewToRight(_ivReload);
 
         _rightInfo.setOnClickListener(new View.OnClickListener() {
             @Override
