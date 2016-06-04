@@ -10,8 +10,11 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -633,16 +636,42 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _ivPlus= new ImageView(getActivity());
         _ivPlus.setImageResource(R.drawable.plus_zuto);
         //_ivPlus.setPadding(0,120,0,0);
-        getGuiSetup().addViewToRight(_ivPlus);
+        getGuiSetup().addViewToRight(_ivPlus);///
 
-        getGuiSetup().getRightView().setPadding(30,30,30,30);
+        //getGuiSetup().getRightView().setPadding(30,30,30,30);
 
-        guiSetup.addViewToRight(_cameraButton);
+        guiSetup.addViewToRight(_cameraButton);///
 
         _ivReload = new ImageView(getActivity());
         _ivReload.setImageResource(R.drawable.reload_zuto);
         //_ivReload.setPadding(0,120,0,0);
-        getGuiSetup().addViewToRight(_ivReload);
+        getGuiSetup().addViewToRight(_ivReload);////
+        getGuiSetup().getRightView().setWeightSum(100);
+        android.widget.LinearLayout.LayoutParams params = new android.widget.LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 24f);
+        getGuiSetup().getRightView().getChildAt(1).setLayoutParams(params);
+        getGuiSetup().getRightView().getChildAt(1).setPadding(0,0,0,60);
+        //getGuiSetup().getRightView().getChildAt(2).setLayoutParams(params);
+        getGuiSetup().getRightView().getChildAt(3).setLayoutParams(params);
+        getGuiSetup().getRightView().getChildAt(3).setPadding(0,60,0,0);
+        getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
+
+        /*_ivReload.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.f));
+        _ivPlus.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.f));
+        _cameraButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.f));*/
+        RelativeLayout _relative_right = new RelativeLayout(getActivity());
+        //_relative_right.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT));
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT );
+
+
+       /* _relative_right.addView(_ivPlus, lp);
+        //relative_right.getChildAt(0).setLayoutParams(new RelativeLayout.LayoutParams(100,250));
+        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        _relative_right.addView(_cameraButton, lp);
+        lp.addRule(RelativeLayout.ALIGN_BOTTOM);
+        _relative_right.addView(_ivReload, lp);
+        getGuiSetup().addViewToRight(_relative_right);*/
+        //getGuiSetup().getRightView().getChildAt(1);
 
         _rightInfo.setOnClickListener(new View.OnClickListener() {
             @Override
