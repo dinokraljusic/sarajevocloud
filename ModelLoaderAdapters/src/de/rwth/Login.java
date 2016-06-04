@@ -53,6 +53,7 @@ public class Login extends Activity {
             Spremnik.getInstance().setUserName(u);
             //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
             startActivity(new Intent(this, Swipes.class));
+            finish();
         }
         else {
 
@@ -70,6 +71,7 @@ public class Login extends Activity {
                     Spremnik.getInstance().setUserId(userId);
                     startActivity(new Intent(this, Swipes.class));
                     //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
+                    finish();
                 }
             }
 
@@ -116,6 +118,7 @@ public class Login extends Activity {
                             Intent i = new Intent(Login.this, Swipes.class);
                             startActivity(i);
 
+                            finish();
                             //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
                         }
                     }

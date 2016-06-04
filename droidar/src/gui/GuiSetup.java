@@ -285,6 +285,10 @@ public class GuiSetup {
 		rightView.addView(v);
 	}
 
+	public void addViewToLeft(View v) {
+		leftView.addView(v);
+	}
+
 	public View getMainContainerView() {
 		return main;
 	}

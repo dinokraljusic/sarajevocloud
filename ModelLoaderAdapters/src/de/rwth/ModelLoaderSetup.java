@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -80,10 +81,10 @@ public class ModelLoaderSetup extends DefaultARSetup {
     private MoveComp _moveComp;
 
     private Button _lokacijaLabel;
-    private Button _rightInfo, _rightFotografije, _rightAbout;
-    private ImageView _ivPlus, _ivReload;
+    private Button _rightInfo, _rightFotografije, _rightAbout, _leftMojCloud, _leftSarajevoCloud;
+    private ImageView _ivPlus, _ivReload, _ivMojCloud, _ivSarajevoCloud;
 
-    private LinearLayout  _rightMenu;
+    private LinearLayout  _rightMenu,_leftMenu;
     private LinearLayout _messageBox;
     private LinearLayout _titleBar;
     private TextView _messageBox_TextView;
@@ -327,6 +328,14 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightMenu.setOrientation(LinearLayout.VERTICAL);
         _rightMenu.setBackgroundColor(android.graphics.Color.argb(128, 0, 0, 0));
 
+        _leftMenu = new LinearLayout(getActivity());
+        getGuiSetup().addViewToLeft(_leftMenu);
+        _leftMenu.setVisibility(View.GONE);
+        _leftMenu.setOrientation(LinearLayout.VERTICAL);
+        _leftMenu.setWeightSum(99);
+
+
+
         //guiSetup.addViewToTop(_lokacijaLabel);
 
         //region --- old code ---
@@ -479,7 +488,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         return  true;
                     }
                 });
-        guiSetup.addViewToRight(_cameraButton);
+
 
         View lijeviMeni = createButtonImageWithTransparentBackground(getActivity(),
                 R.drawable.gornji_lijevi_button_zuto, R.drawable.gornji_lijevi_button_zeleno,
@@ -495,6 +504,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             _messageBox.setVisibility(View.VISIBLE);
                             _messageBox_TextView.setVisibility(View.VISIBLE);
                             //_messageBox_TextView.setText("LIJEVI TEXT");
+                            _leftMenu.setVisibility(View.VISIBLE);
                         }else {
                             visible = true;
                             guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
@@ -502,6 +512,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             _cameraButton.setVisibility(View.VISIBLE);
                             _messageBox_TextView.setVisibility(View.GONE);
                             _messageBox.setVisibility(View.GONE);
+                            _leftMenu.setVisibility(View.GONE);
                         }
                         return true;
                     }
@@ -620,15 +631,17 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightMenu.setPadding(80,0,50,50);
 
         _ivPlus= new ImageView(getActivity());
-        _ivPlus.setImageResource(R.drawable.no_first);
-        _ivPlus.setRotation(45);
-        _ivPlus.setPadding(0,120,0,0);
+        _ivPlus.setImageResource(R.drawable.plus_zuto);
+        //_ivPlus.setPadding(0,120,0,0);
         getGuiSetup().addViewToRight(_ivPlus);
 
+        getGuiSetup().getRightView().setPadding(30,30,30,30);
+
+        guiSetup.addViewToRight(_cameraButton);
+
         _ivReload = new ImageView(getActivity());
-        _ivReload.setImageResource(R.drawable.no_second);
-        _ivReload.setRotation(45);
-        _ivReload.setPadding(0,120,0,0);
+        _ivReload.setImageResource(R.drawable.reload_zuto);
+        //_ivReload.setPadding(0,120,0,0);
         getGuiSetup().addViewToRight(_ivReload);
 
         _rightInfo.setOnClickListener(new View.OnClickListener() {
@@ -653,6 +666,44 @@ public class ModelLoaderSetup extends DefaultARSetup {
                  */
             }
         });
+
+        _leftMojCloud = new Button(getActivity());
+        _leftMojCloud.setText("MOJ CLOUD");
+        _leftMojCloud.setBackgroundColor(0);
+        _leftMojCloud.setTypeface(defaultFont);
+        _leftMojCloud.setTextColor(Color.rgb(242, 229, 0));
+
+        _leftSarajevoCloud = new Button(getActivity());
+        _leftSarajevoCloud.setText("SARAJEVO CLOUD");
+        _leftSarajevoCloud.setBackgroundColor(0);
+        _leftSarajevoCloud.setTypeface(defaultFont);
+        _leftSarajevoCloud.setTextColor(Color.rgb(242, 229, 0));
+
+        LinearLayout _llMojCloud = new LinearLayout(getActivity());
+        _llMojCloud.setOrientation(LinearLayout.HORIZONTAL);
+        _llMojCloud.setWeightSum(100);
+        _ivMojCloud = new ImageView(getActivity());
+        _ivMojCloud.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.gornji_desni_meni_zuto));
+        _llMojCloud.addView(_ivMojCloud);
+        _llMojCloud.addView(_leftMojCloud);
+
+
+        LinearLayout _llSarajevoCloud = new LinearLayout(getActivity());
+        _llSarajevoCloud.setOrientation(LinearLayout.HORIZONTAL);
+        _llSarajevoCloud.setWeightSum(100);
+        _ivSarajevoCloud = new ImageView(getActivity());
+        _ivSarajevoCloud.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.gornji_lijevi_button_zuto));
+        _llSarajevoCloud.addView(_ivSarajevoCloud);
+        _llSarajevoCloud.addView(_leftSarajevoCloud);
+
+        TextView _tvModovi = new TextView(getActivity());
+        _tvModovi.setText("MODOVI");
+        _tvModovi.setTypeface(defaultFont);
+        _tvModovi.setTextColor(Color.rgb(242, 229, 0));
+
+        _leftMenu.addView(_tvModovi);
+        _leftMenu.addView(_llMojCloud);
+        _leftMenu.addView(_llSarajevoCloud);
 
         showMessage("Dobro dosli " + Spremnik.getInstance().getUserName());
     }
