@@ -415,7 +415,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         //endregion
 
 
-        guiSetup.addButtonToLeftView(new Command() {
+        /*guiSetup.addButtonToLeftView(new Command() {
 
             @Override
             public boolean execute() {
@@ -424,7 +424,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 return true;
             }
 
-        }, " + ");
+        }, " + ");*/
 
         //region --- old code ---
         /*guiSetup.addButtonToBottomView(new Command() {
@@ -535,7 +535,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     public boolean execute() {
                         if(visible){
                             visible = false;
-                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
+                            //guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
                             _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
                             _cameraButton.setVisibility(View.GONE);
                             _messageBox.setVisibility(View.VISIBLE);
@@ -680,6 +680,13 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _relative_right.addView(_ivReload, lp);
         getGuiSetup().addViewToRight(_relative_right);*/
         //getGuiSetup().getRightView().getChildAt(1);
+        _ivPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), chooser.class);
+                getActivity().startActivityForResult(intent, 0);
+            }
+        });
 
         _rightInfo.setOnClickListener(new View.OnClickListener() {
             @Override
