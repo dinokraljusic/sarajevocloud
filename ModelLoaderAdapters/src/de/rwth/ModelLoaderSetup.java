@@ -541,12 +541,20 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             _messageBox.setVisibility(View.VISIBLE);
                             _rightMenu.setVisibility(View.VISIBLE);
 
+                            _ivReload.setVisibility(View.GONE);
+                            _ivPlus.setVisibility(View.GONE);
+                            getGuiSetup().getRightView().setGravity(Gravity.TOP);
+
                         }else {
                             visible = true;
                             guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
                             _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
                             _cameraButton.setVisibility(View.VISIBLE);
                             _rightMenu.setVisibility(View.GONE);
+
+                            _ivReload.setVisibility(View.VISIBLE);
+                            _ivPlus.setVisibility(View.VISIBLE);
+                            getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
                         }
 
                         return true;
