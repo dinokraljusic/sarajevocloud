@@ -4,6 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="fill_horizontal|top"
+              android:background="@android:color/transparent"
               android:id="@+id/progBar1">
 
     <ProgressBar
@@ -21,6 +22,7 @@
         android:id="@+id/listSetovi"
         android:visibility="visible"
         android:clickable="true"
+        android:background="@android:color/transparent"
         />
 
     <TextView

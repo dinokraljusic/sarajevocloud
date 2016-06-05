@@ -14,7 +14,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:text="  "
             android:layout_height="wrap_content" />
 
@@ -28,7 +28,7 @@
             android:id="@+id/tvPrvi"
             android:layout_weight="10"
             android:textColor="@color/black"
-            android:text="NADOGRADITE STVARNI PROSTOR SA VIRTU-\nELNIM OBJEKTIMA.\n\nOBJEKTI OSTAJU POZICIONIRANI\nU PROSTORU POMOCU GPS-A.\n\nPOSMATRANJEM OKRUZENJA\nKROZ KAMERU, MOZETE FOTOGRAFISATI I\nHODATI KROZ VLASTITE PROSTORE, I PROSTORE\nDRUGIH KORISNIKA." />
+            android:text="NADOGRADITE STVARNI PROSTOR SA VIRTUELNIM OBJEKTIMA\n\nOBJEKTI OSTAJU POZICIONIRANI U PROSTORU u odnosu na korisnika\n\nPOSMATRANJEM OKRUZENJA KROZ KAMERU, MOZETE kreirati i fotografisati vase prostore,posmatrati i FOTOGRAFISATI PROSTORE DRUGIH KORISNIKA/ca" />
 
         <!--<TextView
             android:id="@+id/tvLink"
