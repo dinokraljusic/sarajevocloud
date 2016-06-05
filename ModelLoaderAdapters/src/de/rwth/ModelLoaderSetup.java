@@ -1410,16 +1410,16 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
                     if(_leftMenu.getVisibility()== View.VISIBLE){
                         _leftMenu.setVisibility(View.GONE);
-                        _timesBackPressed=0;
+                        _timesBackPressed = 0;
                     }
                     if(_rightMenu.getVisibility()== View.VISIBLE){
                         _rightMenu.setVisibility(View.GONE);
-                        _timesBackPressed=0;
+                        _timesBackPressed = 0;
                     }
                     if(_messageBox.getVisibility() == View.VISIBLE){
                         _messageBox.setVisibility(View.GONE);
                         //if(_messageBox.getChildAt(1) != null) _messageBox.getChildAt(1).setVisibility(View.GONE);
-                        _timesBackPressed=0;
+                        _timesBackPressed = 0;
                     }
 
                     //if()
@@ -1434,6 +1434,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     }
                     _cameraButton.setVisibility(View.VISIBLE);
                     _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+
+                    if(_popupWindow.getVisibility() == View.VISIBLE){
+                        _popupWindow.setVisibility(View.GONE);
+                        _timesBackPressed = 0;
+                    }
 
                     if(_timesBackPressed > 0){
                         //_messageBox_TextView.setText("Press back once more to exit.");
