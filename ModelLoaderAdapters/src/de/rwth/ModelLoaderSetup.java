@@ -437,6 +437,10 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             _messageBox_TextView.setVisibility(View.VISIBLE);
                             //_messageBox_TextView.setText("LIJEVI TEXT");
                             _leftMenu.setVisibility(View.VISIBLE);
+
+                            _rightMenu.setVisibility(View.GONE);
+                            //_ivReload.setVisibility(View.INVISIBLE);
+                            //_ivPlus.setVisibility(View.INVISIBLE);
                         }else {
                             visible = true;
                             guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
@@ -763,9 +767,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
             }
         });
 
+
         showMessage("Dobro dosli " + Spremnik.getInstance().getUserName());
         checkNewPiktogramHandler.postDelayed(checkNewPiktogramRunnable, 0);
     }
+
 
     private void initMessageBox(GuiSetup guiSetup) {
         _messageBox_TextView = new TextView(getActivity());

@@ -8,7 +8,11 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.method.KeyListener;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,6 +75,52 @@ public class Login extends Activity {
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/ACTOPOLIS.otf");
 
         etIme.setTypeface(type);
+
+        etIme.setOnKeyListener(new View.OnKeyListener()
+        {
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            final String userName = etIme.getText().toString();
+                            // TODO: Check if username is available!
+                            if (!userName.matches("")) {
+                                String userId = null;
+                                try {
+                                    userId = new RegisterUserIdAsync().execute(userName).get();
+                                }catch (Throwable t) {
+
+                                }
+                                if (userId == null || userId.equals("") || userId.isEmpty()) {
+                                    showMessage("Korisnicko ime zauaeto. Molimo izaberite drugo.");
+                                } else {
+                                    Spremnik.getInstance().setUserId(userId);
+                                    Spremnik.getInstance().setUserName(userName);
+
+                                    SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
+                                    SharedPreferences.Editor editor = settings.edit();
+                                    editor.putString("userName", userName);
+                                    editor.commit();
+
+                                    //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
+                                    Intent i = new Intent(Login.this, Swipes.class);
+                                    startActivity(i);
+                                    //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
+                                }
+                            }
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
         btnSignIn.setTypeface(type);
         //btnFacebook.setTypeface(type);
 

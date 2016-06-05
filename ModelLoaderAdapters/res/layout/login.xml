@@ -34,6 +34,7 @@
             android:background="@drawable/rounded_edit_text"
             android:padding="10dp"
             android:layout_marginBottom="20dp"
+            android:inputType="text"
             android:layout_weight="1"/>
 
         <Button
