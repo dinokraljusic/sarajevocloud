@@ -108,6 +108,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
     Typeface defaultFont;
 
     private boolean modeSarajevoCloud=true;
+    private int _timesBackPressed = 0;
 
     //endregion
 
@@ -1400,15 +1401,23 @@ public class ModelLoaderSetup extends DefaultARSetup {
             {
                 case KeyEvent.KEYCODE_BACK:
                 case KeyEvent.KEYCODE_BACKSLASH:
+                    _timesBackPressed++;
+
+                    if(_timesBackPressed > 1) return super.onKeyDown(a, keyCode, event);
 
                     //if( getGuiSetup().getMainContainerView().getBack )
                     getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
                     //_titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
 
-                    if(_leftMenu.getVisibility()== View.VISIBLE)
+                    if(_leftMenu.getVisibility()== View.VISIBLE){
                         _leftMenu.setVisibility(View.GONE);
-                    if(_rightMenu.getVisibility()== View.VISIBLE)
+                        _timesBackPressed=0;
+                    }
+                    if(_rightMenu.getVisibility()== View.VISIBLE){
                         _rightMenu.setVisibility(View.GONE);
+                        _timesBackPressed=0;
+                    }
+
                     //if()
 
                     if(modeSarajevoCloud){
