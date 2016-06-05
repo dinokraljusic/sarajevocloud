@@ -164,6 +164,7 @@ public class GL1Renderer extends GLRenderer {
                 Log.d(LOG_TAG, "GL1 screensize length=" + screenshotSize);
                 ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
                 bb.order(ByteOrder.nativeOrder());
+				bb.position(0);
                 gl.glReadPixels(0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bb);
                 int pixelsBuffer[] = new int[screenshotSize];
                 bb.asIntBuffer().get(pixelsBuffer);

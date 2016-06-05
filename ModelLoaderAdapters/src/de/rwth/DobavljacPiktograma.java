@@ -66,14 +66,11 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
                 String tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_piktogram"));
                 final String finalFileName = Utility.downloadAndSaveFile(_context, set.getInt("id"), false, tmp, LOG_TAG);
 
-
                 tmp = set.getString("naziv") + "."+Utility.getEkstension(set.getString("put_tekstura"));
                 final String finalTextureName = Utility.downloadAndSaveFile(_context, set.getInt("id"), true, tmp, LOG_TAG);
 
-
                 Par par = new Par(set.getString("naziv"),  finalFileName, finalTextureName, set.getString("id"));
                 mapaPiktogrami.add(par);
-
             }
         } catch (org.json.JSONException je) {
             Log.d(LOG_TAG, "Error parsing response to JSONArray.", je);
@@ -125,6 +122,7 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
             Key= key;
             Value=value;
             Tekstura = tekstura;
+            this.ID = ID;
         }
     }
 

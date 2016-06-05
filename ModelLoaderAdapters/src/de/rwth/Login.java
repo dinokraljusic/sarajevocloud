@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import system.ArActivity;
-import util.Log;
 
 /**
  * Created by dinok on 5/3/2016.
@@ -34,6 +33,7 @@ public class Login extends Activity {
     //private String _url = "http://192.168.1.6:33";
     //private String _url = "http://192.168.0.110";
     //private String _url = "http://192.168.137.14";
+    public static final String CREDENTIALS = "credentials.sc";
     private String _url = "http://192.168.1.5";
     public static String LOG_TAG = "Login";
     public Location l1;
@@ -43,89 +43,71 @@ public class Login extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
 
-        SharedPreferences sp = getSharedPreferences("sc", 0);
-        String u = sp.getString("userName", ""), i = sp.getString("userId", "");
-        if(u!=null && !u.equals("") && !i.equals("")){
-            Spremnik.getInstance().setUserId(i);
-            Spremnik.getInstance().setUserName(u);
-            //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
-            startActivity(new Intent(this, Swipes.class));
-            finish();
-        }
-        else {
-
-            final  String userName = Spremnik.getInstance().getUserName();
-            if(userName != null && !userName.equals("")) {
-                String userId = "";
-                try {
-                    userId = new GetUserIdAsync().execute(userName).get();
-                }
-                catch (Throwable t){}
-                if(userId == null || userId.equals("0")){
-                    Toast.makeText(Login.this, "User not logged. Please register", Toast.LENGTH_LONG).show();
-                    Log.i("LOGIN", "Korisnik nije logovan!");
-                }else{
-                    Spremnik.getInstance().setUserId(userId);
-                    startActivity(new Intent(this, Swipes.class));
-                    //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
-                    finish();
-                }
+        final String userName = settings.getString("userName", "");
+        if(userName != null && !userName.isEmpty() && !userName.equals("")){
+            Spremnik.getInstance().setUserName(userName);
+            String userId = "";
+            try {
+                userId = new GetUserIdAsync().execute(userName).get();
+            }catch (Exception ex) {
+                showMessage(ex.getMessage());
             }
+            if (userId == null || userId.isEmpty() || userId.equals("0")) {
+                showMessage("KORISNIK NIJE LOGOVAN! MOLIMO REGISTRUJTE SE.");
+            } else {
+                Spremnik.getInstance().setUserId(userId);
+                ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
+            }
+        }
 
 
-            final EditText etIme = (EditText) findViewById(R.id.etIme);
-            Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
-           // Button btnFacebook = (Button) findViewById(R.id.btnFacebook);
+        final EditText etIme = (EditText) findViewById(R.id.etIme);
+        Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
+        //Button btnFacebook = (Button) findViewById(R.id.btnFacebook);
 
-            Typeface type = Typeface.createFromAsset(getAssets(), "fonts/ACTOPOLIS.otf");
+        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/ACTOPOLIS.otf");
 
-            etIme.setTypeface(type);
-            btnSignIn.setTypeface(type);
-    //        btnFacebook.setTypeface(type);
+        etIme.setTypeface(type);
+        btnSignIn.setTypeface(type);
+        //btnFacebook.setTypeface(type);
 
-            l1=null;
-            updateL1();
+        l1=null;
+        updateL1();
+        
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String userName = etIme.getText().toString();
+                // TODO: Check if username is available!
+                if (!userName.matches("")) {
+                    String userId = null;
+                    try {
+                        userId = new RegisterUserIdAsync().execute(userName).get();
+                    }catch (Throwable t) {
 
-            btnSignIn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final String userName = etIme.getText().toString();
-                    // TODO: Check if username is available!
-                    if (!userName.matches("")) {
-                        String userId = null;
-                        try {
-                            userId = new RegisterUserIdAsync().execute(userName).get();
-                        }catch (Throwable t) {
+                    }
+                    if (userId == null || userId.equals("") || userId.isEmpty()) {
+                        showMessage("Korisnicko ime zauaeto. Molimo izaberite drugo.");
+                    } else {
+                        Spremnik.getInstance().setUserId(userId);
+                        Spremnik.getInstance().setUserName(userName);
 
-                        }
-                        if (userId == null || userId.equals("") || userId.isEmpty()) {
-                            Toast.makeText(Login.this, "Korisni?ko ime zauzeto! Molimo izaberite drugo."
-                                    , Toast.LENGTH_LONG).show();
-                            Log.i("LOGIN", "Korisni?ko ime zauzeto! Molimo izaberite drugo.");
-                        } else {
-                            Spremnik.getInstance().setUserId(userId);
-                            Spremnik.getInstance().setUserName(userName);
+                        SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("userName", userName);
+                        editor.commit();
 
-                            SharedPreferences sp = getSharedPreferences("sc", 0);
-                            SharedPreferences.Editor editor=sp.edit();
-                            editor.putString("userId",userId);
-                            editor.putString("userName",userName);
-                            editor.commit();
-
-                            Intent i = new Intent(Login.this, Swipes.class);
-                            startActivity(i);
-
-                            finish();
-                            //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
-                        }
+                        //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
+                        Intent i = new Intent(Login.this, Swipes.class);
+                        startActivity(i);
+                        //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
                     }
                 }
-            });
-
-        }
+            }
+        });
     }
 
     public void updateL1(){
@@ -153,20 +135,49 @@ public class Login extends Activity {
         //Log.i("location l1:", Double.toString(l1.getLatitude()) + "; " + Double.toString(l1.getLongitude()));
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        finish();
+    }
 
-        class RegisterUserIdAsync extends AsyncTask<String, String, String> {
-
+    private void showMessage(String text) {
+        findViewById(R.id.messageBox).setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.messageBox_text)).setText(text);
+        new android.os.Handler().postDelayed(new Runnable() {
             @Override
-            protected String doInBackground(String... params) {
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        findViewById(R.id.messageBox).setVisibility(View.GONE);
+                    }
+                });
+            }
+        }, 3000);
+    }
+
+    class RegisterUserIdAsync extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
                 List<NameValuePair> args = new ArrayList<>(1);
                 args.add(new BasicNameValuePair("ime", params[0]));
-                String userID = Utility.POST(Spremnik.getInstance().getUserServiceAddress(), args);
-//Log.i("LOG_LOGIN", userID);
-                String userId = Utility.GET(Spremnik.getInstance().getUserServiceAddress() + "?ime=" + params[0]);
-                updateL1();
-                return userId;
+                String userID = Utility.registerUser(Spremnik.getInstance().getUserServiceAddress(), args);
+                return userID;
+            } catch (java.io.IOException ioe) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showMessage("PROBLEMI SA KONEKCIJOM!");
+                    }
+                });
             }
+            return "";
         }
+    }
+
     class GetUserIdAsync extends AsyncTask<String, String, String> {
 
         @Override

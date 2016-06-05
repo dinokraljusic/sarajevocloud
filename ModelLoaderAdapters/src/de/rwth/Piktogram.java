@@ -1,8 +1,5 @@
 package de.rwth;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by MiniP on 3/27/2016.
  */
@@ -12,6 +9,8 @@ public class Piktogram {
     private String _naziv;
     private String _putPiktogram;
     private String _putTekstura;
+    private float _latitude,
+                _longitude;
 
     /**
      * No args constructor for use in serialization
@@ -30,6 +29,21 @@ public class Piktogram {
         this._naziv = naziv;
         this._putPiktogram = putPiktogram;
         this._putTekstura = putTekstura;
+    }
+
+    /**
+     * @param id
+     * @param naziv
+     * @param putPiktogram
+     * @param putTekstura
+     */
+    public Piktogram(int id, String naziv, String putPiktogram, String putTekstura, float latitude, float longitude) {
+        this._id = id;
+        this._naziv = naziv;
+        this._putPiktogram = putPiktogram;
+        this._putTekstura = putTekstura;
+        this._latitude = latitude;
+        this._longitude= longitude;
     }
 
     /**
@@ -86,5 +100,21 @@ public class Piktogram {
      */
     public void setPutTekstura(String putTekstura) {
         this._putTekstura = putTekstura;
+    }
+
+    public float get_latitude() {
+        return _latitude;
+    }
+
+    public void set_latitude(float _latitude) {
+        this._latitude = _latitude;
+    }
+
+    public float get_longitude() {
+        return _longitude;
+    }
+
+    public void set_longitude(float _longitude) {
+        this._longitude = _longitude;
     }
 }
