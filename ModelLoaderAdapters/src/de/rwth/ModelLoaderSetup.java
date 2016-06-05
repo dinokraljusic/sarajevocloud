@@ -414,6 +414,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     @Override
                     public boolean execute() {
                         try {
+                            _cameraButton.setVisibility(View.GONE);
                             getMyRenderer().takeScreenShot(myCameraView, Spremnik.getInstance().get_slikaPath());
                             //takeScreenshot();
                             pictureHandler.postDelayed(pictureRunnable, 100);
@@ -1343,6 +1344,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
     private void hidePopup(){
         _popupWindow.setVisibility(View.GONE);
         _thumbnailImage.setVisibility(View.GONE);
+        _cameraButton.setVisibility(View.VISIBLE);
     }
 
     protected void showLoader(String text){
