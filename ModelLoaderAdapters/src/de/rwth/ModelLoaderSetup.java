@@ -432,33 +432,35 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     boolean visible = true;
                     @Override
                     public boolean execute() {
-                        if(visible){
-                            visible = false;
-                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
-                            _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
-                            _cameraButton.setVisibility(View.GONE);
-                            _messageBox.setVisibility(View.GONE);
-                            _messageBox_TextView.setVisibility(View.VISIBLE);
-                            //_messageBox_TextView.setText("LIJEVI TEXT");
-                            _leftMenu.setVisibility(View.VISIBLE);
+                        if(_popupWindow.getVisibility() != View.VISIBLE) {
+                            if(visible){
+                                visible = false;
+                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
+                                _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
+                                _cameraButton.setVisibility(View.GONE);
+                                _messageBox.setVisibility(View.GONE);
+                                _messageBox_TextView.setVisibility(View.VISIBLE);
+                                //_messageBox_TextView.setText("LIJEVI TEXT");
+                                _leftMenu.setVisibility(View.VISIBLE);
 
-                            _rightMenu.setVisibility(View.GONE);
-                            _ivReload.setVisibility(View.INVISIBLE);
-                            _ivPlus.setVisibility(View.INVISIBLE);
-                        }else {
-                            visible = true;
-                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
-                            _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
-                            _cameraButton.setVisibility(View.VISIBLE);
-                            _messageBox_TextView.setVisibility(View.GONE);
-                            _messageBox.setVisibility(View.GONE);
-                            _leftMenu.setVisibility(View.GONE);
+                                _rightMenu.setVisibility(View.GONE);
+                                _ivReload.setVisibility(View.INVISIBLE);
+                                _ivPlus.setVisibility(View.INVISIBLE);
+                            }else {
+                                visible = true;
+                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                                _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+                                _cameraButton.setVisibility(View.VISIBLE);
+                                _messageBox_TextView.setVisibility(View.GONE);
+                                _messageBox.setVisibility(View.GONE);
+                                _leftMenu.setVisibility(View.GONE);
 
-                            if(!modeSarajevoCloud){
-                                _ivReload.setVisibility(View.VISIBLE);
-                                _ivPlus.setVisibility(View.VISIBLE);
+                                if(!modeSarajevoCloud){
+                                    _ivReload.setVisibility(View.VISIBLE);
+                                    _ivPlus.setVisibility(View.VISIBLE);
+                                }
+
                             }
-
                         }
                         return true;
                     }
@@ -476,37 +478,38 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     boolean visible = true;
                     @Override
                     public boolean execute() {
-                        if(visible){
-                            visible = false;
-                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
-                            //_titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
-                            _cameraButton.setVisibility(View.GONE);
-                            //_messageBox.setVisibility(View.VISIBLE);
-                            _rightMenu.setVisibility(View.VISIBLE);
-                            _leftMenu.setVisibility(View.GONE);
+                        if(_popupWindow.getVisibility() != View.VISIBLE){
+                            if(visible){
+                                visible = false;
+                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                                //_titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
+                                _cameraButton.setVisibility(View.GONE);
+                                //_messageBox.setVisibility(View.VISIBLE);
+                                _rightMenu.setVisibility(View.VISIBLE);
+                                _leftMenu.setVisibility(View.GONE);
 
-                            _ivReload.setVisibility(View.GONE);
-                            _ivPlus.setVisibility(View.GONE);
-                            getGuiSetup().getRightView().setGravity(Gravity.TOP);
+                                _ivReload.setVisibility(View.GONE);
+                                _ivPlus.setVisibility(View.GONE);
+                                getGuiSetup().getRightView().setGravity(Gravity.TOP);
 
-                        }else {
-                            visible = true;
-                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
-                            _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
-                            _cameraButton.setVisibility(View.VISIBLE);
-                            _rightMenu.setVisibility(View.GONE);
+                            }else {
+                                visible = true;
+                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                                _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+                                _cameraButton.setVisibility(View.VISIBLE);
+                                _rightMenu.setVisibility(View.GONE);
 
-                            if(modeSarajevoCloud){
+                                if(modeSarajevoCloud){
 
+                                }
+                                else{
+                                    _ivReload.setVisibility(View.VISIBLE);
+                                    _ivPlus.setVisibility(View.VISIBLE);
+                                }
+
+                                getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
                             }
-                            else{
-                                _ivReload.setVisibility(View.VISIBLE);
-                                _ivPlus.setVisibility(View.VISIBLE);
-                            }
-
-                            getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
                         }
-
                         return true;
                     }
                 });
