@@ -104,6 +104,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     private WebView _webView;
 
+    private boolean modeSarajevoCloud=true;
+
     //endregion
 
     //region CONSTRUCTORS
@@ -447,7 +449,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         return true;
                     }
                 });
-        _lijeviMeni_btn.setPadding(15, 15, 60, 25);
+        _lijeviMeni_btn.setPadding(1, 5, 75, 45);
         _naslov_txt = new TextView(getActivity());
         _naslov_txt.setPadding(0, 15, 0, 15);
         _naslov_txt.setTypeface(defaultFont);
@@ -479,8 +481,14 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             _cameraButton.setVisibility(View.VISIBLE);
                             _rightMenu.setVisibility(View.GONE);
 
-                            _ivReload.setVisibility(View.VISIBLE);
-                            _ivPlus.setVisibility(View.VISIBLE);
+                            if(modeSarajevoCloud){
+
+                            }
+                            else{
+                                _ivReload.setVisibility(View.VISIBLE);
+                                _ivPlus.setVisibility(View.VISIBLE);
+                            }
+
                             getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
                         }
 
@@ -697,6 +705,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _llSarajevoCloud.addView(_ivSarajevoCloud);
         _llSarajevoCloud.addView(_leftSarajevoCloud);
 
+        LinearLayout.LayoutParams paramsSC = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        //paramsSC.weight = 30.0f;
+        paramsSC.gravity = Gravity.CENTER_VERTICAL;
+        _ivSarajevoCloud.setLayoutParams(paramsSC);
+
         TextView _tvModovi = new TextView(getActivity());
         _tvModovi.setText("MODOVI");
         _tvModovi.setTypeface(defaultFont);
@@ -712,6 +725,43 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _leftMenu.getChildAt(1).setPadding(80,50,0,0);
         _leftMenu.getChildAt(2).setPadding(80,40,0,0);
 
+        getGuiSetup().getRightView().getChildAt(1).setVisibility(View.GONE);
+        getGuiSetup().getRightView().getChildAt(3).setVisibility(View.GONE);
+
+
+        _leftMojCloud.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                modeSarajevoCloud = false;
+                _naslov_txt.setText("MOJ CLOUD");
+                getGuiSetup().getRightView().getChildAt(1).setVisibility(View.VISIBLE);
+                getGuiSetup().getRightView().getChildAt(3).setVisibility(View.VISIBLE);
+                //_leftMenu.setVisibility(View.GONE);
+                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+                _cameraButton.setVisibility(View.VISIBLE);
+                _messageBox_TextView.setVisibility(View.GONE);
+                _messageBox.setVisibility(View.GONE);
+                _leftMenu.setVisibility(View.GONE); //TODO: when mycloud clicked
+            }
+        });
+
+        _leftSarajevoCloud.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                modeSarajevoCloud = true;
+                _naslov_txt.setText("SARAJEVO CLOUD");
+                getGuiSetup().getRightView().getChildAt(1).setVisibility(View.GONE);
+                getGuiSetup().getRightView().getChildAt(3).setVisibility(View.GONE);
+                //_leftMenu.setVisibility(View.GONE);
+                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+                _cameraButton.setVisibility(View.VISIBLE);
+                _messageBox_TextView.setVisibility(View.GONE);
+                _messageBox.setVisibility(View.GONE);
+                _leftMenu.setVisibility(View.GONE);//TODO: when changed from my to sarajevo
+            }
+        });
 
         showMessage("Dobro dosli " + Spremnik.getInstance().getUserName());
         checkNewPiktogramHandler.postDelayed(checkNewPiktogramRunnable, 0);
@@ -1179,7 +1229,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                             }
                                         });
                             }
-                        }, 500);
+                        }, 150);
             }
         });
         return imgButton;
@@ -1209,7 +1259,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                             }
                                         });
                             }
-                        }, 500);
+                        }, 150);
             }
         });
         return imgButton;
