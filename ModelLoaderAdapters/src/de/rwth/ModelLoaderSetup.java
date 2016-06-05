@@ -824,6 +824,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
             return;
         }
         final List<Set> _setovi_lista = new ArrayList<>();
+        if(_messageBox.getVisibility() != View.VISIBLE) _messageBox.setVisibility(View.VISIBLE);
 
         new AsyncTask<Void, Void, Void>() {
             @Override
