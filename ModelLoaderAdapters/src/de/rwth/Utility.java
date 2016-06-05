@@ -324,7 +324,8 @@ public class Utility {
 
                                 @Override
                                 public void run() {
-                                    caller.showMessage("FOTOGRAFIJA POHRANjENA");
+                                    caller.hideLoader();
+                                    caller.showMessage("FOTOGRAFIJA UPLOADOVANA I POHRANJENA");
                                 }
                             });
                             Log.i("PostingPhoto", the_string_response);
@@ -342,7 +343,7 @@ public class Utility {
                         try {
                             String str = Utility.POST(Spremnik.getInstance().getUrl() + "/postToFb.php", nameValuePairs);
                             Log.i("FbResponse", str);
-                            caller.hideLoader();
+                            //caller.hideLoader();
                         }catch (Throwable th){
                             Log.i("FbResponse", th.getMessage());
                         }

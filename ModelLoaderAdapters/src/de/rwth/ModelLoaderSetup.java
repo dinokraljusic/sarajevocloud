@@ -3,7 +3,6 @@ package de.rwth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -632,8 +631,13 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 new Command() {
                     @Override
                     public boolean execute() {
-                        world.clear();
-                        return true;
+                        try {
+                            if (world != null && !world.isCleared())
+                                world.clear();
+                            return true;
+                        } catch (Throwable t) {
+                        }
+                        return false;
                     }
                 });
         //_ivReload.setPadding(0,120,0,0);
@@ -901,34 +905,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         final String finalThumbnail_2 = Utility.downloadAndSaveFile(ctx, set.getInt("id"), 2, tmp, LOG_TAG);
 
                         final float W = getScreenHeigth();
-                        if (i % 5 != 0) {
-                            final ImageView btnImage = (ImageView)createImageWithTransparentBackground(getActivity(),
-                                    finalThumbnail_1, finalThumbnail_2,
-                                    new Command() {
-                                        @Override
-                                        public boolean execute() {
-                                            newObject(finalFileName, finalThumbnail_1);
-                                            _piktogramChooser.setVisibility(View.GONE);
-                                            showRightBar();
-                                            return false;
-                                        }
-                                    });
-                            btnImage.setMaxWidth((int) (W * 0.18));
-                            btnImage.setMaxHeight((int) (W * 0.18));
-                            btnImage.setPadding((int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01));
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((LinearLayout) (_piktogramChooser_piktogramRows
-                                            .getChildAt(_piktogramChooser_piktogramRows.getChildCount() - 1)))
-                                            .addView(btnImage);
-                                    btnImage.getLayoutParams().height = (int) (W * 0.18);
-                                    btnImage.getLayoutParams().width = (int) (W * 0.18);
-                                    btnImage.requestLayout();
-                                }
-                            });
-                        } else {
+                        if (i % 5 == 0) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -938,6 +915,33 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                 }
                             });
                         }
+                        final ImageView btnImage = createImageWithTransparentBackground(getActivity(),
+                                finalThumbnail_1, finalThumbnail_2,
+                                new Command() {
+                                    @Override
+                                    public boolean execute() {
+                                        String defaultTextureName = Spremnik.getInstance().getUrl() + "/teksture/default.jpg";
+                                        _piktogramChooser.setVisibility(View.GONE);
+                                        newObject(finalFileName, defaultTextureName);
+                                        showRightBar();
+                                        return false;
+                                    }
+                                });
+                        btnImage.setMaxWidth((int) (W * 0.18));
+                        btnImage.setMaxHeight((int) (W * 0.18));
+                        btnImage.setPadding((int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01));
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((LinearLayout) (_piktogramChooser_piktogramRows
+                                        .getChildAt(_piktogramChooser_piktogramRows.getChildCount() - 1)))
+                                        .addView(btnImage);
+                                btnImage.getLayoutParams().height = (int) (W * 0.18);
+                                btnImage.getLayoutParams().width = (int) (W * 0.18);
+                                btnImage.requestLayout();
+                            }
+                        });
                     }
                 } catch (org.json.JSONException je) {
                     Log.e("PiktogramChooser", je.toString());
@@ -951,10 +955,12 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     protected void showRightBar(){
         getGuiSetup().getRightView().setVisibility(View.VISIBLE);
+        _cameraButton.setVisibility(View.VISIBLE);
     }
 
     protected void hideRightBar(){
         getGuiSetup().getRightView().setVisibility(View.GONE);
+        _cameraButton.setVisibility(View.GONE);
     }
 
     private void initMessageBox(GuiSetup guiSetup) {
@@ -1116,14 +1122,14 @@ public class ModelLoaderSetup extends DefaultARSetup {
         final MeshComponent lightGroup = new Shape();
         lightGroup.addChild(spotLight);
         lightObject.setComp(lightGroup);
-        //lightObject.setComp(new MoveComp(1));
-        lightObject.setComp(_moveComp);
+        lightObject.setComp(new MoveComp(1));
+        //lightObject.setComp(_moveComp);
 
         final ModelLoader model = new ModelLoader(_localRenderer, newObjectFilename, newObjectTexturename) {
             @Override
             public void modelLoaded(final MeshComponent gdxMesh) {
                 Log.d(LOG_TAG, "Loaded mesh component from GDX");
-                gdxMesh.setPosition(new Vec(-2, -2, -2));
+                //gdxMesh.setPosition(new Vec(-2, -2, -2));
                 gdxMesh.setColor(gl.Color.greenTransparent());
                 lightObject.setComp(gdxMesh);
                 Log.d(LOG_TAG, "CAMERA LOCATION: " + camera.getGPSLocation().toString());
@@ -1131,7 +1137,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 _targetMoveWrapper.setTo(lightObject);
                 if (_targetMoveWrapper.getObject() instanceof Obj) {
                     ((Obj) _targetMoveWrapper.getObject())
-                            .getComp(MoveComp.class).myTargetPos.z = -30f;
+                            .getComp(MoveComp.class).myTargetPos.z = -20f;
                 }
 
                 final MeshComponent finalGdxMesh = gdxMesh;
