@@ -478,11 +478,12 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     public boolean execute() {
                         if(visible){
                             visible = false;
-                            //guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
+                            guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
                             //_titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
                             _cameraButton.setVisibility(View.GONE);
                             //_messageBox.setVisibility(View.VISIBLE);
                             _rightMenu.setVisibility(View.VISIBLE);
+                            _leftMenu.setVisibility(View.GONE);
 
                             _ivReload.setVisibility(View.GONE);
                             _ivPlus.setVisibility(View.GONE);
@@ -1446,6 +1447,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         if(_timesBackPressed > 1) return super.onKeyDown(a, keyCode, event);
                         if(_timesBackPressed == 1) Toast.makeText(getActivity(), "Press back once more to exit", Toast.LENGTH_SHORT).show();
                     }
+
+                    getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
 
                     return true;
                 default:
