@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -1403,8 +1404,6 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 case KeyEvent.KEYCODE_BACKSLASH:
                     _timesBackPressed++;
 
-                    if(_timesBackPressed > 1) return super.onKeyDown(a, keyCode, event);
-
                     //if( getGuiSetup().getMainContainerView().getBack )
                     getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
                     //_titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
@@ -1434,6 +1433,14 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         _ivPlus.setVisibility(View.VISIBLE);
                     }
                     _cameraButton.setVisibility(View.VISIBLE);
+                    _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+
+                    if(_timesBackPressed > 0){
+                        //_messageBox_TextView.setText("Press back once more to exit.");
+                        //_messageBox.setVisibility(View.VISIBLE);
+                        if(_timesBackPressed > 1) return super.onKeyDown(a, keyCode, event);
+                        if(_timesBackPressed == 1) Toast.makeText(getActivity(), "Press back once more to exit", Toast.LENGTH_SHORT).show();
+                    }
 
                     return true;
                 default:
