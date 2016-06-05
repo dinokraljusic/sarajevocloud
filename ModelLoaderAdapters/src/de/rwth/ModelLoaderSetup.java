@@ -456,6 +456,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                 _messageBox.setVisibility(View.GONE);
                                 _leftMenu.setVisibility(View.GONE);
 
+                                getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);//centers camera
+
                                 if(!modeSarajevoCloud){
                                     _ivReload.setVisibility(View.VISIBLE);
                                     _ivPlus.setVisibility(View.VISIBLE);
@@ -499,6 +501,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                 _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
                                 _cameraButton.setVisibility(View.VISIBLE);
                                 _rightMenu.setVisibility(View.GONE);
+                                _leftMenu.setVisibility(View.GONE);
 
                                 if(modeSarajevoCloud){
 
