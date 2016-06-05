@@ -447,7 +447,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         return true;
                     }
                 });
-        _lijeviMeni_btn.setPadding(15, 15, 45, 15);
+        _lijeviMeni_btn.setPadding(15, 15, 60, 25);
         _naslov_txt = new TextView(getActivity());
         _naslov_txt.setPadding(0, 15, 0, 15);
         _naslov_txt.setTypeface(defaultFont);
@@ -671,18 +671,20 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _leftMojCloud.setBackgroundColor(0);
         _leftMojCloud.setTypeface(defaultFont);
         _leftMojCloud.setTextColor(Color.rgb(242, 229, 0));
+        _leftMojCloud.setTextSize(26);
 
         _leftSarajevoCloud = new Button(getActivity());
         _leftSarajevoCloud.setText("SARAJEVO CLOUD");
         _leftSarajevoCloud.setBackgroundColor(0);
         _leftSarajevoCloud.setTypeface(defaultFont);
         _leftSarajevoCloud.setTextColor(Color.rgb(242, 229, 0));
+        _leftSarajevoCloud.setTextSize(26);
 
         LinearLayout _llMojCloud = new LinearLayout(getActivity());
         _llMojCloud.setOrientation(LinearLayout.HORIZONTAL);
         _llMojCloud.setWeightSum(100);
         _ivMojCloud = new ImageView(getActivity());
-        _ivMojCloud.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.gornji_desni_meni_zuto));
+        _ivMojCloud.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.moj_cloud_icon_zuto));
         _llMojCloud.addView(_ivMojCloud);
         _llMojCloud.addView(_leftMojCloud);
 
@@ -691,7 +693,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _llSarajevoCloud.setOrientation(LinearLayout.HORIZONTAL);
         _llSarajevoCloud.setWeightSum(100);
         _ivSarajevoCloud = new ImageView(getActivity());
-        _ivSarajevoCloud.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.gornji_lijevi_button_zuto));
+        _ivSarajevoCloud.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.sarajevo_cloud_icon_zuto));
         _llSarajevoCloud.addView(_ivSarajevoCloud);
         _llSarajevoCloud.addView(_leftSarajevoCloud);
 
@@ -699,10 +701,17 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _tvModovi.setText("MODOVI");
         _tvModovi.setTypeface(defaultFont);
         _tvModovi.setTextColor(Color.rgb(242, 229, 0));
+        _tvModovi.setTextSize(26);
 
         _leftMenu.addView(_tvModovi);
+        //_leftMenu.getChildAt(1).setPadding(60,70,80,90);
         _leftMenu.addView(_llMojCloud);
         _leftMenu.addView(_llSarajevoCloud);
+
+        _leftMenu.getChildAt(0).setPadding(60,40,0,0);//ltrb
+        _leftMenu.getChildAt(1).setPadding(80,50,0,0);
+        _leftMenu.getChildAt(2).setPadding(80,40,0,0);
+
 
         showMessage("Dobro dosli " + Spremnik.getInstance().getUserName());
         checkNewPiktogramHandler.postDelayed(checkNewPiktogramRunnable, 0);
@@ -938,8 +947,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
         return  null;*/
 
     /**
-    * Dodavanje postojecih objekata iz baze
-    * */
+     * Dodavanje postojecih objekata iz baze
+     * */
     private Obj loadedObject(String newObjectFilename, String newObjectTexturename, final Location location) {
         final GeoObj x = new GeoObj(location);
 
@@ -1176,7 +1185,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         return imgButton;
     }
     public View createImageWithTransparentBackground(Context context, final int normalImageId, final int clickedImageId,
-                                                            final Command command){
+                                                     final Command command){
         final ImageView imgButton = new ImageView(context);
         imgButton.setBackgroundColor(0);
         imgButton.setImageResource(normalImageId);
@@ -1206,3 +1215,4 @@ public class ModelLoaderSetup extends DefaultARSetup {
         return imgButton;
     }
 }
+
