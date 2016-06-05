@@ -478,9 +478,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         if(visible){
                             visible = false;
                             //guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
-                            _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
+                            //_titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
                             _cameraButton.setVisibility(View.GONE);
-                            _messageBox.setVisibility(View.VISIBLE);
+                            //_messageBox.setVisibility(View.VISIBLE);
                             _rightMenu.setVisibility(View.VISIBLE);
 
                             _ivReload.setVisibility(View.GONE);
@@ -1415,6 +1415,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     }
                     if(_rightMenu.getVisibility()== View.VISIBLE){
                         _rightMenu.setVisibility(View.GONE);
+                        _timesBackPressed=0;
+                    }
+                    if(_messageBox.getVisibility() == View.VISIBLE){
+                        _messageBox.setVisibility(View.GONE);
+                        //if(_messageBox.getChildAt(1) != null) _messageBox.getChildAt(1).setVisibility(View.GONE);
                         _timesBackPressed=0;
                     }
 
