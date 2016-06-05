@@ -44,6 +44,14 @@ public class ArActivity extends Activity {
 		}
 	}
 
+	//@Override
+	/*public void onBackPressed()
+	{
+		// code here to show dialog
+		//mySetupToUse.
+		super.onBackPressed();  // optional depending on your needs
+	}*/
+
 	public static void startWithSetup(Activity currentActivity, Setup setupToUse) {
 		ArActivity.staticSetupHolder = setupToUse;
 		currentActivity.startActivity(new Intent(currentActivity,

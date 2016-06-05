@@ -3,6 +3,7 @@ package de.rwth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -116,7 +118,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
         //instantiated light here, since the method _a2_initLightning() is no longer overridden
         spotLight = LightSource.newDefaultDefuseLight(GL10.GL_LIGHT1, new Vec(0, 0, 0));
+
     }
+
 
     //endregion
 
@@ -431,14 +435,14 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
                             _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
                             _cameraButton.setVisibility(View.GONE);
-                            _messageBox.setVisibility(View.VISIBLE);
+                            _messageBox.setVisibility(View.GONE);
                             _messageBox_TextView.setVisibility(View.VISIBLE);
                             //_messageBox_TextView.setText("LIJEVI TEXT");
                             _leftMenu.setVisibility(View.VISIBLE);
 
                             _rightMenu.setVisibility(View.GONE);
-                            //_ivReload.setVisibility(View.INVISIBLE);
-                            //_ivPlus.setVisibility(View.INVISIBLE);
+                            _ivReload.setVisibility(View.INVISIBLE);
+                            _ivPlus.setVisibility(View.INVISIBLE);
                         }else {
                             visible = true;
                             guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
@@ -447,6 +451,12 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             _messageBox_TextView.setVisibility(View.GONE);
                             _messageBox.setVisibility(View.GONE);
                             _leftMenu.setVisibility(View.GONE);
+
+                            if(!modeSarajevoCloud){
+                                _ivReload.setVisibility(View.VISIBLE);
+                                _ivPlus.setVisibility(View.VISIBLE);
+                            }
+
                         }
                         return true;
                     }
@@ -620,7 +630,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         getGuiSetup().addViewToRight(_ivReload);////
         getGuiSetup().getRightView().setWeightSum(100);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 24f);
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 22f);
         getGuiSetup().getRightView().getChildAt(1).setLayoutParams(params);
         getGuiSetup().getRightView().getChildAt(1).setPadding(0,0,0,60);
         //getGuiSetup().getRightView().getChildAt(2).setLayoutParams(params);
@@ -710,6 +720,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         //paramsSC.weight = 30.0f;
         paramsSC.gravity = Gravity.CENTER_VERTICAL;
         _ivSarajevoCloud.setLayoutParams(paramsSC);
+        _ivMojCloud.setLayoutParams(paramsSC);
 
         TextView _tvModovi = new TextView(getActivity());
         _tvModovi.setText("MODOVI");
@@ -766,6 +777,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
 
         initPiktogramChooser();
+
+        //TODO:back
 
         showMessage("Dobro dosli " + Spremnik.getInstance().getUserName());
         //checkNewPiktogramHandler.postDelayed(checkNewPiktogramRunnable, 0);
@@ -1377,6 +1390,45 @@ public class ModelLoaderSetup extends DefaultARSetup {
             pictureHandler.removeCallbacks(pictureRunnable);
         if(checkNewPiktogramHandler!=null && checkNewPiktogramRunnable!=null)
             checkNewPiktogramHandler.removeCallbacks(checkNewPiktogramRunnable);
+    }
+
+    @Override
+    public boolean onKeyDown(Activity a, int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN)
+        {
+            switch (keyCode)
+            {
+                case KeyEvent.KEYCODE_BACK:
+                case KeyEvent.KEYCODE_BACKSLASH:
+
+                    //if( getGuiSetup().getMainContainerView().getBack )
+                    getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                    //_titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
+
+                    if(_leftMenu.getVisibility()== View.VISIBLE)
+                        _leftMenu.setVisibility(View.GONE);
+                    if(_rightMenu.getVisibility()== View.VISIBLE)
+                        _rightMenu.setVisibility(View.GONE);
+                    //if()
+
+                    if(modeSarajevoCloud){
+                        _ivReload.setVisibility(View.GONE);
+                        _ivPlus.setVisibility(View.GONE);
+                    }
+                    else{
+                        _ivReload.setVisibility(View.VISIBLE);
+                        _ivPlus.setVisibility(View.VISIBLE);
+                    }
+                    _cameraButton.setVisibility(View.VISIBLE);
+
+                    return true;
+                default:
+                    break;
+            }
+        }
+        return false;
+
+        //return super.onKeyDown(a, keyCode, event);
     }
 
     @Override
