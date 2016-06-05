@@ -14,19 +14,20 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -88,21 +89,21 @@ public class ModelLoaderSetup extends DefaultARSetup {
     private ImageView _ivPlus, _ivReload, _ivMojCloud, _ivSarajevoCloud;
 
     private LinearLayout  _rightMenu,_leftMenu;
-    private LinearLayout _messageBox, _popupWindow;
+    private LinearLayout _messageBox, _popupWindow, _loader;
     private LinearLayout _titleBar;
     private TextView _messageBox_TextView;
-    private LinearLayout _messageBox_buttons;
+    private LinearLayout _messageBox_buttons,  _piktogramChooser_piktogramRows;
     ImageView _messageBox_yesButton,
             _messageBox_noButton;
     View _cameraButton, _lijeviMeni_btn, _desniMeni_btn;
     RelativeLayout _mojCloud_commands;
     View _about;
     ImageView _thumbnailImage;
-    TextView _naslov_txt;
+    TextView _naslov_txt, _loader_text;
+    ProgressBar _loader_loader, _piktogramChooser_loader;
+    ScrollView _piktogramChooser;
 
     Typeface defaultFont;
-
-    private WebView _webView;
 
     private boolean modeSarajevoCloud=true;
 
@@ -361,8 +362,6 @@ public class ModelLoaderSetup extends DefaultARSetup {
             }
         }, " > ");
         */
-        //endregion
-
 
         /*guiSetup.addButtonToLeftView(new Command() {
 
@@ -375,7 +374,6 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
         }, " + ");
 */
-        //region --- old code ---
         /*guiSetup.addButtonToBottomView(new Command() {
 
                @Override
@@ -542,10 +540,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
         _popupWindow = new LinearLayout(getActivity());
         _thumbnailImage = new ImageView(getActivity());
-        _webView = new WebView(getActivity());
 
         _popupWindow.addView(_thumbnailImage);
-        _popupWindow.addView(_webView);
 
         RelativeLayout mainView = (RelativeLayout)guiSetup.getMainContainerView();
         RelativeLayout.LayoutParams lp_popup = new RelativeLayout.LayoutParams(
@@ -598,8 +594,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 R.drawable.plus_zuto, R.drawable.plus_zeleno, new Command() {
                     @Override
                     public boolean execute() {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), chooser.class);
-                        getActivity().startActivityForResult(intent, 0);
+                        //Intent intent = new Intent(getActivity().getApplicationContext(), chooser.class);
+                        //getActivity().startActivityForResult(intent, 0);
+                        showPiktogramChooser();
                         return true;
                     }
                 });
@@ -647,13 +644,13 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _relative_right.addView(_ivReload, lp);
         getGuiSetup().addViewToRight(_relative_right);*/
         //getGuiSetup().getRightView().getChildAt(1);
-        _ivPlus.setOnClickListener(new View.OnClickListener() {
+        /*_ivPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), chooser.class);
                 getActivity().startActivityForResult(intent, 0);
             }
-        });
+        });*/
 
         _rightInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -768,12 +765,185 @@ public class ModelLoaderSetup extends DefaultARSetup {
         });
 
 
+        initPiktogramChooser();
+
         showMessage("Dobro dosli " + Spremnik.getInstance().getUserName());
-        checkNewPiktogramHandler.postDelayed(checkNewPiktogramRunnable, 0);
+        //checkNewPiktogramHandler.postDelayed(checkNewPiktogramRunnable, 0);
     }
 
+    private void initPiktogramChooser(){
+        Context ctx = getActivity();
+        _piktogramChooser = new ScrollView(ctx);
+        _piktogramChooser_piktogramRows = new LinearLayout(ctx);
+        _piktogramChooser_piktogramRows.setOrientation(LinearLayout.VERTICAL);
+        _piktogramChooser_piktogramRows.setPadding(0,15,0,10);
+
+        _piktogramChooser_loader = new ProgressBar(ctx);
+
+        _piktogramChooser.addView(_piktogramChooser_piktogramRows);
+        _piktogramChooser_loader.setVisibility(View.GONE);
+
+        _messageBox.addView(_piktogramChooser);
+    }
+
+    private void showPiktogramChooser(){
+        if(_messageBox.getVisibility() == View.VISIBLE){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showPiktogramChooser();
+                }
+            }, 500);
+            return;
+        }
+        final List<Set> _setovi_lista = new ArrayList<>();
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                _piktogramChooser_piktogramRows.removeAllViews();
+                _piktogramChooser_loader.setVisibility(View.VISIBLE);
+                _piktogramChooser.getLayoutParams().height = (int)(getScreenWidth()*0.6);
+                _piktogramChooser.getLayoutParams().width = (int)(getScreenHeigth());
+                _piktogramChooser.setLayoutParams(
+                        new LinearLayout.LayoutParams(
+                                (int)(getScreenHeigth()),
+                                (int)(getScreenWidth()*0.6)
+                        )
+                );
+                _piktogramChooser.setVisibility(View.VISIBLE);
+                _messageBox.setVisibility(View.VISIBLE);
+                _messageBox_TextView.setVisibility(View.GONE);
+                _messageBox_buttons.setVisibility(View.GONE);
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    String json = Utility.GET(Spremnik.getInstance().getSetServiceAddress());
+                    android.util.Log.d(LOG_TAG, "json: " + json);
+                    JSONArray setovi = new JSONArray(json);
+                    for (int i = 0; i < setovi.length(); i++) {
+                        JSONObject set = setovi.getJSONObject(i);
+                        android.util.Log.d(LOG_TAG, "set(" + i + "): " + set.toString());
+                        _setovi_lista.add(new Set(set.getInt("id"), set.getString("naziv")));
+                        dobaviPiktograme(getActivity(), set.getString("naziv"), Integer.toString(set.getInt("id")));
+                    }
+                } catch (org.json.JSONException je) {
+                    Log.e("LOG_piktogramchooser", je.toString());
+                } catch (Throwable ex) {
+                    android.util.Log.d(LOG_TAG, "error: " + ex.getMessage(), ex);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
+            }
+
+            void dobaviPiktograme(Context ctx, final String setName, String setId){
+                List<Piktogram> _piktogram_lista = new ArrayList<Piktogram>();
+                try {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView naslovSeta = new TextView(getActivity());
+                            naslovSeta.setTypeface(defaultFont);
+                            naslovSeta.setText(setName);
+                            naslovSeta.setTextSize(19);
+                            naslovSeta.setPadding(25, 7, 0, 7);
+                            naslovSeta.setTextColor(Color.rgb(242, 229, 0));
+                            _piktogramChooser_piktogramRows.addView(naslovSeta);
+                        }
+                    });
+                    String json = Utility.GET(Spremnik.getInstance().getPiktogramServiceAddress() + "?setid=" + setId);
+                    android.util.Log.d(LOG_TAG, "json: " + json);
+                    JSONArray setovi = new JSONArray(json);
+                    for (int i = 0; i < setovi.length(); i++) {
+
+                        JSONObject set = setovi.getJSONObject(i);
+                        android.util.Log.d(LOG_TAG, "set(" + i + "): " + set.toString());
+                        Piktogram newPiktogram = new Piktogram(set.getInt("id"),
+                                set.getString("naziv"),
+                                set.getString("put_piktogram"),
+                                set.getString("put_tekstura"));
+                        _piktogram_lista.add(newPiktogram);
+                        String tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_piktogram"));
+                        final String finalFileName = Utility.downloadAndSaveFile(ctx, set.getInt("id"), 0, tmp, LOG_TAG);
+
+                        tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_tekstura"));
+                        final String finalThumbnail_1 = Utility.downloadAndSaveFile(ctx, set.getInt("id"), 1, tmp, LOG_TAG);
+                        final String finalThumbnail_2 = Utility.downloadAndSaveFile(ctx, set.getInt("id"), 2, tmp, LOG_TAG);
+
+                        final float W = getScreenHeigth();
+                        if (i % 5 != 0) {
+                            final ImageView btnImage = (ImageView)createImageWithTransparentBackground(getActivity(),
+                                    finalThumbnail_1, finalThumbnail_2,
+                                    new Command() {
+                                        @Override
+                                        public boolean execute() {
+                                            newObject(finalFileName, finalThumbnail_1);
+                                            _piktogramChooser.setVisibility(View.GONE);
+                                            showRightBar();
+                                            return false;
+                                        }
+                                    });
+                            btnImage.setMaxWidth((int) (W * 0.18));
+                            btnImage.setMaxHeight((int) (W * 0.18));
+                            btnImage.setPadding((int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01));
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((LinearLayout) (_piktogramChooser_piktogramRows
+                                            .getChildAt(_piktogramChooser_piktogramRows.getChildCount() - 1)))
+                                            .addView(btnImage);
+                                    btnImage.getLayoutParams().height = (int) (W * 0.18);
+                                    btnImage.getLayoutParams().width = (int) (W * 0.18);
+                                    btnImage.requestLayout();
+                                }
+                            });
+                        } else {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LinearLayout noviRed = new LinearLayout(getActivity());
+                                    noviRed.setOrientation(LinearLayout.HORIZONTAL);
+                                    _piktogramChooser_piktogramRows.addView(noviRed);
+                                }
+                            });
+                        }
+                    }
+                } catch (org.json.JSONException je) {
+                    Log.e("PiktogramChooser", je.toString());
+                } catch (Throwable ex) {
+                    android.util.Log.d("PiktogramChooser", ex.getMessage(), ex);
+                }
+            }
+        }.execute();
+
+    }
+
+    protected void showRightBar(){
+        getGuiSetup().getRightView().setVisibility(View.VISIBLE);
+    }
+
+    protected void hideRightBar(){
+        getGuiSetup().getRightView().setVisibility(View.GONE);
+    }
 
     private void initMessageBox(GuiSetup guiSetup) {
+        _loader_loader = new ProgressBar(getActivity());
+        _loader_text = new TextView(getActivity());
+
+        _loader = new LinearLayout(getActivity());
+        _loader.setOrientation(LinearLayout.HORIZONTAL);
+        _loader.addView(_loader_loader);
+        _loader.addView(_loader_text);
+        _loader.setVisibility(View.GONE);
+
         _messageBox_TextView = new TextView(getActivity());
         _messageBox_buttons = new LinearLayout(getActivity());
 
@@ -783,6 +953,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _messageBox.setBackgroundColor(android.graphics.Color.argb(128, 0, 0, 0));
         _messageBox.addView(_messageBox_TextView);
         _messageBox.addView(_messageBox_buttons);
+        _messageBox.addView(_loader);
 
         _messageBox_TextView.setPadding(0, 13, 0, 17);
         _messageBox_TextView.setTypeface(defaultFont);
@@ -809,6 +980,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
             }, 500);
         } else {
             _messageBox_TextView.setText(text);
+            _messageBox_TextView.setVisibility(View.VISIBLE);
+            _loader.setVisibility(View.GONE);
             _messageBox.setVisibility(View.VISIBLE);
             _messageBox_buttons.setVisibility(View.GONE);
             new Handler().postDelayed(new Runnable() {
@@ -830,6 +1003,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         }else {
             _messageBox_TextView.setText(text);
             _messageBox.setVisibility(View.VISIBLE);
+            _messageBox_TextView.setVisibility(View.VISIBLE);
             _messageBox_buttons.setVisibility(View.VISIBLE);
             _messageBox_yesButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -980,6 +1154,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         //Utility.SaveThisPiktogram(loc);
         return lightObject;
     }
+    //region -- old code --
         /*
         try {
             Location loc = camera.getGPSLocation();
@@ -1001,6 +1176,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
             t.printStackTrace();
         }
         return  null;*/
+    //endregion
 
     /**
      * Dodavanje postojecih objekata iz baze
@@ -1110,24 +1286,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                                 @Override
                                                 protected Void doInBackground(Void... params) {
                                                     try {
-                                                        JSONArray authorized = new JSONArray(
-                                                                Utility.GET(Spremnik.getInstance().getUrl() + "/facebook/authorized.php?userId="
-                                                                        +Spremnik.getInstance().getUserId() ));
-                                                        if(authorized!=null && authorized.length()>0){
-                                                            JSONObject json = authorized.getJSONObject(0);
-                                                            if(json!=null && json.has("authorized") && json.getInt("authorized") == 1) {
-                                                                Utility.uploadScreenshoot(ModelLoaderSetup.this, slikaPath, camera.getGPSLocation());
-                                                            }else {
-                                                                getActivity().runOnUiThread(new Runnable() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        showWebBrowser();
-                                                                    }
-                                                                });
-                                                            }
-                                                        }
+                                                        Utility.uploadScreenshoot(ModelLoaderSetup.this, slikaPath, camera.getGPSLocation());
                                                     }catch (Throwable t1){
-                                                        Log.e("fbAuth", t1.toString());
+                                                        Log.e("uploadScreen", t1.toString());
                                                         t1.printStackTrace();
                                                     }
                                                     return null;
@@ -1136,6 +1297,12 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                         }catch (Throwable t) {
                                         }
                                         hidePopup();
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                showLoader("POSTING TO FACEBOOK");
+                                            }
+                                        });
                                         return false;
                                     }
                                 },
@@ -1154,17 +1321,24 @@ public class ModelLoaderSetup extends DefaultARSetup {
         }
     };
 
-    private  void  showWebBrowser(){
-        _popupWindow.setVisibility(View.VISIBLE);
-        _webView.setWebViewClient(new WebViewClient());
-        _webView.setVisibility(View.VISIBLE);
-        _webView.loadUrl(Spremnik.getInstance().getUrl()+"/facebook/login.php");
-    }
-
     private void hidePopup(){
         _popupWindow.setVisibility(View.GONE);
         _thumbnailImage.setVisibility(View.GONE);
-        _webView.setVisibility(View.GONE);
+    }
+
+    protected void showLoader(String text){
+        _messageBox.setVisibility(View.VISIBLE);
+        _messageBox_TextView.setVisibility(View.GONE);
+        _messageBox_buttons.setVisibility(View.GONE);
+        _loader.setVisibility(View.VISIBLE);
+        _loader_text.setText(text);
+    }
+
+    protected void hideLoader(){
+        _messageBox.setVisibility(View.GONE);
+        _messageBox_TextView.setVisibility(View.GONE);
+        _messageBox_buttons.setVisibility(View.GONE);
+        _loader.setVisibility(View.GONE);
     }
 
     private void showScreenshotThumbnail(String slikaPath) {
@@ -1268,6 +1442,43 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         }, 150);
             }
         });
+        return imgButton;
+    }
+
+    public ImageView createImageWithTransparentBackground(Context context, String normalImagePath, String clickedImagePath,
+                                                      final Command command){
+        final ImageView imgButton = new ImageView(context);
+        try {
+            imgButton.setBackgroundColor(0);
+            final Bitmap normalBmp = BitmapFactory.decodeFile(normalImagePath);
+            final Bitmap clickedBitmap = BitmapFactory.decodeFile(clickedImagePath);
+            imgButton.setImageBitmap(normalBmp);
+            imgButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    imgButton.setImageBitmap(clickedBitmap);
+                    if (vibrateCommand != null)
+                        vibrateCommand.execute();
+                    if (command != null)
+                        command.execute();
+                    new Handler().postDelayed(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    getActivity().runOnUiThread(
+                                            new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    imgButton.setImageBitmap(normalBmp);
+                                                }
+                                            });
+                                }
+                            }, 500);
+                }
+            });
+        }catch (Throwable t) {
+            t.printStackTrace();
+        }
         return imgButton;
     }
 }

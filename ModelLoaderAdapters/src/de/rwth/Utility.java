@@ -58,7 +58,7 @@ public class Utility {
                                 + "?lastId=" + Integer.toString(lastId)
                                 + "&userId=" + Integer.toString(userId));
                         Log.d(LOG_TAG, "json: " + json);
-                        JSONArray piktogrami = new JSONArray(json);
+                        JSONArray piktogrami = new JSONArray(  );
                         for (int n = 0; n < piktogrami.length(); n++) {
 
                             JSONObject piktogram = piktogrami.getJSONObject(n);
@@ -72,10 +72,10 @@ public class Utility {
                             if (pikrogramObj.getId() > lastId)
                                 lastId = pikrogramObj.getId();
                             String tmp = piktogram.getString("naziv") + "." + Utility.getEkstension(piktogram.getString("put_piktogram"));
-                            pikrogramObj.setPutPiktogram(Utility.downloadAndSaveFile(context, piktogram.getInt("id"), false, tmp, LOG_TAG));
+                            pikrogramObj.setPutPiktogram(Utility.downloadAndSaveFile(context, piktogram.getInt("id"), 0, tmp, LOG_TAG));
 
                             tmp = piktogram.getString("naziv") + "." + Utility.getEkstension(piktogram.getString("put_tekstura"));
-                            pikrogramObj.setPutTekstura(Utility.downloadAndSaveFile(context, piktogram.getInt("id"), true, tmp, LOG_TAG));
+                            pikrogramObj.setPutTekstura(Utility.downloadAndSaveFile(context, piktogram.getInt("id"), 1, tmp, LOG_TAG));
 
                             pikrogramObj.set_latitude((float) piktogram.getDouble("latitude"));
                             pikrogramObj.set_longitude((float) piktogram.getDouble("longitude"));
@@ -95,7 +95,7 @@ public class Utility {
         return null;
     }
 
-    public static String downloadAndSaveFile(Context context, int id, boolean slika, String fileName, String LOG_TAG) {
+    public static String downloadAndSaveFile(Context context, int id, int slika, String fileName, String LOG_TAG) {
         try {
             String PATH = null;
             FileOutputStream fos = null;
@@ -112,7 +112,7 @@ public class Utility {
                 return fileName;
             }
 
-            URL url = new URL(url_string + "?id=" + id + (slika ? "&slika" : ""));
+            URL url = new URL(url_string + "?id=" + id + "&slika=" + Integer.toString(slika));
 
             //region OLD CODE FOR DOWNLOAD - does not work in LG
 			/*
@@ -340,8 +340,9 @@ public class Utility {
                             System.out.println("Error in http connection " + e.toString());
                         }
                         try {
-                            String str = Utility.POST("http://filter.omniapps.info/facebook/postToFb.php", nameValuePairs);
+                            String str = Utility.POST(Spremnik.getInstance().getUrl() + "/postToFb.php", nameValuePairs);
                             Log.i("FbResponse", str);
+                            caller.hideLoader();
                         }catch (Throwable th){
                             Log.i("FbResponse", th.getMessage());
                         }

@@ -49,64 +49,6 @@ public class DobavljacPiktograma extends AsyncTask<String, String, String>{
     protected String doInBackground(String... strings) {
         _parametri = strings;
 
-
-        try {
-            String json = Utility.GET(Spremnik.getInstance().getPiktogramServiceAddress() + "?setid=" + strings[1]);
-            Log.d(LOG_TAG, "json: " + json);
-            JSONArray setovi = new JSONArray(json);
-            for (n = 0; n < setovi.length(); n++) {
-
-                JSONObject set = setovi.getJSONObject(n);
-                Log.d(LOG_TAG, "set(" + n + "): " + set.toString());
-                _lista.add(new Piktogram(set.getInt("id"),
-                                         set.getString("naziv"),
-                                         set.getString("put_piktogram"),
-                                         set.getString("put_tekstura"))
-                          );
-                String tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_piktogram"));
-                final String finalFileName = Utility.downloadAndSaveFile(_context, set.getInt("id"), false, tmp, LOG_TAG);
-
-                tmp = set.getString("naziv") + "."+Utility.getEkstension(set.getString("put_tekstura"));
-                final String finalTextureName = Utility.downloadAndSaveFile(_context, set.getInt("id"), true, tmp, LOG_TAG);
-
-                Par par = new Par(set.getString("naziv"),  finalFileName, finalTextureName, set.getString("id"));
-                mapaPiktogrami.add(par);
-            }
-        } catch (org.json.JSONException je) {
-            Log.d(LOG_TAG, "Error parsing response to JSONArray.", je);
-            _lista.add(new Piktogram(-1,
-                    "kutija",
-                    "put_piktogram.obj",
-                    "put_tekstura.jpg"));
-            String tmp = "kutija.obj";
-
-            final String finalFileName = Utility.downloadAndSaveFile(_context, 1, false, tmp, LOG_TAG);
-            tmp = "kutija.jpg";
-            final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
-            Par par = new Par("kutija",  finalFileName, finalTextureName, "1");
-            mapaPiktogrami.add(par);
-
-            n++;
-        } catch (Throwable ex) {
-            Log.d(LOG_TAG, ex.getMessage(), ex);
-            //Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG);
-            _lista.add(new Piktogram(-1,
-                            "kutija",
-                            "put_piktogram.obj",
-                            "put_tekstura.jpg")
-            );
-
-            String tmp = "kutija.obj";
-
-            final String finalFileName = Utility.downloadAndSaveFile(_context, 1, false, tmp, LOG_TAG);
-            tmp = "kutija.jpg";
-            final String finalTextureName = Utility.downloadAndSaveFile(_context, 1, true, tmp, LOG_TAG);
-            Par par = new Par("kutija",  finalFileName, finalTextureName, "1");
-            mapaPiktogrami.add(par);
-
-
-            n++;
-        }
         return null;
     }
 
