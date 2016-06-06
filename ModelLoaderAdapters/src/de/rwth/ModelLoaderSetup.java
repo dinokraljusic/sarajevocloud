@@ -87,7 +87,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
     private Obj _selectedObj;
     private MoveComp _moveComp;
 
-    private Button _rightInfo, _rightFotografije, _rightAbout, _leftMojCloud, _leftSarajevoCloud;
+    private Button _rightInfo, _rightFotografije, _leftMojCloud, _leftSarajevoCloud;
     private ImageView _ivPlus, _ivReload, _ivMojCloud, _ivSarajevoCloud;
 
     private LinearLayout  _rightMenu,_leftMenu;
@@ -99,9 +99,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
             _messageBox_noButton;
     View _cameraButton, _lijeviMeni_btn, _desniMeni_btn;
     RelativeLayout _mojCloud_commands;
-    View _about;
     ImageView _thumbnailImage;
-    TextView _naslov_txt, _loader_text;
+    TextView _naslov_txt, _loader_text, _piktogramChooser_info, _mojCloud_userName;
     ProgressBar _loader_loader, _piktogramChooser_loader;
     ScrollView _piktogramChooser;
 
@@ -217,7 +216,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         Log.i(LOG_TAG, "entering _c_addActionsToEvents");
 
         super.rotateGLCameraAction = new ActionRotateCameraBuffered(camera);
-        Action rot2 = new ActionPlaceObject(super.camera, _targetMoveWrapper, 300);
+        Action rot2 = new ActionPlaceObject(super.camera, _targetMoveWrapper, 200);
 
         eventManager.addOnOrientationChangedAction(rotateGLCameraAction);
         eventManager.addOnOrientationChangedAction(rot2);
@@ -281,6 +280,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
         _titleBar.setMinimumWidth((int) getScreenHeigth());
         _titleBar.setTop(0);
+        _titleBar.setOrientation(LinearLayout.VERTICAL);
 
         _rightMenu =  new LinearLayout(getActivity());
         getGuiSetup().addViewToRight(_rightMenu);
@@ -413,10 +413,10 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     @Override
                     public boolean execute() {
                         try {
-                            _cameraButton.setVisibility(View.GONE);
                             getMyRenderer().takeScreenShot(myCameraView, Spremnik.getInstance().get_slikaPath());
                             //takeScreenshot();
-                            pictureHandler.postDelayed(pictureRunnable, 100);
+                            pictureHandler.postDelayed(pictureRunnable, 500);
+                            hideRightBar();
                         } catch (Throwable t) {
                             t.printStackTrace();
                             return true;
@@ -433,6 +433,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     @Override
                     public boolean execute() {
                         if(_popupWindow.getVisibility() != View.VISIBLE) {
+                            _piktogramChooser_info.setVisibility(View.GONE);
                             if(visible){
                                 visible = false;
                                 guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
@@ -450,7 +451,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                 visible = true;
                                 guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
                                 _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
-                                _cameraButton.setVisibility(View.VISIBLE);
+                                showRightBar();
                                 _messageBox_TextView.setVisibility(View.GONE);
                                 _messageBox.setVisibility(View.GONE);
                                 _leftMenu.setVisibility(View.GONE);
@@ -469,11 +470,19 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 });
         _lijeviMeni_btn.setPadding(1, 5, 75, 45);
         _naslov_txt = new TextView(getActivity());
-        _naslov_txt.setPadding(0, 15, 0, 15);
+        _naslov_txt.setPadding(105, 15, 0, 15);
         _naslov_txt.setTypeface(defaultFont);
         _naslov_txt.setTextColor(Color.rgb(242, 229, 0));
         _naslov_txt.setTextSize(19);
         _naslov_txt.setText("SARAJEVO CLOUD");
+        _mojCloud_userName = new TextView(getActivity());
+        _mojCloud_userName.setTypeface(defaultFont);
+        _mojCloud_userName.setTextSize(17);
+        _mojCloud_userName.setText(Spremnik.getInstance().getUserName());
+        _mojCloud_userName.setTextColor(Color.rgb(242, 229, 0));
+        _mojCloud_userName.setPadding(105, 9, 0, 11);
+        _mojCloud_userName.setVisibility(View.GONE);
+
         _desniMeni_btn = createImageWithTransparentBackground(getActivity(),
                 R.drawable.gornji_desni_meni_zuto, R.drawable.gornji_desni_meni_zelen,
                 new Command() {
@@ -540,7 +549,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
-        lp_c.addRule(RelativeLayout.CENTER_IN_PARENT);
+        //lp_c.addRule(RelativeLayout.CENTER_IN_PARENT);
         lp_d.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         lp_d.addRule(RelativeLayout.CENTER_VERTICAL);
 
@@ -594,18 +603,10 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightInfo.setText("INFO");
         _rightInfo.setBackgroundColor(0);
         _rightInfo.setTypeface(defaultFont);
-        _rightInfo.setTextColor(Color.rgb(242, 229, 0));
-
-        _rightAbout = new Button(getActivity());
-        _rightAbout.setPadding(25, 25, 35, 30);
-        _rightAbout.setBackgroundColor(0);
-        _rightAbout.setText("ABOUT");
-        _rightAbout.setTypeface(defaultFont);
-        _rightAbout.setTextColor(Color.rgb(242, 229, 0));
+        _rightInfo.setTextColor(Color.rgb(242, 229, 0));;
 
         _rightMenu.addView(_rightInfo);
         _rightMenu.addView(_rightFotografije);
-        _rightMenu.addView(_rightAbout);
         _rightMenu.setPadding(80, 0, 50, 50);
 
         guiSetup.setRightViewCentered();
@@ -632,8 +633,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     @Override
                     public boolean execute() {
                         try {
-                            if (world != null && !world.isCleared())
+                            if (world != null) {
                                 world.clear();
+                            }else {
+                                world = new World(camera);
+                            }
                             return true;
                         } catch (Throwable t) {
                         }
@@ -747,9 +751,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _leftMenu.addView(_llMojCloud);
         _leftMenu.addView(_llSarajevoCloud);
 
-        _leftMenu.getChildAt(0).setPadding(60,40,0,0);//ltrb
+        _leftMenu.getChildAt(0).setPadding(60, 40, 0, 0);//ltrb
         _leftMenu.getChildAt(1).setPadding(80,50,0,0);
-        _leftMenu.getChildAt(2).setPadding(80,40,0,0);
+        _leftMenu.getChildAt(2).setPadding(80, 40, 0, 0);
 
         getGuiSetup().getRightView().getChildAt(1).setVisibility(View.GONE);
         getGuiSetup().getRightView().getChildAt(3).setVisibility(View.GONE);
@@ -760,15 +764,18 @@ public class ModelLoaderSetup extends DefaultARSetup {
             public void onClick(View v) {
                 modeSarajevoCloud = false;
                 _naslov_txt.setText("MOJ CLOUD");
+                _mojCloud_userName.setVisibility(View.VISIBLE);
                 getGuiSetup().getRightView().getChildAt(1).setVisibility(View.VISIBLE);
                 getGuiSetup().getRightView().getChildAt(3).setVisibility(View.VISIBLE);
                 //_leftMenu.setVisibility(View.GONE);
-                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
                 _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
                 _cameraButton.setVisibility(View.VISIBLE);
                 _messageBox_TextView.setVisibility(View.GONE);
                 _messageBox.setVisibility(View.GONE);
+                _piktogramChooser_info.setVisibility(View.GONE);
                 _leftMenu.setVisibility(View.GONE); //TODO: when mycloud clicked
+                showRightBar();
             }
         });
 
@@ -777,24 +784,28 @@ public class ModelLoaderSetup extends DefaultARSetup {
             public void onClick(View v) {
                 modeSarajevoCloud = true;
                 _naslov_txt.setText("SARAJEVO CLOUD");
+                _mojCloud_userName.setVisibility(View.GONE);
                 getGuiSetup().getRightView().getChildAt(1).setVisibility(View.GONE);
                 getGuiSetup().getRightView().getChildAt(3).setVisibility(View.GONE);
                 //_leftMenu.setVisibility(View.GONE);
-                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
                 _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
                 _cameraButton.setVisibility(View.VISIBLE);
                 _messageBox_TextView.setVisibility(View.GONE);
                 _messageBox.setVisibility(View.GONE);
+                _piktogramChooser_info.setVisibility(View.GONE);
                 _leftMenu.setVisibility(View.GONE);//TODO: when changed from my to sarajevo
             }
         });
 
 
         initPiktogramChooser();
+        _titleBar.addView(_mojCloud_userName);
+        _titleBar.addView(_piktogramChooser_info);
 
         //TODO:back
 
-        showMessage("Dobro dosli " + Spremnik.getInstance().getUserName());
+        //showMessage("Dobro dosli " + Spremnik.getInstance().getUserName());
         //checkNewPiktogramHandler.postDelayed(checkNewPiktogramRunnable, 0);
     }
 
@@ -803,7 +814,14 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _piktogramChooser = new ScrollView(ctx);
         _piktogramChooser_piktogramRows = new LinearLayout(ctx);
         _piktogramChooser_piktogramRows.setOrientation(LinearLayout.VERTICAL);
-        _piktogramChooser_piktogramRows.setPadding(0,15,0,10);
+        _piktogramChooser_piktogramRows.setPadding(0, 15, 0, 10);
+        _piktogramChooser_info = new TextView(getActivity());
+        _piktogramChooser_info.setTypeface(defaultFont);
+        _piktogramChooser_info.setTextSize(19);
+        _piktogramChooser_info.setText("ODABERITE OBJEKAT");
+        _piktogramChooser_info.setTextColor(Color.rgb(242, 229, 0));
+        _piktogramChooser_info.setPadding(45, 19, 0, 105);
+        _piktogramChooser_info.setVisibility(View.GONE);
 
         _piktogramChooser_loader = new ProgressBar(ctx);
 
@@ -824,11 +842,14 @@ public class ModelLoaderSetup extends DefaultARSetup {
             return;
         }
         final List<Set> _setovi_lista = new ArrayList<>();
+        getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(128, 0, 0, 0));
         if(_messageBox.getVisibility() != View.VISIBLE) _messageBox.setVisibility(View.VISIBLE);
+        hideRightBar();
 
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
+                _piktogramChooser_info.setVisibility(View.VISIBLE);
                 _piktogramChooser_piktogramRows.removeAllViews();
                 _piktogramChooser_loader.setVisibility(View.VISIBLE);
                 _piktogramChooser.getLayoutParams().height = (int)(getScreenWidth()*0.6);
@@ -840,6 +861,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         )
                 );
                 _piktogramChooser.setVisibility(View.VISIBLE);
+                _piktogramChooser_info.setVisibility(View.VISIBLE);
                 _messageBox.setVisibility(View.VISIBLE);
                 _messageBox_TextView.setVisibility(View.GONE);
                 _messageBox_buttons.setVisibility(View.GONE);
@@ -893,10 +915,13 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
                         JSONObject set = setovi.getJSONObject(i);
                         android.util.Log.d(LOG_TAG, "set(" + i + "): " + set.toString());
-                        Piktogram newPiktogram = new Piktogram(set.getInt("id"),
+                        final Piktogram newPiktogram = new Piktogram(set.getInt("id"),
                                 set.getString("naziv"),
                                 set.getString("put_piktogram"),
-                                set.getString("put_tekstura"));
+                                set.getString("put_tekstura"),
+                                set.getInt("color_red"),
+                                set.getInt("color_green"),
+                                set.getInt("color_blue"));
                         _piktogram_lista.add(newPiktogram);
                         String tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_piktogram"));
                         final String finalFileName = Utility.downloadAndSaveFile(ctx, set.getInt("id"), 0, tmp, LOG_TAG);
@@ -923,7 +948,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                     public boolean execute() {
                                         String defaultTextureName = Spremnik.getInstance().getUrl() + "/teksture/default.jpg";
                                         _piktogramChooser.setVisibility(View.GONE);
-                                        newObject(finalFileName, defaultTextureName);
+                                        _piktogramChooser_info.setVisibility(View.GONE);
+                                        getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
+                                        _messageBox.setVisibility(View.GONE);
+                                        _piktogramChooser_info.setVisibility(View.GONE);
+                                        newObject(finalFileName, defaultTextureName, newPiktogram);
                                         showRightBar();
                                         return false;
                                     }
@@ -979,6 +1008,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
         _messageBox = guiSetup.getBottomView();
         _messageBox.setVisibility(View.GONE);
+//        _piktogramChooser_info.setVisibility(View.GONE);
         _messageBox.setOrientation(LinearLayout.VERTICAL);
         _messageBox.setBackgroundColor(android.graphics.Color.argb(128, 0, 0, 0));
         _messageBox.addView(_messageBox_TextView);
@@ -995,7 +1025,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _messageBox_noButton = new ImageView(getActivity());
         _messageBox_noButton.setImageResource(R.drawable.no_first);
         _messageBox_noButton.setPadding(35, 25, 25, 30);
-
+        _messageBox_buttons.setGravity(Gravity.CENTER);
         _messageBox_buttons.addView(_messageBox_yesButton);
         _messageBox_buttons.addView(_messageBox_noButton);
     }
@@ -1031,6 +1061,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 }
             }, 500);
         }else {
+            _piktogramChooser.setVisibility(View.GONE);
             _messageBox_TextView.setText(text);
             _messageBox.setVisibility(View.VISIBLE);
             _messageBox_TextView.setVisibility(View.VISIBLE);
@@ -1077,6 +1108,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                                 public void run() {
                                                     _messageBox_noButton.setImageResource(R.drawable.no_first);
                                                     _messageBox.setVisibility(View.GONE);
+                                                    showMessage("FOTOGRAFIJA POHRANJENA");
                                                 }
                                             });
                                 }
@@ -1113,10 +1145,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
     }
 
     /** Snima novododani objekat
-     *              @param newObjectFilename - lokacija za .obj novog piktograma
+     * @param newObjectFilename - lokacija za .obj novog piktograma
      *              @param newObjectTexturename - lokacija za teksturu novog piktograma
+     * @param newPiktogram
      **/
-    private Obj newObject(String newObjectFilename, String newObjectTexturename) {
+    private Obj newObject(String newObjectFilename, String newObjectTexturename, final Piktogram newPiktogram) {
         final Obj lightObject = new Obj();
         lightObject.setPosition(new Vec(0,0,-1));
         spotLight.setPosition(new Vec(0, 0, 2));
@@ -1131,7 +1164,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
             public void modelLoaded(final MeshComponent gdxMesh) {
                 Log.d(LOG_TAG, "Loaded mesh component from GDX");
                 //gdxMesh.setPosition(new Vec(-2, -2, -2));
-                gdxMesh.setColor(gl.Color.greenTransparent());
+                final gl.Color tmpColor = newPiktogram.get_color();
+                tmpColor.alpha = 0.5f;
+                gdxMesh.setColor(tmpColor);
                 lightObject.setComp(gdxMesh);
                 Log.d(LOG_TAG, "CAMERA LOCATION: " + camera.getGPSLocation().toString());
                 world.add(lightObject);
@@ -1156,7 +1191,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         final MeshComponent lightGroup = new Shape();
                         lightGroup.addChild(spotLight);
                         final3Dobj.setComp(lightGroup);
-                        finalGdxMesh.setColor(gl.Color.green());
+                        tmpColor.alpha = 1;
+                        finalGdxMesh.setColor(tmpColor);
                         final3Dobj.setComp(finalGdxMesh);
                         //final3Dobj.setComp(new MoveComp(1));
                         //final3Dobj.setVirtualPosition(new Vec(30,0,-2));
@@ -1176,6 +1212,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                 showMessage("OBJEKAT POSTAVLjEN I MEMORISAN");
                             }
                         });
+                        gdxMesh.setOnClickCommand(null);
                         return true;
                     }
                 });
@@ -1355,6 +1392,10 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _popupWindow.setVisibility(View.GONE);
         _thumbnailImage.setVisibility(View.GONE);
         _cameraButton.setVisibility(View.VISIBLE);
+        if(!modeSarajevoCloud)
+            showRightBar();
+        else
+            _cameraButton.setVisibility(View.VISIBLE);
     }
 
     protected void showLoader(String text){
@@ -1392,7 +1433,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
             //fileName = objPut;
             //textureName = tekPut;
-            newObject(objPut, tekPut);
+            //newObject(objPut, tekPut, newPiktogram);
             //loadedObject(objPut, tekPut, camera.getGPSLocation());
         }
     }
@@ -1426,14 +1467,27 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
                     if(_leftMenu.getVisibility()== View.VISIBLE){
                         _leftMenu.setVisibility(View.GONE);
+                        if(!modeSarajevoCloud)
+                            showRightBar();
+                        else
+                            _cameraButton.setVisibility(View.VISIBLE);
                         _timesBackPressed = 0;
                     }
                     if(_rightMenu.getVisibility()== View.VISIBLE){
                         _rightMenu.setVisibility(View.GONE);
+                        if(!modeSarajevoCloud)
+                            showRightBar();
+                        else
+                            _cameraButton.setVisibility(View.VISIBLE);
                         _timesBackPressed = 0;
                     }
                     if(_messageBox.getVisibility() == View.VISIBLE){
                         _messageBox.setVisibility(View.GONE);
+                        _piktogramChooser_info.setVisibility(View.GONE);
+                        if(!modeSarajevoCloud)
+                            showRightBar();
+                        else
+                            _cameraButton.setVisibility(View.VISIBLE);
                         //if(_messageBox.getChildAt(1) != null) _messageBox.getChildAt(1).setVisibility(View.GONE);
                         _timesBackPressed = 0;
                     }
@@ -1447,19 +1501,22 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     else{
                         _ivReload.setVisibility(View.VISIBLE);
                         _ivPlus.setVisibility(View.VISIBLE);
+                        showRightBar();
                     }
                     _cameraButton.setVisibility(View.VISIBLE);
                     _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
 
                     if(_popupWindow.getVisibility() == View.VISIBLE){
                         _popupWindow.setVisibility(View.GONE);
+                        showRightBar();
                         _timesBackPressed = 0;
+                        showMessage("FOTOGRAFIJA POHRANJENA");
                     }
 
                     if(_timesBackPressed > 0){
                         //_messageBox_TextView.setText("Press back once more to exit.");
                         //_messageBox.setVisibility(View.VISIBLE);
-                        if(_timesBackPressed > 1) return super.onKeyDown(a, keyCode, event);
+                        if(_timesBackPressed > 1) getActivity().finish();// return super.onKeyDown(a, keyCode, event);
                         if(_timesBackPressed == 1) Toast.makeText(getActivity(), "Press back once more to exit", Toast.LENGTH_SHORT).show();
                     }
 
@@ -1546,13 +1603,21 @@ public class ModelLoaderSetup extends DefaultARSetup {
         final ImageView imgButton = new ImageView(context);
         try {
             imgButton.setBackgroundColor(0);
+            System.gc();
             final Bitmap normalBmp = BitmapFactory.decodeFile(normalImagePath);
-            final Bitmap clickedBitmap = BitmapFactory.decodeFile(clickedImagePath);
+            System.gc();
+            Bitmap clickedBitmap= null;
+            try{
+                clickedBitmap= BitmapFactory.decodeFile(clickedImagePath);
+            }catch (Throwable t){
+                clickedBitmap = normalBmp;
+            }
+            final Bitmap finalClickedBitmap = clickedBitmap;
             imgButton.setImageBitmap(normalBmp);
             imgButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    imgButton.setImageBitmap(clickedBitmap);
+                    imgButton.setImageBitmap(finalClickedBitmap);
                     if (vibrateCommand != null)
                         vibrateCommand.execute();
                     if (command != null)

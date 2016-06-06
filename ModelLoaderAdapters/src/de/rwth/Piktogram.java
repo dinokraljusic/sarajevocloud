@@ -1,5 +1,7 @@
 package de.rwth;
 
+import gl.Color;
+
 /**
  * Created by MiniP on 3/27/2016.
  */
@@ -11,6 +13,7 @@ public class Piktogram {
     private String _putTekstura;
     private float _latitude,
                 _longitude;
+    private Color _color;
 
     /**
      * No args constructor for use in serialization
@@ -24,11 +27,12 @@ public class Piktogram {
      * @param putPiktogram
      * @param putTekstura
      */
-    public Piktogram(int id, String naziv, String putPiktogram, String putTekstura) {
+    public Piktogram(int id, String naziv, String putPiktogram, String putTekstura, int red, int green, int blue) {
         this._id = id;
         this._naziv = naziv;
         this._putPiktogram = putPiktogram;
         this._putTekstura = putTekstura;
+        this._color = new Color((float)red/256, (float)green/256, (float)blue/256, 1);
     }
 
     /**
@@ -116,5 +120,13 @@ public class Piktogram {
 
     public void set_longitude(float _longitude) {
         this._longitude = _longitude;
+    }
+
+    public Color get_color() {
+        return _color;
+    }
+
+    public void set_color(Color _color) {
+        this._color = _color;
     }
 }

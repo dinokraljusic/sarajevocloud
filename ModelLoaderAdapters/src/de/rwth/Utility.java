@@ -67,7 +67,10 @@ public class Utility {
                                     piktogram.getInt("id"),
                                     piktogram.getString("naziv"),
                                     piktogram.getString("put_piktogram"),
-                                    piktogram.getString("put_tekstura")
+                                    piktogram.getString("put_tekstura"),
+                                    piktogram.getInt("color_red"),
+                                    piktogram.getInt("color_green"),
+                                    piktogram.getInt("color_blue")
                             );
                             if (pikrogramObj.getId() > lastId)
                                 lastId = pikrogramObj.getId();
