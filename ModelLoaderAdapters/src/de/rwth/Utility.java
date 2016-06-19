@@ -1,9 +1,11 @@
 package de.rwth;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -309,7 +311,7 @@ public class Utility {
 
                 nameValuePairs.add(new BasicNameValuePair("image", image_str));
                 nameValuePairs.add(new BasicNameValuePair("imageName", image.getName()));
-                nameValuePairs.add(new BasicNameValuePair("userId", Spremnik.getInstance().getCurrId()));
+                nameValuePairs.add(new BasicNameValuePair("userId", Spremnik.getInstance().getUserId()));
                 nameValuePairs.add(new BasicNameValuePair("lat", Double.toString(location.getLatitude())));
                 nameValuePairs.add(new BasicNameValuePair("lon", Double.toString(location.getLongitude())));
 
@@ -327,8 +329,8 @@ public class Utility {
 
                                 @Override
                                 public void run() {
-                                    caller.hideLoader();
-                                    caller.showMessage("FOTOGRAFIJA UPLOADOVANA I POHRANJENA");
+                                    caller._loader.hideLoader();
+                                    caller._messageBox.showMessage("FOTOGRAFIJA UPLOADOVANA I POHRANJENA");
                                 }
                             });
                             Log.i("PostingPhoto", the_string_response);
@@ -338,22 +340,54 @@ public class Utility {
 
                                 @Override
                                 public void run() {
-                                    caller.showMessage("GRESKA PRI POSTAVLjANJU FOTOGRAFIJE");
+                                    caller._messageBox.showMessage("GRESKA PRI POSTAVLjANJU FOTOGRAFIJE");
                                 }
                             });
                             System.out.println("Error in http connection " + e.toString());
+                            return;
                         }
                         try {
-                            String str = Utility.POST(Spremnik.getInstance().getUrl() + "/postToFb.php", nameValuePairs);
-                            Log.i("FbResponse", str);
+                            Boolean authorized = isFacebookAuthorized();
+
+                            if(authorized) {
+                                String str = Utility.POST(Spremnik.getInstance().getUrl() + "/facebook/postToFb.php", nameValuePairs);
+                                Log.i("FbResponse", str);
+                            }else{
+                                caller.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent webIntent = new Intent( Intent.ACTION_VIEW );
+                                        webIntent.setData(Uri.parse(Spremnik.getInstance().getUrl() + "/facebook/login.php?userId="
+                                                + Spremnik.getInstance().getUserId()));
+                                        caller.getActivity().startActivity(webIntent);
+                                    }
+                                });
+                            }
                             //caller.hideLoader();
                         }catch (Throwable th){
-                            Log.i("FbResponse", th.getMessage());
+                            Log.e("FbResponse", th.getMessage());
                         }
                     }
                 });
                 t.start();
                 return "";
+            }
+
+            private boolean isFacebookAuthorized(){
+                String str = GET(Spremnik.getInstance().getUrl() + "/facebook/authorized.php?userId="
+                    + Spremnik.getInstance().getUserId());
+                Log.i("FbResponse", str);
+                try {
+                    JSONArray responses = new JSONArray(str);
+                    if(responses != null && responses.length()>0){
+                        JSONObject object = responses.getJSONObject(0);
+                        if(object.has("authorized") && object.getInt("authorized") == 1)
+                            return  true;
+                    }
+                }catch (Throwable t){
+
+                }
+                return false;
             }
 
             public String convertResponseToString(HttpResponse response) throws IllegalStateException, IOException {

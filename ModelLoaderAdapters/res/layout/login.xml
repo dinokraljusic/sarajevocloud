@@ -73,7 +73,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#80000000"
-        android:id="@+id/messageBox">
+        android:id="@+id/messageBox"
+        android:visibility="visible">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

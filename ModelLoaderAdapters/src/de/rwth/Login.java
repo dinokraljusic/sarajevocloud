@@ -8,10 +8,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.method.KeyListener;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -51,7 +48,7 @@ public class Login extends Activity {
         SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
 
         final String userName = settings.getString("userName", "");
-        if(userName != null && !userName.isEmpty() && !userName.equals("")){
+        if(!userName.isEmpty() && !userName.equals("")){
             Spremnik.getInstance().setUserName(userName);
             String userId = "";
             try {
@@ -188,6 +185,12 @@ public class Login extends Activity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         finish();
     }
 

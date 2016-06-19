@@ -165,11 +165,12 @@ public class GL1Renderer extends GLRenderer {
                 ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
                 bb.order(ByteOrder.nativeOrder());
 				bb.position(0);
+				//GL_RGBA
                 gl.glReadPixels(0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bb);
                 int pixelsBuffer[] = new int[screenshotSize];
                 bb.asIntBuffer().get(pixelsBuffer);
                 bb = null;
-                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
                 bitmap.setPixels(pixelsBuffer, screenshotSize - width, -width, 0, 0, width, height);
                 pixelsBuffer = null;
 
@@ -409,10 +410,30 @@ public class GL1Renderer extends GLRenderer {
             bmp2 = getResizedBitmap(bmp2, bmp1.getWidth(), bmp1.getHeight());
         else if(bmp2.getWidth() > bmp1.getWidth())
             bmp1 = getResizedBitmap(bmp1, bmp2.getWidth(), bmp2.getHeight());
-        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+
+		int width = bmp2.getWidth(),
+				height = bmp2.getHeight();
+		int count = width*height;
+		Bitmap mb = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+		int[] alphaPix = new int[count];
+		bmp2.getPixels(alphaPix, 0, width, 0, 0, width, height);
+
+		for (int i = 0; i < count; ++i)
+		{
+			int x = alphaPix[i];
+			if(x == android.graphics.Color.BLACK)
+				x = android.graphics.Color.argb(0, 0, 0, 0);
+			alphaPix[i] = x; //(red * 255 / 31) | (green * 255/63)|(blue*255/31);
+		}
+		mb.setPixels(alphaPix, 0, width, 0, 0, width, height);
+
+		Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
-        canvas.drawBitmap(bmp1, new Matrix(), null);
-        canvas.drawBitmap(bmp2, 0, 0, null);
+        //canvas.drawBitmap(bmp1, new Matrix(), null);
+		canvas.drawBitmap(bmp1, 0, 0, null);
+        //canvas.drawBitmap(bmp2, 0, 0, p);
+		canvas.drawBitmap(mb, 0, 0, null);
         return bmOverlay;
     }
 

@@ -189,7 +189,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
                                 bytes.length, bfo);
 
                         Log.d(LOG_TAG, "BitmapFactory.decodeByteArray done");
-                        //SaveBitmap(bitmap);
+						GL1Renderer.SaveBitmap(foreLayer);
 						Bitmap finalBitmap = GL1Renderer.MergeBitmaps(bitmapPicture, foreLayer);
                         String responsePath = GL1Renderer.SaveBitmap(finalBitmap);
                         //GL1Renderer.SaveBitmap(GL1Renderer.MergeBitmaps(foreLayer, bitmapPicture));

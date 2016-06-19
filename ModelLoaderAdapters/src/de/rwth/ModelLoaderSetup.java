@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -41,6 +42,11 @@ import actions.ActionRotateCameraBuffered;
 import commands.Command;
 import commands.system.CommandDeviceVibrate;
 import components.ViewPosCalcerComp;
+import de.rwth.GuiElements.DialogBox;
+import de.rwth.GuiElements.LoaderBar;
+import de.rwth.GuiElements.MessageBox;
+import de.rwth.GuiElements.MojCloudCommands;
+import de.rwth.GuiElements.TitleBar;
 import geo.GeoObj;
 import gl.CustomGLSurfaceView;
 import gl.GL1Renderer;
@@ -68,6 +74,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     private String LOG_TAG = "ModelLoader";
     private static final long VIBRATION_DURATION_IN_MS = 20;
+    public static final String CREDENTIALS = "credentials.sc";
 
     //endregion
 
@@ -87,27 +94,29 @@ public class ModelLoaderSetup extends DefaultARSetup {
     private Obj _selectedObj;
     private MoveComp _moveComp;
 
-    private Button _rightInfo, _rightFotografije, _leftMojCloud, _leftSarajevoCloud;
-    private ImageView _ivPlus, _ivReload, _ivMojCloud, _ivSarajevoCloud;
+    private TitleBar _titleBar;
+    protected MessageBox _messageBox;
+    protected LoaderBar _loader;
+    private DialogBox _uploadPictureDialogBox;
+    private MojCloudCommands _mojCloudKomande;
 
-    private LinearLayout  _rightMenu,_leftMenu;
-    private LinearLayout _messageBox, _popupWindow, _loader;
-    private LinearLayout _titleBar;
-    private TextView _messageBox_TextView;
-    private LinearLayout _messageBox_buttons,  _piktogramChooser_piktogramRows;
-    ImageView _messageBox_yesButton,
-            _messageBox_noButton;
-    View _cameraButton, _lijeviMeni_btn, _desniMeni_btn;
-    RelativeLayout _mojCloud_commands;
+    private Button _rightInfo, _rightFotografije, _leftMojCloud, _leftSarajevoCloud;
+    private ImageView _ivMojCloud, _ivSarajevoCloud;
+
+    private LinearLayout _rightMenu, _leftMenu,
+            _popupWindow,
+            _piktogramChooser_piktogramRows;
     ImageView _thumbnailImage;
-    TextView _naslov_txt, _loader_text, _piktogramChooser_info, _mojCloud_userName;
-    ProgressBar _loader_loader, _piktogramChooser_loader;
+    ProgressBar _piktogramChooser_loader;
     ScrollView _piktogramChooser;
 
     Typeface defaultFont;
 
-    private boolean modeSarajevoCloud=true;
+    private boolean modeSarajevoCloud = true;
     private int _timesBackPressed = 0;
+
+    Obj _selectedLightObject;
+    MeshComponent _selectedMesh;
 
     //endregion
 
@@ -147,6 +156,19 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     MoveComp m = obj.getComp(MoveComp.class);
                     if (m != null) {
                         m.myTargetPos = targetVec;
+                    }
+                    Vec pos = camera.getPositionOnGroundWhereTheCameraIsLookingAt();
+                    if (_selectedMesh != null) {
+                        Vec rot = _selectedMesh.getRotation();
+                        if (rot == null) return;
+                        int stepeni = (int) Math.toDegrees(Math.atan2(pos.y, pos.x));
+                        if (_previousRotation != stepeni) {
+                            int dz = stepeni - _previousRotation;
+                            rot.z += dz;
+                            _selectedMesh.setRotation(rot);
+                            _previousRotation = stepeni;
+                            Log.i("rotation", Integer.toString(stepeni));
+                        }
                     }
                 }
             }
@@ -210,6 +232,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 		};*/
     }
 
+    int _previousRotation;
     @Override
     public void _c_addActionsToEvents(EventManager eventManager,
                                       CustomGLSurfaceView arView, SystemUpdater updater) {
@@ -220,6 +243,26 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
         eventManager.addOnOrientationChangedAction(rotateGLCameraAction);
         eventManager.addOnOrientationChangedAction(rot2);
+        /*eventManager.addOnOrientationChangedAction(new Action() {
+
+            @Override
+            public boolean onLocationChanged(Location location) {
+                Vec pos = camera.getPositionOnGroundWhereTheCameraIsLookingAt();
+                if (_selectedMesh != null) {
+                    Vec rot = _selectedMesh.getRotation();
+                    if (rot == null) return true;
+                    int stepeni = (int) Math.toDegrees(Math.atan2(pos.y, pos.x));
+                    if (_previousRotation != stepeni) {
+                        int dz = stepeni - _previousRotation;
+                        rot.z += dz;
+                        _selectedMesh.setPosition(rot);
+                        _previousRotation = stepeni;
+                        Log.i("rotation", Integer.toString(stepeni));
+                    }
+                }
+                return true;
+            }
+        });*/
         //eventManager.addOnLocationChangedAction(
         //        new ActionCalcRelativePos(world, camera));
 
@@ -274,15 +317,44 @@ public class ModelLoaderSetup extends DefaultARSetup {
         }
         defaultFont = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/ACTOPOLIS.otf");
 
-        initMessageBox(guiSetup);
+        guiSetup.getBottomView().setOrientation(LinearLayout.VERTICAL);
+        _messageBox = new MessageBox(getActivity(), (int) getScreenHeigth());
+        guiSetup.getBottomView().addView(_messageBox);
 
-        _titleBar = guiSetup.getTopView();
-        _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
+        _loader = new LoaderBar(getActivity(), defaultFont);
+        guiSetup.getBottomView().addView(_loader);
+        _loader.getLayoutParams().width = (int)getScreenHeigth();
+
+        _uploadPictureDialogBox = new DialogBox(getActivity(), R.drawable.yes_first, R.drawable.yes_second, R.drawable.no_first, R.drawable.no_second);
+        _uploadPictureDialogBox.registerOnShowCommand(new Command() {
+            @Override
+            public boolean execute() {
+                _mojCloudKomande.hide();
+                _titleBar.setEnabled(false);
+                _piktogramChooser.setVisibility(View.GONE);
+
+                return true;
+            }
+        });
+        _uploadPictureDialogBox.registerOnHideCommand(new Command() {
+            @Override
+            public boolean execute() {
+                _mojCloudKomande.show(modeSarajevoCloud);
+                _messageBox.showMessage("FOTOGRAFIJA POHRANJENA");
+                _titleBar.setEnabled(true);
+                return false;
+            }
+        });
+        guiSetup.getBottomView().addView(_uploadPictureDialogBox);
+
+        guiSetup.getTopView().setOrientation(LinearLayout.VERTICAL);
+        _titleBar = new TitleBar(getActivity(), (int) getScreenHeigth());
+        _titleBar.showBackground();
         _titleBar.setMinimumWidth((int) getScreenHeigth());
         _titleBar.setTop(0);
-        _titleBar.setOrientation(LinearLayout.VERTICAL);
+        guiSetup.getTopView().addView(_titleBar);
 
-        _rightMenu =  new LinearLayout(getActivity());
+        _rightMenu = new LinearLayout(getActivity());
         getGuiSetup().addViewToRight(_rightMenu);
         _rightMenu.setVisibility(View.GONE);
         _rightMenu.setOrientation(LinearLayout.VERTICAL);
@@ -294,7 +366,59 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _leftMenu.setOrientation(LinearLayout.VERTICAL);
         _leftMenu.setWeightSum(99);
 
-        //guiSetup.addViewToTop(_lokacijaLabel);
+        _mojCloudKomande = new MojCloudCommands(getActivity(), (int) getScreenWidth());
+        guiSetup.addViewToRight(_mojCloudKomande);
+
+        guiSetup.addButtonToLeftView(new Command() {
+            @Override
+            public boolean execute() {
+                if (_selectedMesh != null) {
+                    Vec rot = _selectedMesh.getRotation();
+                    if (rot == null)
+                        rot = new Vec(0, 0, 0);
+                    rot.z += 22.5;
+                    _selectedMesh.setRotation(rot);
+                    return true;
+                }
+                return false;
+            }
+        }, ">");
+        guiSetup.addButtonToLeftView(new Command() {
+
+            @Override
+            public boolean execute() {
+                if (_selectedMesh != null && _selectedLightObject != null) {
+                    //_selectedMesh = null;
+                    Vec v_loc = _selectedLightObject.getPosition();
+                    Log.d(LOG_TAG, "v_loc: " + v_loc.toString());
+                    final GeoObj final3Dobj = new GeoObj(true);
+                    final3Dobj.setVirtualPosition(v_loc);
+
+                    final MeshComponent lightGroup = new Shape();
+                    lightGroup.addChild(spotLight);
+                    final3Dobj.setComp(lightGroup);
+                    gl.Color tmpColor = _selectedMesh.getColor();
+                    tmpColor.alpha = 1;
+                    _selectedMesh.setColor(tmpColor);
+                    final3Dobj.setComp(_selectedMesh);
+                    world.add(final3Dobj);
+                    world.remove(_selectedLightObject);
+
+                    _targetMoveWrapper.setTo(final3Dobj);
+                    //setStatic(lightObject);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            _messageBox.showMessage("OBJEKAT POSTAVLjEN I MEMORISAN");
+                        }
+                    });
+                    _selectedMesh = null;
+                    _selectedLightObject = null;
+                    return true;
+                }
+                return false;
+            }
+        }, "o");
 
         //region --- old code ---
         /*guiSetup.addButtonToBottomView(new Command() {
@@ -405,187 +529,93 @@ public class ModelLoaderSetup extends DefaultARSetup {
         });*/
         //endregion
 
-
-        /*_about = create*/
-
-        _cameraButton = createButtonImageWithTransparentBackground(getActivity().getApplicationContext(),
-                R.drawable.cam_yellow, R.drawable.cam_green, new Command() {
-                    @Override
-                    public boolean execute() {
-                        try {
-                            getMyRenderer().takeScreenShot(myCameraView, Spremnik.getInstance().get_slikaPath());
-                            //takeScreenshot();
-                            pictureHandler.postDelayed(pictureRunnable, 500);
-                            hideRightBar();
-                        } catch (Throwable t) {
-                            t.printStackTrace();
-                            return true;
-                        }
-                        return  true;
-                    }
-                });
+        _mojCloudKomande.setCameraCommand(new Command() {
+            @Override
+            public boolean execute() {
+                try {
+                    getMyRenderer().takeScreenShot(myCameraView, Spremnik.getInstance().get_slikaPath());
+                    //takeScreenshot();
+                    pictureHandler.postDelayed(pictureRunnable, 500);
+                    _mojCloudKomande.hide();
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    return true;
+                }
+                return true;
+            }
+        });
 
 
-        _lijeviMeni_btn = createButtonImageWithTransparentBackground(getActivity(),
-                R.drawable.gornji_lijevi_button_zuto, R.drawable.gornji_lijevi_button_zeleno,
+        _titleBar.setLeftButtonCommand(
                 new Command() {
-                    boolean visible = true;
+
                     @Override
                     public boolean execute() {
-                        if(_popupWindow.getVisibility() != View.VISIBLE) {
-                            _piktogramChooser_info.setVisibility(View.GONE);
-                            if(visible){
-                                visible = false;
-                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128,0,0,0));
-                                _titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
-                                _cameraButton.setVisibility(View.GONE);
-                                _messageBox.setVisibility(View.GONE);
-                                _messageBox_TextView.setVisibility(View.VISIBLE);
-                                //_messageBox_TextView.setText("LIJEVI TEXT");
+                        if (_popupWindow.getVisibility() != View.VISIBLE) {
+                            _titleBar.showPiktogramChooserInfo(false);
+                            if (_titleBar.isBackgroundShown()) {
+                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(128, 0, 0, 0));
+                                _titleBar.hideBackground();
+                                _mojCloudKomande.hide();
                                 _leftMenu.setVisibility(View.VISIBLE);
-
                                 _rightMenu.setVisibility(View.GONE);
-                                _ivReload.setVisibility(View.INVISIBLE);
-                                _ivPlus.setVisibility(View.INVISIBLE);
-                            }else {
-                                visible = true;
-                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
-                                _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
-                                showRightBar();
-                                _messageBox_TextView.setVisibility(View.GONE);
-                                _messageBox.setVisibility(View.GONE);
+                            } else {
+                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
+                                _titleBar.showBackground();
+                                _mojCloudKomande.show(modeSarajevoCloud);
                                 _leftMenu.setVisibility(View.GONE);
-
-                                getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);//centers camera
-
-                                if(!modeSarajevoCloud){
-                                    _ivReload.setVisibility(View.VISIBLE);
-                                    _ivPlus.setVisibility(View.VISIBLE);
-                                }
-
                             }
                         }
                         return true;
                     }
                 });
-        _lijeviMeni_btn.setPadding(1, 5, 75, 45);
-        _naslov_txt = new TextView(getActivity());
-        _naslov_txt.setPadding(105, 15, 0, 15);
-        _naslov_txt.setTypeface(defaultFont);
-        _naslov_txt.setTextColor(Color.rgb(242, 229, 0));
-        _naslov_txt.setTextSize(19);
-        _naslov_txt.setText("SARAJEVO CLOUD");
-        _mojCloud_userName = new TextView(getActivity());
-        _mojCloud_userName.setTypeface(defaultFont);
-        _mojCloud_userName.setTextSize(17);
-        _mojCloud_userName.setText(Spremnik.getInstance().getUserName());
-        _mojCloud_userName.setTextColor(Color.rgb(242, 229, 0));
-        _mojCloud_userName.setPadding(105, 9, 0, 11);
-        _mojCloud_userName.setVisibility(View.GONE);
+        _titleBar.setTitle("SARAJEVO CLOUD");
 
-        _desniMeni_btn = createImageWithTransparentBackground(getActivity(),
-                R.drawable.gornji_desni_meni_zuto, R.drawable.gornji_desni_meni_zelen,
+        _titleBar.setRightButtonCommand(
                 new Command() {
                     boolean visible = true;
+
                     @Override
                     public boolean execute() {
-                        if(_popupWindow.getVisibility() != View.VISIBLE){
-                            if(visible){
+                        if (_popupWindow.getVisibility() != View.VISIBLE) {
+                            if (visible) {
                                 visible = false;
-                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
-                                //_titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
-                                _cameraButton.setVisibility(View.GONE);
-                                //_messageBox.setVisibility(View.VISIBLE);
+                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
                                 _rightMenu.setVisibility(View.VISIBLE);
                                 _leftMenu.setVisibility(View.GONE);
-
-                                _ivReload.setVisibility(View.GONE);
-                                _ivPlus.setVisibility(View.GONE);
-                                getGuiSetup().getRightView().setGravity(Gravity.TOP);
-
-                            }else {
+                                _mojCloudKomande.hide();
+                            } else {
                                 visible = true;
-                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
-                                _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
-                                _cameraButton.setVisibility(View.VISIBLE);
+                                guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
                                 _rightMenu.setVisibility(View.GONE);
                                 _leftMenu.setVisibility(View.GONE);
-
-                                if(modeSarajevoCloud){
-
-                                }
-                                else{
-                                    _ivReload.setVisibility(View.VISIBLE);
-                                    _ivPlus.setVisibility(View.VISIBLE);
-                                }
-
-                                getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
+                                _mojCloudKomande.show(modeSarajevoCloud);
                             }
                         }
                         return true;
                     }
                 });
-        _desniMeni_btn.setRight((int) getScreenHeigth() - 15);
-        _desniMeni_btn.setPadding(55, 15, 15, 15);
-
-        // Creating a new RelativeLayout
-        RelativeLayout relativeLayout = new RelativeLayout(getActivity());
-
-        // Defining the RelativeLayout layout parameters.
-        // In this case I want to fill its parent
-        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT);
-
-        // Defining the layout parameters of the TextView
-        RelativeLayout.LayoutParams lp_l = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams lp_c = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams lp_d = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
-        //lp_c.addRule(RelativeLayout.CENTER_IN_PARENT);
-        lp_d.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        lp_d.addRule(RelativeLayout.CENTER_VERTICAL);
-
-        // Setting the parameters on the TextView
-        _lijeviMeni_btn.setLayoutParams(lp_l);
-        _naslov_txt.setLayoutParams(lp_c);
-        _desniMeni_btn.setLayoutParams(lp_d);
-
-        // Adding the TextView to the RelativeLayout as a child
-        relativeLayout.addView(_lijeviMeni_btn);
-        relativeLayout.addView(_naslov_txt);
-        relativeLayout.addView(_desniMeni_btn);
-        relativeLayout.setMinimumWidth((int) getScreenHeigth());
-
-        _titleBar.addView(relativeLayout, rlp);
 
         _popupWindow = new LinearLayout(getActivity());
         _thumbnailImage = new ImageView(getActivity());
 
         _popupWindow.addView(_thumbnailImage);
 
-        RelativeLayout mainView = (RelativeLayout)guiSetup.getMainContainerView();
+        RelativeLayout mainView = (RelativeLayout) guiSetup.getMainContainerView();
         RelativeLayout.LayoutParams lp_popup = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         //lp_thumbnail.addRule(RelativeLayout.CENTER_VERTICAL);
         //lp_thumbnail.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        int H = (int)getScreenWidth(),
-                W=(int)getScreenHeigth();
-        int h1 = (int)(0.13*H),
-                h2 = (int)(0.22*H),
-                dW=(int)(0.175*W);
+        int H = (int) getScreenWidth(),
+                W = (int) getScreenHeigth();
+        int h1 = (int) (0.13 * H),
+                h2 = (int) (0.22 * H),
+                dW = (int) (0.175 * W);
         //mainView.addView(_thumbnailImage, lp_popup);
         mainView.addView(_popupWindow, lp_popup);
-        _popupWindow.getLayoutParams().height = (int)(H*0.65);
-        _popupWindow.getLayoutParams().width = (int) (W*0.65);
+        _popupWindow.getLayoutParams().height = (int) (H * 0.65);
+        _popupWindow.getLayoutParams().width = (int) (W * 0.65);
         lp_popup.setMargins(dW, h1, dW, h2);
         _popupWindow.requestLayout();
         hidePopup();
@@ -603,39 +633,30 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightInfo.setText("INFO");
         _rightInfo.setBackgroundColor(0);
         _rightInfo.setTypeface(defaultFont);
-        _rightInfo.setTextColor(Color.rgb(242, 229, 0));;
+        _rightInfo.setTextColor(Color.rgb(242, 229, 0));
 
         _rightMenu.addView(_rightInfo);
         _rightMenu.addView(_rightFotografije);
         _rightMenu.setPadding(80, 0, 50, 50);
 
-        guiSetup.setRightViewCentered();
-        _ivPlus= (ImageView)createImageWithTransparentBackground(getActivity(),
-                R.drawable.plus_zuto, R.drawable.plus_zeleno, new Command() {
-                    @Override
-                    public boolean execute() {
-                        //Intent intent = new Intent(getActivity().getApplicationContext(), chooser.class);
-                        //getActivity().startActivityForResult(intent, 0);
-                        showPiktogramChooser();
-                        return true;
-                    }
-                });
-        _ivPlus.setPadding(0, 120, 0, 0);
-        getGuiSetup().addViewToRight(_ivPlus);
+        //guiSetup.setRightViewCentered();
 
-        //getGuiSetup().getRightView().setPadding(30,30,30,30);
+        _mojCloudKomande.setNewPiktogramCommand(new Command() {
+            @Override
+            public boolean execute() {
+                showPiktogramChooser();
+                return true;
+            }
+        });
 
-        guiSetup.addViewToRight(_cameraButton);///
-
-        _ivReload = (ImageView)createImageWithTransparentBackground(getActivity(),
-                R.drawable.reload_zuto, R.drawable.reload_zeleno,
+        _mojCloudKomande.setReloadCommand(
                 new Command() {
                     @Override
                     public boolean execute() {
                         try {
                             if (world != null) {
                                 world.clear();
-                            }else {
+                            } else {
                                 world = new World(camera);
                             }
                             return true;
@@ -644,41 +665,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         return false;
                     }
                 });
-        //_ivReload.setPadding(0,120,0,0);
-        getGuiSetup().addViewToRight(_ivReload);////
-        getGuiSetup().getRightView().setWeightSum(100);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 22f);
-        getGuiSetup().getRightView().getChildAt(1).setLayoutParams(params);
-        getGuiSetup().getRightView().getChildAt(1).setPadding(0,0,0,60);
-        //getGuiSetup().getRightView().getChildAt(2).setLayoutParams(params);
-        getGuiSetup().getRightView().getChildAt(3).setLayoutParams(params);
-        getGuiSetup().getRightView().getChildAt(3).setPadding(0,60,0,0);
-        getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
 
-        /*_ivReload.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.f));
-        _ivPlus.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.f));
-        _cameraButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.f));*/
-        RelativeLayout _relative_right = new RelativeLayout(getActivity());
-        //_relative_right.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT));
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT );
-
-
-       /* _relative_right.addView(_ivPlus, lp);
-        //relative_right.getChildAt(0).setLayoutParams(new RelativeLayout.LayoutParams(100,250));
-        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        _relative_right.addView(_cameraButton, lp);
-        lp.addRule(RelativeLayout.ALIGN_BOTTOM);
-        _relative_right.addView(_ivReload, lp);
-        getGuiSetup().addViewToRight(_relative_right);*/
-        //getGuiSetup().getRightView().getChildAt(1);
-        /*_ivPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), chooser.class);
-                getActivity().startActivityForResult(intent, 0);
-            }
-        });*/
 
         _rightInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -752,30 +739,21 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _leftMenu.addView(_llSarajevoCloud);
 
         _leftMenu.getChildAt(0).setPadding(60, 40, 0, 0);//ltrb
-        _leftMenu.getChildAt(1).setPadding(80,50,0,0);
+        _leftMenu.getChildAt(1).setPadding(80, 50, 0, 0);
         _leftMenu.getChildAt(2).setPadding(80, 40, 0, 0);
-
-        getGuiSetup().getRightView().getChildAt(1).setVisibility(View.GONE);
-        getGuiSetup().getRightView().getChildAt(3).setVisibility(View.GONE);
 
 
         _leftMojCloud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 modeSarajevoCloud = false;
-                _naslov_txt.setText("MOJ CLOUD");
-                _mojCloud_userName.setVisibility(View.VISIBLE);
-                getGuiSetup().getRightView().getChildAt(1).setVisibility(View.VISIBLE);
-                getGuiSetup().getRightView().getChildAt(3).setVisibility(View.VISIBLE);
-                //_leftMenu.setVisibility(View.GONE);
+                _titleBar.setTitle("MOJ CLOUD");
+                _titleBar.showBackground();
+                //_mojCloud_userName.setVisibility(View.VISIBLE);
+                _mojCloudKomande.show(modeSarajevoCloud);
                 guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
-                _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
-                _cameraButton.setVisibility(View.VISIBLE);
-                _messageBox_TextView.setVisibility(View.GONE);
-                _messageBox.setVisibility(View.GONE);
-                _piktogramChooser_info.setVisibility(View.GONE);
+                _titleBar.showPiktogramChooserInfo(false);
                 _leftMenu.setVisibility(View.GONE); //TODO: when mycloud clicked
-                showRightBar();
             }
         });
 
@@ -783,25 +761,18 @@ public class ModelLoaderSetup extends DefaultARSetup {
             @Override
             public void onClick(View v) {
                 modeSarajevoCloud = true;
-                _naslov_txt.setText("SARAJEVO CLOUD");
-                _mojCloud_userName.setVisibility(View.GONE);
-                getGuiSetup().getRightView().getChildAt(1).setVisibility(View.GONE);
-                getGuiSetup().getRightView().getChildAt(3).setVisibility(View.GONE);
-                //_leftMenu.setVisibility(View.GONE);
+                _titleBar.setTitle("SARAJEVO CLOUD");
+                _titleBar.showBackground();
+                //_mojCloud_userName.setVisibility(View.GONE);
+                _mojCloudKomande.show(modeSarajevoCloud);
                 guiSetup.getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
-                _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
-                _cameraButton.setVisibility(View.VISIBLE);
-                _messageBox_TextView.setVisibility(View.GONE);
-                _messageBox.setVisibility(View.GONE);
-                _piktogramChooser_info.setVisibility(View.GONE);
+                _titleBar.showPiktogramChooserInfo(false);
                 _leftMenu.setVisibility(View.GONE);//TODO: when changed from my to sarajevo
             }
         });
 
 
         initPiktogramChooser();
-        _titleBar.addView(_mojCloud_userName);
-        _titleBar.addView(_piktogramChooser_info);
 
         //TODO:back
 
@@ -809,30 +780,33 @@ public class ModelLoaderSetup extends DefaultARSetup {
         //checkNewPiktogramHandler.postDelayed(checkNewPiktogramRunnable, 0);
     }
 
-    private void initPiktogramChooser(){
+    private void initPiktogramChooser() {
         Context ctx = getActivity();
         _piktogramChooser = new ScrollView(ctx);
         _piktogramChooser_piktogramRows = new LinearLayout(ctx);
         _piktogramChooser_piktogramRows.setOrientation(LinearLayout.VERTICAL);
         _piktogramChooser_piktogramRows.setPadding(0, 15, 0, 10);
-        _piktogramChooser_info = new TextView(getActivity());
-        _piktogramChooser_info.setTypeface(defaultFont);
-        _piktogramChooser_info.setTextSize(19);
-        _piktogramChooser_info.setText("ODABERITE OBJEKAT");
-        _piktogramChooser_info.setTextColor(Color.rgb(242, 229, 0));
-        _piktogramChooser_info.setPadding(45, 19, 0, 105);
-        _piktogramChooser_info.setVisibility(View.GONE);
 
         _piktogramChooser_loader = new ProgressBar(ctx);
 
         _piktogramChooser.addView(_piktogramChooser_piktogramRows);
         _piktogramChooser_loader.setVisibility(View.GONE);
 
-        _messageBox.addView(_piktogramChooser);
+        //_messageBox.addView(_piktogramChooser);
+        _piktogramChooser.setVisibility(View.GONE);
+        getGuiSetup().addViewToBottom(_piktogramChooser);
     }
 
-    private void showPiktogramChooser(){
-        if(_messageBox.getVisibility() == View.VISIBLE){
+    private void showPiktogramChooser() {
+        boolean thereAreVisibleSiblings = false;
+        ViewGroup row = (ViewGroup)_piktogramChooser.getParent();
+        for (int itemPos = 0; itemPos < row.getChildCount(); itemPos++) {
+            if (row.getChildAt(itemPos).getVisibility() == View.VISIBLE) {
+                thereAreVisibleSiblings = true;
+                break;
+            }
+        }
+        if (thereAreVisibleSiblings) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -842,29 +816,28 @@ public class ModelLoaderSetup extends DefaultARSetup {
             return;
         }
         final List<Set> _setovi_lista = new ArrayList<>();
-        getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(128, 0, 0, 0));
-        if(_messageBox.getVisibility() != View.VISIBLE) _messageBox.setVisibility(View.VISIBLE);
-        hideRightBar();
+        //getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(128, 0, 0, 0));
+        //if (_messageBox.getVisibility() != View.VISIBLE) _messageBox.setVisibility(View.VISIBLE);
+        _mojCloudKomande.hide();
 
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
-                _piktogramChooser_info.setVisibility(View.VISIBLE);
+                _titleBar.showPiktogramChooserInfo(true);
+                _titleBar.hideBackground();
+                getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(128, 0, 0, 0));
                 _piktogramChooser_piktogramRows.removeAllViews();
                 _piktogramChooser_loader.setVisibility(View.VISIBLE);
-                _piktogramChooser.getLayoutParams().height = (int)(getScreenWidth()*0.6);
-                _piktogramChooser.getLayoutParams().width = (int)(getScreenHeigth());
+                _piktogramChooser.getLayoutParams().height = (int) (getScreenWidth() * 0.6);
+                _piktogramChooser.getLayoutParams().width = (int) (getScreenHeigth());
                 _piktogramChooser.setLayoutParams(
                         new LinearLayout.LayoutParams(
-                                (int)(getScreenHeigth()),
-                                (int)(getScreenWidth()*0.6)
+                                (int) (getScreenHeigth()),
+                                (int) (getScreenWidth() * 0.6)
                         )
                 );
                 _piktogramChooser.setVisibility(View.VISIBLE);
-                _piktogramChooser_info.setVisibility(View.VISIBLE);
-                _messageBox.setVisibility(View.VISIBLE);
-                _messageBox_TextView.setVisibility(View.GONE);
-                _messageBox_buttons.setVisibility(View.GONE);
+                _titleBar.setEnabled(false);
             }
 
             @Override
@@ -893,7 +866,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
             }
 
-            void dobaviPiktograme(Context ctx, final String setName, String setId){
+            void dobaviPiktograme(Context ctx, final String setName, String setId) {
                 List<Piktogram> _piktogram_lista = new ArrayList<Piktogram>();
                 try {
                     getActivity().runOnUiThread(new Runnable() {
@@ -948,12 +921,10 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                     public boolean execute() {
                                         String defaultTextureName = Spremnik.getInstance().getUrl() + "/teksture/default.jpg";
                                         _piktogramChooser.setVisibility(View.GONE);
-                                        _piktogramChooser_info.setVisibility(View.GONE);
+                                        _titleBar.showPiktogramChooserInfo(false);
                                         getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
-                                        _messageBox.setVisibility(View.GONE);
-                                        _piktogramChooser_info.setVisibility(View.GONE);
                                         newObject(finalFileName, defaultTextureName, newPiktogram);
-                                        showRightBar();
+                                        _mojCloudKomande.show(modeSarajevoCloud);
                                         return false;
                                     }
                                 });
@@ -983,141 +954,6 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     }
 
-    protected void showRightBar(){
-        getGuiSetup().getRightView().setVisibility(View.VISIBLE);
-        _cameraButton.setVisibility(View.VISIBLE);
-    }
-
-    protected void hideRightBar(){
-        getGuiSetup().getRightView().setVisibility(View.GONE);
-        _cameraButton.setVisibility(View.GONE);
-    }
-
-    private void initMessageBox(GuiSetup guiSetup) {
-        _loader_loader = new ProgressBar(getActivity());
-        _loader_text = new TextView(getActivity());
-
-        _loader = new LinearLayout(getActivity());
-        _loader.setOrientation(LinearLayout.HORIZONTAL);
-        _loader.addView(_loader_loader);
-        _loader.addView(_loader_text);
-        _loader.setVisibility(View.GONE);
-
-        _messageBox_TextView = new TextView(getActivity());
-        _messageBox_buttons = new LinearLayout(getActivity());
-
-        _messageBox = guiSetup.getBottomView();
-        _messageBox.setVisibility(View.GONE);
-//        _piktogramChooser_info.setVisibility(View.GONE);
-        _messageBox.setOrientation(LinearLayout.VERTICAL);
-        _messageBox.setBackgroundColor(android.graphics.Color.argb(128, 0, 0, 0));
-        _messageBox.addView(_messageBox_TextView);
-        _messageBox.addView(_messageBox_buttons);
-        _messageBox.addView(_loader);
-
-        _messageBox_TextView.setPadding(0, 13, 0, 17);
-        _messageBox_TextView.setTypeface(defaultFont);
-        _messageBox_TextView.setWidth((int) getScreenHeigth());
-
-        _messageBox_yesButton = new ImageView(getActivity());
-        _messageBox_yesButton.setImageResource(R.drawable.yes_first);
-        _messageBox_yesButton.setPadding(25, 25, 35, 30);
-        _messageBox_noButton = new ImageView(getActivity());
-        _messageBox_noButton.setImageResource(R.drawable.no_first);
-        _messageBox_noButton.setPadding(35, 25, 25, 30);
-        _messageBox_buttons.setGravity(Gravity.CENTER);
-        _messageBox_buttons.addView(_messageBox_yesButton);
-        _messageBox_buttons.addView(_messageBox_noButton);
-    }
-
-    public void showMessage(final String text) {
-        if (_messageBox.getVisibility() == View.VISIBLE) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showMessage(text);
-                }
-            }, 500);
-        } else {
-            _messageBox_TextView.setText(text);
-            _messageBox_TextView.setVisibility(View.VISIBLE);
-            _loader.setVisibility(View.GONE);
-            _messageBox.setVisibility(View.VISIBLE);
-            _messageBox_buttons.setVisibility(View.GONE);
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
-                    _messageBox.setVisibility(View.GONE);
-                }
-            }, 5000);
-        }
-    }
-
-    public void showDialog(final String text, final Command yesCallback, final Command noCallback){
-        if(_messageBox.getVisibility() == View.VISIBLE){
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showDialog(text, yesCallback, noCallback);
-                }
-            }, 500);
-        }else {
-            _piktogramChooser.setVisibility(View.GONE);
-            _messageBox_TextView.setText(text);
-            _messageBox.setVisibility(View.VISIBLE);
-            _messageBox_TextView.setVisibility(View.VISIBLE);
-            _messageBox_buttons.setVisibility(View.VISIBLE);
-            _messageBox_yesButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    _messageBox_yesButton.setImageResource(R.drawable.yes_second);
-                    if (vibrateCommand != null)
-                        vibrateCommand.execute();
-                    if (yesCallback != null)
-                        yesCallback.execute();
-                    new Handler().postDelayed(
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    getActivity().runOnUiThread(
-                                            new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    _messageBox_yesButton.setImageResource(R.drawable.yes_first);
-                                                    _messageBox.setVisibility(View.GONE);
-                                                }
-                                            });
-                                }
-                            }, 500);
-                }
-            });
-            _messageBox_noButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    _messageBox_noButton.setImageResource(R.drawable.no_second);
-                    if (vibrateCommand != null)
-                        vibrateCommand.execute();
-                    if (noCallback != null)
-                        noCallback.execute();
-                    new Handler().postDelayed(
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    getActivity().runOnUiThread(
-                                            new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    _messageBox_noButton.setImageResource(R.drawable.no_first);
-                                                    _messageBox.setVisibility(View.GONE);
-                                                    showMessage("FOTOGRAFIJA POHRANJENA");
-                                                }
-                                            });
-                                }
-                            }, 500);
-                }
-            });
-        }
-    }
-
     @Override
     public void _d_addElementsToUpdateThread(SystemUpdater updater) {
         super._d_addElementsToUpdateThread(updater);
@@ -1137,21 +973,23 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     private String IspisLokacije(Location l) {
         String lat = Double.toString(l.getLatitude()), lon = Double.toString(l.getLongitude());
-        if(lat.length() > 8)
-            lat  = lat.substring(0,9);
-        if(lon.length() > 8)
-            lon = lon.substring(0,9);
+        if (lat.length() > 8)
+            lat = lat.substring(0, 9);
+        if (lon.length() > 8)
+            lon = lon.substring(0, 9);
         return "{ " + lat + "; " + lon + "; " + Double.toString(l.getAltitude()) + " }";
     }
 
-    /** Snima novododani objekat
-     * @param newObjectFilename - lokacija za .obj novog piktograma
-     *              @param newObjectTexturename - lokacija za teksturu novog piktograma
+    /**
+     * Snima novododani objekat
+     *
+     * @param newObjectFilename    - lokacija za .obj novog piktograma
+     * @param newObjectTexturename - lokacija za teksturu novog piktograma
      * @param newPiktogram
      **/
     private Obj newObject(String newObjectFilename, String newObjectTexturename, final Piktogram newPiktogram) {
         final Obj lightObject = new Obj();
-        lightObject.setPosition(new Vec(0,0,-1));
+        lightObject.setPosition(new Vec(0, 0, -1));
         spotLight.setPosition(new Vec(0, 0, 2));
         final MeshComponent lightGroup = new Shape();
         lightGroup.addChild(spotLight);
@@ -1162,12 +1000,15 @@ public class ModelLoaderSetup extends DefaultARSetup {
         final ModelLoader model = new ModelLoader(_localRenderer, newObjectFilename, newObjectTexturename) {
             @Override
             public void modelLoaded(final MeshComponent gdxMesh) {
+                _selectedMesh = gdxMesh;
+                _selectedMesh.setRotation(new Vec(0, 0, 0));
+                _selectedLightObject = lightObject;
                 Log.d(LOG_TAG, "Loaded mesh component from GDX");
-                //gdxMesh.setPosition(new Vec(-2, -2, -2));
                 final gl.Color tmpColor = newPiktogram.get_color();
                 tmpColor.alpha = 0.5f;
                 gdxMesh.setColor(tmpColor);
                 lightObject.setComp(gdxMesh);
+                lightObject.setComp(_viewPosCalcer);
                 Log.d(LOG_TAG, "CAMERA LOCATION: " + camera.getGPSLocation().toString());
                 world.add(lightObject);
                 _targetMoveWrapper.setTo(lightObject);
@@ -1176,49 +1017,13 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             .getComp(MoveComp.class).myTargetPos.z = -20f;
                 }
 
-                final MeshComponent finalGdxMesh = gdxMesh;
-                gdxMesh.setOnClickCommand(new Command() {
-                    @Override
-                    public boolean execute() {
-                        Vec v_loc = lightObject.getPosition();
-                        //Location loc = camera.getGPSLocation();//TODO:check
-                        Log.d(LOG_TAG, "v_loc: " + v_loc.toString());
-                        //Log.d(LOG_TAG, "loc: " + loc.toString());
-                        final GeoObj final3Dobj = new GeoObj(true);
-                        //final3Dobj.setLocation(loc);
-                        final3Dobj.setVirtualPosition(v_loc);
-
-                        final MeshComponent lightGroup = new Shape();
-                        lightGroup.addChild(spotLight);
-                        final3Dobj.setComp(lightGroup);
-                        tmpColor.alpha = 1;
-                        finalGdxMesh.setColor(tmpColor);
-                        final3Dobj.setComp(finalGdxMesh);
-                        //final3Dobj.setComp(new MoveComp(1));
-                        //final3Dobj.setVirtualPosition(new Vec(30,0,-2));
-                        world.add(final3Dobj);
-                        world.remove(lightObject);
-
-                        _targetMoveWrapper.setTo(final3Dobj);
-                        //if (_targetMoveWrapper.getObject() instanceof Obj) {
-                        //    ((Obj) _targetMoveWrapper.getObject())
-                        //            .getComp(MoveComp.class).myTargetPos.z -= 14f;
-                        //}
-                        setStatic(lightObject);
-                        //Log.d(LOG_TAG, final3Dobj.getVirtualPosition().toString());
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showMessage("OBJEKAT POSTAVLjEN I MEMORISAN");
-                            }
-                        });
-                        gdxMesh.setOnClickCommand(null);
-                        return true;
-                    }
-                });
             }
         };
-        //Utility.SaveThisPiktogram(loc);
+        try {
+            Utility.SaveThisPiktogram(camera.getGPSLocation());
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
         return lightObject;
     }
     //region -- old code --
@@ -1247,7 +1052,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     /**
      * Dodavanje postojecih objekata iz baze
-     * */
+     */
     private Obj loadedObject(String newObjectFilename, String newObjectTexturename, final Location location) {
         final GeoObj x = new GeoObj(location);
 
@@ -1320,11 +1125,12 @@ public class ModelLoaderSetup extends DefaultARSetup {
         public void run() {
             List<Piktogram> noviPiktogrami = Utility.GetNewPiktograms(getActivity());
 
-            if(noviPiktogrami!=null && noviPiktogrami.size() > 0){
+            if (noviPiktogrami != null && noviPiktogrami.size() > 0) {
                 for (Piktogram p : noviPiktogrami) {
                     Location location = new Location("GPS");
                     location.setLatitude(p.get_latitude());
                     location.setLongitude(p.get_longitude());
+
                     loadedObject(p.getPutPiktogram(), p.getPutTekstura(), location);
                 }
             }
@@ -1338,13 +1144,13 @@ public class ModelLoaderSetup extends DefaultARSetup {
         @Override
         public void run() {
             final String slikaPath = Spremnik.getInstance().get_slikaPath().get();
-            if(slikaPath!= null && !slikaPath.equals("")){
+            if (slikaPath != null && !slikaPath.equals("")) {
                 Spremnik.getInstance().get_slikaPath().getAndSet("");
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         showScreenshotThumbnail(slikaPath);
-                        showDialog("POSALJI FOTOGRAFIJU NA SARAJEVO CLOUD FACEBOOK?",
+                        _uploadPictureDialogBox.showDialog("POSALJI FOTOGRAFIJU NA SARAJEVO CLOUD FACEBOOK?",
                                 new Command() {
                                     @Override
                                     public boolean execute() {
@@ -1354,20 +1160,20 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                                 protected Void doInBackground(Void... params) {
                                                     try {
                                                         Utility.uploadScreenshoot(ModelLoaderSetup.this, slikaPath, camera.getGPSLocation());
-                                                    }catch (Throwable t1){
+                                                    } catch (Throwable t1) {
                                                         Log.e("uploadScreen", t1.toString());
                                                         t1.printStackTrace();
                                                     }
                                                     return null;
                                                 }
                                             }.execute().get();
-                                        }catch (Throwable t) {
+                                        } catch (Throwable t) {
                                         }
                                         hidePopup();
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                showLoader("POSTING TO FACEBOOK");
+                                                _loader.showLoader("POSTING TO FACEBOOK");
                                             }
                                         });
                                         return false;
@@ -1382,35 +1188,16 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                 });
                     }
                 });
-            }else{
+            } else {
                 pictureHandler.postDelayed(this, 100);
             }
         }
     };
 
-    private void hidePopup(){
+    private void hidePopup() {
         _popupWindow.setVisibility(View.GONE);
         _thumbnailImage.setVisibility(View.GONE);
-        _cameraButton.setVisibility(View.VISIBLE);
-        if(!modeSarajevoCloud)
-            showRightBar();
-        else
-            _cameraButton.setVisibility(View.VISIBLE);
-    }
-
-    protected void showLoader(String text){
-        _messageBox.setVisibility(View.VISIBLE);
-        _messageBox_TextView.setVisibility(View.GONE);
-        _messageBox_buttons.setVisibility(View.GONE);
-        _loader.setVisibility(View.VISIBLE);
-        _loader_text.setText(text);
-    }
-
-    protected void hideLoader(){
-        _messageBox.setVisibility(View.GONE);
-        _messageBox_TextView.setVisibility(View.GONE);
-        _messageBox_buttons.setVisibility(View.GONE);
-        _loader.setVisibility(View.GONE);
+        _mojCloudKomande.show(modeSarajevoCloud);
     }
 
     private void showScreenshotThumbnail(String slikaPath) {
@@ -1427,7 +1214,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         String objPut = Spremnik.getInstance().getObjekatPut(),
                 tekPut = Spremnik.getInstance().getTeksturaPut();
 
-        if(objPut!=null && tekPut!=null) {
+        if (objPut != null && tekPut != null) {
             Spremnik.getInstance().setObjekatPut(null);
             Spremnik.getInstance().setTeksturaPut(null);
 
@@ -1436,91 +1223,83 @@ public class ModelLoaderSetup extends DefaultARSetup {
             //newObject(objPut, tekPut, newPiktogram);
             //loadedObject(objPut, tekPut, camera.getGPSLocation());
         }
+        /*String world_gson = "";
+        SharedPreferences settings = getActivity().getSharedPreferences(CREDENTIALS, 0);
+        world_gson = settings.getString("world", "");
+        if(world_gson != null && !world_gson.equals("")){
+            Gson gson = new Gson();
+            world = gson.fromJson(world_gson, World.class);
+        }*/
     }
 
     @Override
     public void onStart(Activity a) {
-        super.onStart(a);}
+        super.onStart(a);
+    }
 
     @Override
     public void onStop(Activity a) {
         super.onStop(a);
-        if(pictureHandler!=null && pictureRunnable!=null)
+        if (pictureHandler != null && pictureRunnable != null)
             pictureHandler.removeCallbacks(pictureRunnable);
-        if(checkNewPiktogramHandler!=null && checkNewPiktogramRunnable!=null)
+        if (checkNewPiktogramHandler != null && checkNewPiktogramRunnable != null)
             checkNewPiktogramHandler.removeCallbacks(checkNewPiktogramRunnable);
+        /*Gson gson = new Gson();
+        String world_gson = gson.toJson(world);
+        SharedPreferences settings = getActivity().getSharedPreferences(CREDENTIALS, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("world", world_gson);
+        editor.commit();*/
     }
 
     @Override
     public boolean onKeyDown(Activity a, int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN)
-        {
-            switch (keyCode)
-            {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
                 case KeyEvent.KEYCODE_BACKSLASH:
                     _timesBackPressed++;
 
                     //if( getGuiSetup().getMainContainerView().getBack )
-                    getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
-                    //_titleBar.setBackgroundColor(Color.argb(0, 0, 0, 0));
+                    getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
+                    _titleBar.showBackground();
 
-                    if(_leftMenu.getVisibility()== View.VISIBLE){
+                    if (_leftMenu.getVisibility() == View.VISIBLE) {
                         _leftMenu.setVisibility(View.GONE);
-                        if(!modeSarajevoCloud)
-                            showRightBar();
-                        else
-                            _cameraButton.setVisibility(View.VISIBLE);
+                        _mojCloudKomande.show(modeSarajevoCloud);
                         _timesBackPressed = 0;
                     }
-                    if(_rightMenu.getVisibility()== View.VISIBLE){
+                    if (_rightMenu.getVisibility() == View.VISIBLE) {
                         _rightMenu.setVisibility(View.GONE);
-                        if(!modeSarajevoCloud)
-                            showRightBar();
-                        else
-                            _cameraButton.setVisibility(View.VISIBLE);
+                        _mojCloudKomande.show(modeSarajevoCloud);
                         _timesBackPressed = 0;
                     }
-                    if(_messageBox.getVisibility() == View.VISIBLE){
-                        _messageBox.setVisibility(View.GONE);
-                        _piktogramChooser_info.setVisibility(View.GONE);
-                        if(!modeSarajevoCloud)
-                            showRightBar();
-                        else
-                            _cameraButton.setVisibility(View.VISIBLE);
-                        //if(_messageBox.getChildAt(1) != null) _messageBox.getChildAt(1).setVisibility(View.GONE);
+                    if (_piktogramChooser.isShown()) {
+                        _titleBar.showPiktogramChooserInfo(false);
+                        _mojCloudKomande.show(modeSarajevoCloud);
+                        _piktogramChooser.setVisibility(View.GONE);
+                        getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
                         _timesBackPressed = 0;
                     }
 
-                    //if()
-
-                    if(modeSarajevoCloud){
-                        _ivReload.setVisibility(View.GONE);
-                        _ivPlus.setVisibility(View.GONE);
-                    }
-                    else{
-                        _ivReload.setVisibility(View.VISIBLE);
-                        _ivPlus.setVisibility(View.VISIBLE);
-                        showRightBar();
-                    }
-                    _cameraButton.setVisibility(View.VISIBLE);
-                    _titleBar.setBackgroundColor(Color.argb(128, 0, 0, 0));
-
-                    if(_popupWindow.getVisibility() == View.VISIBLE){
+                    if (_popupWindow.getVisibility() == View.VISIBLE) {
                         _popupWindow.setVisibility(View.GONE);
-                        showRightBar();
+                        //_mojCloudKomande.show(modeSarajevoCloud);
+                        _uploadPictureDialogBox.hideDialog();
                         _timesBackPressed = 0;
-                        showMessage("FOTOGRAFIJA POHRANJENA");
+                        _messageBox.showMessage("FOTOGRAFIJA POHRANJENA");
                     }
 
-                    if(_timesBackPressed > 0){
+                    if (_timesBackPressed > 0) {
                         //_messageBox_TextView.setText("Press back once more to exit.");
                         //_messageBox.setVisibility(View.VISIBLE);
-                        if(_timesBackPressed > 1) getActivity().finish();// return super.onKeyDown(a, keyCode, event);
-                        if(_timesBackPressed == 1) Toast.makeText(getActivity(), "Press back once more to exit", Toast.LENGTH_SHORT).show();
+                        if (_timesBackPressed > 1)
+                            getActivity().finish();// return super.onKeyDown(a, keyCode, event);
+                        if (_timesBackPressed == 1)
+                            Toast.makeText(getActivity(), "Press back once more to exit", Toast.LENGTH_SHORT).show();
                     }
 
-                    getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
+                    //getGuiSetup().getRightView().setGravity(Gravity.CENTER_VERTICAL);
 
                     return true;
                 default:
@@ -1538,7 +1317,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
     }
 
     public View createButtonImageWithTransparentBackground(Context context, final int normalImageId, final int clickedImageId,
-                                                           final Command command){
+                                                           final Command command) {
         final View imgButton = new ImageButton(context);
         imgButton.setBackgroundColor(0);
         imgButton.setBackgroundResource(normalImageId);
@@ -1567,8 +1346,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
         });
         return imgButton;
     }
+
     public View createImageWithTransparentBackground(Context context, final int normalImageId, final int clickedImageId,
-                                                     final Command command){
+                                                     final Command command) {
         final ImageView imgButton = new ImageView(context);
         imgButton.setBackgroundColor(0);
         imgButton.setImageResource(normalImageId);
@@ -1599,48 +1379,47 @@ public class ModelLoaderSetup extends DefaultARSetup {
     }
 
     public ImageView createImageWithTransparentBackground(Context context, String normalImagePath, String clickedImagePath,
-                                                      final Command command){
+                                                          final Command command) {
         final ImageView imgButton = new ImageView(context);
         try {
             imgButton.setBackgroundColor(0);
             System.gc();
             final Bitmap normalBmp = BitmapFactory.decodeFile(normalImagePath);
             System.gc();
-            Bitmap clickedBitmap= null;
-            try{
-                clickedBitmap= BitmapFactory.decodeFile(clickedImagePath);
-            }catch (Throwable t){
-                clickedBitmap = normalBmp;
-            }
-            final Bitmap finalClickedBitmap = clickedBitmap;
+            //Bitmap clickedBitmap = null;
+            //try {
+            //    clickedBitmap = BitmapFactory.decodeFile(clickedImagePath);
+            //} catch (Throwable t) {
+            //    clickedBitmap = normalBmp;
+            //}
+            //final Bitmap finalClickedBitmap = clickedBitmap;
             imgButton.setImageBitmap(normalBmp);
             imgButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    imgButton.setImageBitmap(finalClickedBitmap);
+                    //imgButton.setImageBitmap(finalClickedBitmap);
                     if (vibrateCommand != null)
                         vibrateCommand.execute();
                     if (command != null)
                         command.execute();
-                    new Handler().postDelayed(
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    getActivity().runOnUiThread(
-                                            new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    imgButton.setImageBitmap(normalBmp);
-                                                }
-                                            });
-                                }
-                            }, 500);
+                    //new Handler().postDelayed(
+                    //        new Runnable() {
+                    //            @Override
+                    //            public void run() {
+                    //                getActivity().runOnUiThread(
+                    //                        new Runnable() {
+                    //                            @Override
+                    //                            public void run() {
+                    //                                imgButton.setImageBitmap(normalBmp);
+                    //                            }
+                    //                        });
+                    //            }
+                    //        }, 500);
                 }
             });
-        }catch (Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace();
         }
         return imgButton;
     }
 }
-
