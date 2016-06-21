@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import system.ArActivity;
+
 /**
  * Created by dinok on 5/3/2016.
  */
@@ -53,24 +55,25 @@ public class Splash extends Activity {
 
         if(userName != null && !userName.isEmpty() && !userName.equals("")){
             Spremnik.getInstance().setUserName(userName);
-            tvWelcome.setText("DOBRODOSLI\nWELCOME\n" + userName);
+            tvWelcome.setText("DOBRODOSLI\n" + userName);
         }else{
-            tvWelcome.setText("DOBRODOSLI\nWELCOME");
-            if(u!="") tvWelcome.setText("DOBRODOSLI\nWELCOME\n" + u);
+            tvWelcome.setText("DOBRODOSLI\n");
+            if(u!="") tvWelcome.setText("DOBRODOSLI\n" + u);
         }
 
         final Handler mHandler = new Handler();
         final Runnable wait3secSignup = new Runnable() {
             public void run() {
-                Intent i = new Intent(Splash.this, Login.class);
-                startActivity(i);
-               // finish();
+                //Intent i = new Intent(Splash.this, Login.class);
+                //startActivity(i);
+                ArActivity.startWithSetup(Splash.this, new ModelLoaderSetup());
+                finish();
             }
         };
 
         mHandler.postDelayed(wait3secSignup, 3000 );
 
-        l1=null;
+       // l1=null;
         //updateL1();
     }
 

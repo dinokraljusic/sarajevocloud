@@ -7,8 +7,10 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +40,7 @@ public class Login extends Activity {
     private String _url = "http://192.168.1.5";
     public static String LOG_TAG = "Login";
     public Location l1;
+    Typeface type;
 
 
     @Override
@@ -45,9 +48,10 @@ public class Login extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
+        //SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
 
-        final String userName = settings.getString("userName", "");
+        //final String userName = settings.getString("userName", "");
+        final String userName="";
         if(!userName.isEmpty() && !userName.equals("")){
             Spremnik.getInstance().setUserName(userName);
             String userId = "";
@@ -65,12 +69,22 @@ public class Login extends Activity {
         }
 
 
+        TextView tvUsloviKoristenjaLink = (TextView) findViewById(R.id.uslovi_koristenja_link);
+        TextView tvUsloviKoristenja = (TextView) findViewById(R.id.uslovi_koristenja);
+        //tvUsloviKoristenjaLink.setMovementMethod(LinkMovementMethod.getInstance());
+        tvUsloviKoristenjaLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.goethe.de/ins/ba/bs/sar/ver.cfm?fuseaction=events.detail&event_id=20764379"));
+                startActivity(new Intent(Login.this, UsloviKoristenja.class));
+            }
+        });
         final EditText etIme = (EditText) findViewById(R.id.etIme);
         final Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
         //Button btnFacebook = (Button) findViewById(R.id.btnFacebook);
         final TextView txtMessageBox = (TextView)findViewById(R.id.messageBox_text);
 
-        Typeface type = Typeface.createFromAsset(getAssets(), "fonts/ACTOPOLIS.otf");
+        type = Typeface.createFromAsset(getAssets(), "fonts/ACTOPOLIS.otf");
 
         etIme.setTypeface(type);
         btnSignIn.setTypeface(type);

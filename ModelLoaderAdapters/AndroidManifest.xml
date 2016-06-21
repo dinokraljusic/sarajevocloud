@@ -56,6 +56,10 @@
 			</intent-filter>
 		</activity>
 
+		<activity android:name=".AboutActivity" android:theme="@android:style/Theme.NoTitleBar"/>
+
+		<activity android:name=".UsloviKoristenja" android:theme="@android:style/Theme.NoTitleBar"/>
+
 		<activity android:name=".Login" android:theme="@android:style/Theme.NoTitleBar" />
 
 		<activity android:name=".Face" android:theme="@android:style/Theme.NoTitleBar" />
