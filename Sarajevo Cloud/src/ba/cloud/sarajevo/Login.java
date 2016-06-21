@@ -23,6 +23,7 @@ import java.util.List;
 
 import de.rwth.ModelLoaderSetup;
 import de.rwth.Spremnik;
+import de.rwth.UsloviKoristenja;
 import de.rwth.Utility;
 import system.ArActivity;
 
@@ -72,6 +73,17 @@ public class Login extends Activity {
         final Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
         //Button btnFacebook = (Button) findViewById(R.id.btnFacebook);
         final TextView txtMessageBox = (TextView)findViewById(R.id.messageBox_text);
+
+        TextView tvUsloviKoristenjaLink = (TextView) findViewById(R.id.uslovi_koristenja_link);
+        TextView tvUsloviKoristenja = (TextView) findViewById(R.id.uslovi_koristenja);
+        //tvUsloviKoristenjaLink.setMovementMethod(LinkMovementMethod.getInstance());
+        tvUsloviKoristenjaLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.goethe.de/ins/ba/bs/sar/ver.cfm?fuseaction=events.detail&event_id=20764379"));
+                startActivity(new Intent(Login.this,de.rwth.UsloviKoristenja.class));
+            }
+        });
 
         Typeface type = Typeface.createFromAsset(getAssets(), "fonts/ACTOPOLIS.otf");
 

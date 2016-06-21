@@ -19,12 +19,12 @@ public class UsloviKoristenja extends Activity {
         setContentView(R.layout.uslovi_koristenja);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        ImageView ivUsloviKoristenjaBack = (ImageView) findViewById(R.id.uslovi_koristenja_back);
+        /*ImageView ivUsloviKoristenjaBack = (ImageView) findViewById(R.id.uslovi_koristenja_back);
         ivUsloviKoristenjaBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(UsloviKoristenja.this,Login.class));
             }
-        });
+        });*/
     }
 }

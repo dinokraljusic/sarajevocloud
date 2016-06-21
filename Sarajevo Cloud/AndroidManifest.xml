@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ba.cloud.sarajevo"
     android:versionCode="1"
     android:versionName="1.0">
@@ -7,7 +8,9 @@
     <uses-sdk android:minSdkVersion="15" />
     <application
         android:label="@string/app_name"
-        android:icon="@drawable/sc_icon">
+        android:icon="@drawable/sc_icon"
+        android:debuggable="true"
+        tools:ignore="HardcodedDebugMode">
         <activity
             android:name="MyActivity"
             android:label="@string/app_name">
@@ -68,6 +71,9 @@
         <activity android:name=".Login" android:theme="@android:style/Theme.NoTitleBar" />
 
         <activity android:name=".Swipes" android:theme="@android:style/Theme.NoTitleBar" />
+
+        <activity android:name="de.rwth.AboutActivity" android:theme="@android:style/Theme.NoTitleBar"></activity>
+        <activity android:name="de.rwth.UsloviKoristenja" android:theme="@android:style/Theme.NoTitleBar" />
 
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 

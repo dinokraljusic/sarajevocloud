@@ -5,4 +5,39 @@
     <string name="sarajevocloud"><![CDATA[<a href=sarajevocloud.com>SARAJEVOCLOUD.COM</a>]]></string>
     <string name="accessToken">pk.eyJ1IjoibWluaXByb2dyYW1tZXIiLCJhIjoiY2lvNzk5cnRxMDA3NXVta25zcThnb2oyciJ9.bUzGvvibm6z4UDYBMkg7Yg</string>
     <string name="action_settings">Settings</string>
+
+    <string name="uslovi_koristenja"> Ovim korisničkim pravilima Vas informišemo o prikupljanju, obradi ili korištenju osobnih podataka u okviru korištenja aplikacije Sarajevo Cloud.\n\n
+
+
+Korištenjem aplikacije slijedeći podaci se prikupljaju:\n\n
+
+1.      GPS pozicija prilikom fotografisanja i datum fotografisanja\n\n
+
+
+
+2.      GPS pozicija prilikom postavljanja piktograma i datum postavljanja\n\n
+
+
+
+3.      User Name koji ste unijeli\n\n
+
+
+
+4.      Broj piktograma koji su korišteni, te koji je user postavio određeni piktogram\n\n
+
+
+
+5.      Broj napravljenih fotografija (sa i bez postavljanja na Facebook)\n\n\n
+
+
+
+Postavljanje slika na Facebook:\n\n
+
+
+Prilikom odobrenja da se slika postavi u album na Facebook stranici Actopolis LAB Sarajevo, fotografija se automatski imenuje na slijedeci način: imenom usera, redni broj fotografije (npr.: Haris_1, Haris_2).
+
+\n\n\nKorištenje fotografija:\n\n
+
+Sve slike koje se postave u album na Facebook stranici mogu biti korištene u okviru projekta Actopolis – The Art of Action (u okviru izložbe, dokumentacije, prezentacije, itd). Te će svaki korisnik/korisnica biti imenovana user imenom koje je koristio/koristila pri loginu. </string>
+
 </resources>
