@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:background="@color/zuta"
+    android:layout_height="match_parent" >
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:text="  "
+            android:layout_height="wrap_content" />
+
+        <TextView style="?android:textAppearanceMedium"
+            android:padding="16dp"
+            android:layout_marginTop="30dp"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:id="@+id/tvPrvi"
+            android:layout_weight="10"
+            android:textColor="@color/black"
+            android:text="NADOGRADITE STVARNI PROSTOR SA VIRTUELNIM OBJEKTIMA\n\nOBJEKTI OSTAJU POZICIONIRANI U PROSTORU u odnosu na korisnika\n\nPOSMATRANJEM OKRUZENJA KROZ KAMERU, MOZETE kreirati i fotografisati vase prostore,posmatrati i FOTOGRAFISATI PROSTORE DRUGIH KORISNIKA/ca" />
+
+        <!--<TextView
+            android:id="@+id/tvLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sarajevocloud"/>-->
+
+    </LinearLayout>
+</ScrollView>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/rinfo_status"
+        android:id="@id/statusImage"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp" />
+</RelativeLayout>

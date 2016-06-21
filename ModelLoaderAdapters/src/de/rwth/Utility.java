@@ -1,11 +1,9 @@
 package de.rwth;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -347,12 +345,12 @@ public class Utility {
                             return;
                         }
                         try {
-                            Boolean authorized = isFacebookAuthorized();
+                            //Boolean authorized = isFacebookAuthorized();
 
-                            if(authorized) {
+                            //if(authorized) {
                                 String str = Utility.POST(Spremnik.getInstance().getUrl() + "/facebook/postToFb.php", nameValuePairs);
                                 Log.i("FbResponse", str);
-                            }else{
+                            /*}else{
                                 caller.getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -362,7 +360,7 @@ public class Utility {
                                         caller.getActivity().startActivity(webIntent);
                                     }
                                 });
-                            }
+                            }*/
                             //caller.hideLoader();
                         }catch (Throwable th){
                             Log.e("FbResponse", th.getMessage());

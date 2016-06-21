@@ -1,4 +1,4 @@
-package de.rwth;
+package ba.cloud.sarajevo;
 
 //import android.app.Activity;
 import android.app.Activity;
@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import de.rwth.Spremnik;
 
 /**
  * Created by dinok on 5/3/2016.

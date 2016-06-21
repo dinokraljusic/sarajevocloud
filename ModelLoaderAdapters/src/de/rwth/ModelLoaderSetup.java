@@ -535,7 +535,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 try {
                     getMyRenderer().takeScreenShot(myCameraView, Spremnik.getInstance().get_slikaPath());
                     //takeScreenshot();
-                    pictureHandler.postDelayed(pictureRunnable, 500);
+                    pictureHandler.postDelayed(pictureRunnable, 100);
                     _mojCloudKomande.hide();
                 } catch (Throwable t) {
                     t.printStackTrace();
