@@ -100,7 +100,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
     private DialogBox _uploadPictureDialogBox;
     private MojCloudCommands _mojCloudKomande;
 
-    private Button _rightInfo, _rightFotografije, _leftMojCloud, _leftSarajevoCloud;
+    private Button _rightInfo, _rightFotografije, _rightAbout, _leftMojCloud, _leftSarajevoCloud;
     private ImageView _ivMojCloud, _ivSarajevoCloud;
 
     private LinearLayout _rightMenu, _leftMenu,
@@ -630,14 +630,29 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
         _rightInfo = new Button(getActivity());
         _rightInfo.setPadding(25, 25, 35, 30);
-        _rightInfo.setText("INFO");
+        _rightInfo.setText("UPUTE");
         _rightInfo.setBackgroundColor(0);
         _rightInfo.setTypeface(defaultFont);
         _rightInfo.setTextColor(Color.rgb(242, 229, 0));
 
+        _rightAbout = new Button(getActivity());
+        _rightAbout.setPadding(25, 25, 35, 10);
+        _rightAbout.setText("O PROJEKTU");
+        _rightAbout.setBackgroundColor(0);
+        _rightAbout.setTypeface(defaultFont);
+        _rightAbout.setTextColor(Color.rgb(242, 229, 0));
+
         _rightMenu.addView(_rightInfo);
         _rightMenu.addView(_rightFotografije);
-        _rightMenu.setPadding(80, 0, 50, 50);
+        _rightMenu.addView(_rightAbout);
+        _rightMenu.setPadding(80, 0, 50, 20);
+
+        _rightAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().startActivity(new Intent(getActivity(), AboutActivity.class));
+            }
+        });
 
         //guiSetup.setRightViewCentered();
 
