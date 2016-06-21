@@ -26,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -1197,6 +1198,21 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                 new Command() {
                                     @Override
                                     public boolean execute() {
+                                        try {
+                                            new AsyncTask<Void, Void, Void>() {
+                                                @Override
+                                                protected Void doInBackground(Void... params) {
+                                                    try {
+                                                        String str = Utility.POST(Spremnik.getInstance().getUploadPictureServiceAddress(), new ArrayList<NameValuePair>(0));
+                                                    } catch (Throwable thr) {
+                                                        thr.printStackTrace();
+                                                    }
+                                                    return null;
+                                                }
+                                            };
+                                        }catch (Throwable t){
+                                            Log.w("UploadPicture", t.toString());
+                                        }
                                         hidePopup();
                                         return false;
                                     }
