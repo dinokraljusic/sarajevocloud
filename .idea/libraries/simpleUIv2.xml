@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="simpleUIv2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/droidar/lib/simpleUIv2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

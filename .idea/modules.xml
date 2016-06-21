@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ModelLoaderAdapters/ModelLoaderAdapters.iml" filepath="$PROJECT_DIR$/ModelLoaderAdapters/ModelLoaderAdapters.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Sarajevo Cloud/Sarajevo Cloud.iml" filepath="$PROJECT_DIR$/Sarajevo Cloud/Sarajevo Cloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/droidar/droidar.iml" filepath="$PROJECT_DIR$/droidar/droidar.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/gdx-openal.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/gdx.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/gdx-backend-lwjgl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/gdx-backend-android.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/gdx-1.7.2-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/gdx-setup-ui.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/gdx-backend-gwt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/gdx-natives.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/gdx-backend-lwjgl-natives.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

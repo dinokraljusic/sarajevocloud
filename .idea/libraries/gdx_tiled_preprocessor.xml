@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gdx-tiled-preprocessor">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/extensions/gdx-tiled-preprocessor/gdx-tiled-preprocessor.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

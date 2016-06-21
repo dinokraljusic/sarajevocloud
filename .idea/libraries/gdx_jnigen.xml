@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gdx-jnigen">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/extensions/gdx-jnigen/gdx-jnigen.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

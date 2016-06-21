@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="gdx-bullet">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/extensions/gdx-bullet/gdx-bullet.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/extensions/gdx-bullet/gdx-bullet-natives.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

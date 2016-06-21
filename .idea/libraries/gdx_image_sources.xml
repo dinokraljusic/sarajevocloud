@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gdx-image-sources">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ModelLoaderAdapters/libs/extensions/gdx-image/sources/gdx-image-sources.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
