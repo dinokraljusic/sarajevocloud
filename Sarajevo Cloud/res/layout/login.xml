@@ -22,7 +22,7 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:layout_weight="30"
-        android:minHeight="150dp"
+        android:minHeight="200dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="false"
@@ -53,6 +53,7 @@
             android:textColor="@color/zuta"
             android:background="@drawable/rounded_button"
             android:textSize="25sp"
+            android:minHeight="45dp"
             android:layout_weight="1"/>
 
         <TextView

@@ -81,7 +81,7 @@ public class Login extends Activity {
             @Override
             public void onClick(View v) {
                 //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.goethe.de/ins/ba/bs/sar/ver.cfm?fuseaction=events.detail&event_id=20764379"));
-                startActivity(new Intent(Login.this,de.rwth.UsloviKoristenja.class));
+                startActivity(new Intent(Login.this,Uslovi.class));
             }
         });
 
@@ -148,6 +148,11 @@ public class Login extends Activity {
     }
 
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
+
+    @Override
     protected void onRestart() {
         super.onRestart();
         finish();
@@ -180,7 +185,7 @@ public class Login extends Activity {
                 editor.commit();
 
                 //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
-                Intent i = new Intent(Login.this, Swipes.class);
+                Intent i = new Intent(Login.this, AboutActivity.class);
                 startActivity(i);
                 //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
             }

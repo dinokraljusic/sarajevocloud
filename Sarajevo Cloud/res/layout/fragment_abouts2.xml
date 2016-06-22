@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/zuta"
+    android:weightSum="70"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="5">
+        <TextView
+            android:layout_width="match_parent"
+            android:text=""
+            android:layout_height="match_parent" />
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:id="@+id/tv1_fragment_about1"
+            android:text="SARAJEVO CLOUD JE APLIKACIJA POMOĆU KOJE KORISNICI/E MOGU NADOGRADITIFIZIČKI PROSTOR VIRTUELNIM OBJEKTIMA"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:textColor="@color/black"
+            android:layout_height="match_parent"
+            android:id="@+id/tv2_fragment_about1"
+            android:text="ZA KORIŠTENJE APLIKACIJE POTREBAN VAM JE ANDROID MOBILNI UREĐAJ SA KAMEROM, SENZORIMA (KOMPAS I AKCELEROMETAR) I INTERNET"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:textColor="@color/black"
+            android:layout_height="match_parent"
+            android:id="@+id/tv3_fragment_about1"
+            android:text="NAMJERA PROJEKTA JE UČINITI VIDLJIVIM I PODIJELITI POJEDINAČNE STAVOVE I
+IDEJE O GRADU, OMOGUĆITI ANONIMNOM PROLAZNIKU DA POSTANE DIZAJNER ILI
+KRITIČAR JAVNOG PROSTORA I TRAGATI ZA ZAJEDNIČKOM VIZIJOM PROSTORA"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:id="@+id/tv4_fragment_about1"
+            android:text="SARAJEVO CLOUD JE DIO  ACTOPOLIS SARAJEVO LABORATORIJA, U ORGANIZACIJI GOETHE INSTITUTA U BIH"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/tv_vise_fragment_about1"
+            android:textColor="#000000"
+            android:text="AUTORI:ASMIR MUTEVELIĆ, KENAN VATRENJAK, IBRICA JAŠAREVIĆ, VEDAD ISLAMBEGOVIĆ"
+            android:layout_weight="10"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="10"
+        android:layout_height="0dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:src="@drawable/empty"
+            android:text=" "
+            android:layout_height="match_parent" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=" "
+            android:id="@id/statusImage"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="50" />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:src="@drawable/arrow_right"
+            android:id="@+id/ivOK"
+            android:gravity="right"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</LinearLayout>
