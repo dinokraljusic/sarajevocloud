@@ -651,7 +651,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().startActivity(new Intent(getActivity(), AboutActivity.class));
+                getActivity().startActivity(new Intent(getActivity(), AboutActivity.class));//TODO: open from ba.cloud.sarajevo
             }
         });
 
