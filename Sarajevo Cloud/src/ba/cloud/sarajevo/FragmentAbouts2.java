@@ -71,8 +71,10 @@ public class FragmentAbouts2 extends Fragment {
                                 return true;
                             }
                         }));
+                //getActivity().finish();
             }
         });
+
 
         return rootView;
     }

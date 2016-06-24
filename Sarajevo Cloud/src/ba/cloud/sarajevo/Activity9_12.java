@@ -68,6 +68,7 @@ public class Activity9_12 extends Activity {
                                             return true;
                                         }
                                     }));
+                            finish();
                         }
                     }
                     else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY && current < 2) {

@@ -60,6 +60,7 @@ public class FragmentAbouts3 extends Activity {
                                 return true;
                             }
                         }));
+                //finish();
             }
         }
     }

@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
@@ -39,12 +40,19 @@ public class Login extends Activity {
     private String _url = "http://192.168.1.5";
     public static String LOG_TAG = "Login";
     public Location l1;
+    private LinearLayout _llCredentials, _llWait;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.login);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
+
+        _llCredentials = (LinearLayout) findViewById(R.id.login_credentials);
+        _llWait = (LinearLayout) findViewById(R.id.login_wait);
 
         final String userName = settings.getString("userName", "");
         if(!userName.isEmpty() && !userName.equals("")){
@@ -71,8 +79,6 @@ public class Login extends Activity {
             startActivity(i);
             finish();
         }
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
 
 
         final EditText etIme = (EditText) findViewById(R.id.etIme);
@@ -105,6 +111,8 @@ public class Login extends Activity {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
                             final String userName = etIme.getText().toString().toUpperCase();
+                            _llCredentials.setVisibility(View.GONE);
+                            _llWait.setVisibility(View.VISIBLE);
                             RegisterUser(userName);
                             return true;
                         default:
@@ -122,6 +130,8 @@ public class Login extends Activity {
             @Override
             public void onClick(View v) {
                 final String userName = etIme.getText().toString().toUpperCase();
+                _llCredentials.setVisibility(View.GONE);
+                _llWait.setVisibility(View.VISIBLE);
                 RegisterUser(userName);
             }
         });
@@ -184,6 +194,8 @@ public class Login extends Activity {
             }
             if (userId == null || userId.equals("") || userId.isEmpty()) {
                 showMessage("Korisnicko ime zauzeto. Molimo izaberite drugo.");
+                _llWait.setVisibility(View.GONE);
+                _llCredentials.setVisibility(View.VISIBLE);
             } else {
                 Spremnik.getInstance().setUserId(userId);
                 Spremnik.getInstance().setUserName(userName);

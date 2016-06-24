@@ -1,5 +1,6 @@
 package ba.cloud.sarajevo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,7 +39,7 @@ public class FragmentAbouts1 extends Fragment {
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AboutActivity.mPager.setCurrentItem(2);
+                startActivity( new Intent( getActivity(), ViseOProjektuActivity.class ) );
             }
         });
 

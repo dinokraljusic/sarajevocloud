@@ -78,5 +78,6 @@ public class ScreenSlidePageFragment3 extends Fragment {
                         return true;
                     }
                 }));
+        getActivity().finish();
     }
 }

@@ -63,10 +63,10 @@ public class Splash extends Activity {
 
         if(userName != null && !userName.isEmpty() && !userName.equals("")){
             Spremnik.getInstance().setUserName(userName);
-            tvWelcome.setText("DOBRODOSLI\nWELCOME\n" + userName);
+            tvWelcome.setText("DOBRODOSLI\n" + userName);
         }else{
             tvWelcome.setText("DOBRODOSLI\nWELCOME");
-            if(u!="") tvWelcome.setText("DOBRODOSLI\nWELCOME\n" + u);
+            if(u!="") tvWelcome.setText("DOBRODOSLI\n" + u);
         }
 
         final Handler mHandler = new Handler();
