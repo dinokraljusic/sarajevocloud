@@ -46,7 +46,9 @@
             android:textColor="@color/zuta"
             android:background="@drawable/rounded_button"
             android:textSize="25sp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp" />
     </LinearLayout>
 
     <TextView

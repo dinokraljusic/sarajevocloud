@@ -1,6 +1,5 @@
 package de.rwth;
 
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,7 +34,7 @@ public class ScreenSlidePageFragment3 extends Fragment {
         ivOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup());
+                ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup(null));
                 //Intent i = new Intent(getContext(), Login.class);
                 //startActivity(i);
             }
@@ -45,6 +44,6 @@ public class ScreenSlidePageFragment3 extends Fragment {
     }
 
     public void StartAR(View view){
-        ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup());
+        ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup(null));
     }
 }

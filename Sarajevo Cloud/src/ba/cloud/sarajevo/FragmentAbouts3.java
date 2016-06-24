@@ -1,49 +1,64 @@
 package ba.cloud.sarajevo;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
+import commands.Command;
 import de.rwth.ModelLoaderSetup;
+import de.rwth.Spremnik;
+import de.rwth.Utility;
 import system.ArActivity;
 
 /**
  * Created by dinok on 6/21/2016.
  */
-public class FragmentAbouts3 extends Fragment {
+public class FragmentAbouts3 extends Activity {
+
+    public static final String CREDENTIALS = "credentials.sc";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
 
-        /*TextView tvPrvi = (TextView) getActivity().findViewById(R.id.tvPrvi);
-
-        Typeface type = Typeface.createFromAsset(getActivity().getAssets(),"fonts/ACTOPOLIS.otf");
-
-        if(tvPrvi != null) tvPrvi.setTypeface(type);*/
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(de.rwth.R.layout.fragment_about3, container, false);
-
-        /*TextView tvPrvi = (TextView) rootView.findViewById(R.id.tvPrvi);
-
-        Typeface type = Typeface.createFromAsset(getActivity().getAssets(),"fonts/ACTOPOLIS.otf");
-        if(tvPrvi != null) tvPrvi.setTypeface(type);*/
-        ImageView iv = (ImageView) rootView.findViewById(de.rwth.R.id.fragment_about3_iv);
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup());
-                getActivity().finish();
+        final String userName = settings.getString("userName", "");
+        if(!userName.isEmpty() && !userName.equals("")){
+            Spremnik.getInstance().setUserName(userName);
+            String userId = "";
+            try {
+                userId = new GetUserIdAsync().execute(userName).get();
+            }catch (Exception ex) {
+                Intent i = new Intent(this, Login.class);
+                startActivity(i);
+                finish();
             }
-        });
+            if (userId == null || userId.isEmpty() || userId.equals("0")) {
+                Intent i = new Intent(this, Login.class);
+                startActivity(i);
+                finish();
+            } else {
+                Spremnik.getInstance().setUserId(userId);
+                ArActivity.startWithSetup(this, new ModelLoaderSetup(new Command() {
+                    @Override
+                    public boolean execute() {
+                        startActivity(new Intent(FragmentAbouts3.this, AboutActivity.class));
+                        return true;
+                    }
+                }));
+            }
+        }
+    }
+    class GetUserIdAsync extends AsyncTask<String, String, String> {
 
-        return rootView;
+        @Override
+        protected String doInBackground(String... params) {
+            return Integer.toString(Utility.getUserId(params[0]));
+        }
     }
 }

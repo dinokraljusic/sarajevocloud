@@ -11,14 +11,22 @@
         android:icon="@drawable/sc_icon"
         android:debuggable="true"
         tools:ignore="HardcodedDebugMode">
-        <activity
-            android:name="MyActivity"
+
+        <activity android:name=".Splash" android:theme="@style/SplashTheme"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="MyActivity"
+            android:label="@string/app_name"/>
+            <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity> -->
         <!-- comment -->
 
         <!--
@@ -61,12 +69,6 @@
             android:name="gui.simpleUI.SimpleUIv1"
             android:theme="@android:style/Theme.Translucent" >
         </activity>
-        <activity android:name=".Splash" android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <activity android:name=".Login" android:theme="@android:style/Theme.NoTitleBar" />
 
@@ -74,6 +76,7 @@
 
         <activity android:name="AboutActivity" android:theme="@android:style/Theme.NoTitleBar" />
         <activity android:name=".Uslovi" android:theme="@android:style/Theme.NoTitleBar" />
+        <activity android:name=".FragmentAbouts3" android:theme="@android:style/Theme.NoTitleBar" />
 
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 

@@ -7,10 +7,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -64,7 +62,7 @@ public class Login extends Activity {
                 showMessage("KORISNIK NIJE LOGOVAN! MOLIMO REGISTRUJTE SE.");
             } else {
                 Spremnik.getInstance().setUserId(userId);
-                ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
+                ArActivity.startWithSetup(Login.this, new ModelLoaderSetup(null));
             }
         }
 

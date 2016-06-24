@@ -1,5 +1,6 @@
 package ba.cloud.sarajevo;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import commands.Command;
 import de.rwth.ModelLoaderSetup;
 import system.ArActivity;
 
@@ -35,7 +37,13 @@ public class ScreenSlidePageFragment3 extends Fragment {
         ivOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ModelLoaderSetup setup = new ModelLoaderSetup();
+                ModelLoaderSetup setup = new ModelLoaderSetup(new Command() {
+                    @Override
+                    public boolean execute() {
+                        startActivity(new Intent(getParentFragment().getActivity(), AboutActivity.class));
+                        return  true;
+                    }
+                });
                 ArActivity.startWithSetup(getActivity(), setup);
                 //Intent i = new Intent(getContext(), Login.class);
                 //startActivity(i);
@@ -46,6 +54,12 @@ public class ScreenSlidePageFragment3 extends Fragment {
     }
 
     public void StartAR(View view){
-        ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup());
+        ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup(new Command() {
+            @Override
+            public boolean execute() {
+                startActivity(new Intent(getParentFragment().getActivity(), AboutActivity.class));
+                return  true;
+            }
+        }));
     }
 }

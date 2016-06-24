@@ -9,10 +9,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import de.rwth.FragmentAbout1;
-import de.rwth.FragmentAbout2;
-import de.rwth.FragmentAbout3;
-
 /**
  * Created by dinok on 6/21/2016.
  */
@@ -78,9 +74,6 @@ public class AboutActivity extends FragmentActivity {
                 }
                 case 1:{
                     return new FragmentAbouts2();
-                }
-                case 2:{
-                    return new FragmentAbouts3();
                 }
                 default:{
                     return new FragmentAbouts1();

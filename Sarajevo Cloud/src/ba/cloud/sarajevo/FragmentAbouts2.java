@@ -29,13 +29,13 @@ public class FragmentAbouts2 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(de.rwth.R.layout.fragment_about2, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(ba.cloud.sarajevo.R.layout.fragment_about2, container, false);
 
         /*TextView tvPrvi = (TextView) rootView.findViewById(R.id.tvPrvi);
 
         Typeface type = Typeface.createFromAsset(getActivity().getAssets(),"fonts/ACTOPOLIS.otf");
         if(tvPrvi != null) tvPrvi.setTypeface(type);*/
-        TextView tv4 = (TextView) rootView.findViewById(de.rwth.R.id.tv4_fragment_about1);
+        TextView tv4 = (TextView) rootView.findViewById(R.id.tv4_fragment_about1);
         tv4.setText(Html.fromHtml("SARAJEVO CLOUD JE DIO <font color=\"blue\">  ACTOPOLIS SARAJEVO LABORATORIJA </font>, U ORGANIZACIJI GOETHE INSTITUTA U BIH") );
         tv4.setOnClickListener(new View.OnClickListener() {
             @Override

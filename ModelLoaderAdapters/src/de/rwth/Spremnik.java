@@ -23,7 +23,8 @@ public class Spremnik {
             _objekatEkst = new AtomicReference<>(),
             _teksturaEkst = new AtomicReference<>(),
 
-            _slikaPath = new AtomicReference<>();
+            _slikaPath = new AtomicReference<>(),
+            _previousActivity = new AtomicReference<>();
     private static AtomicReference<Piktogram> piktogram = new AtomicReference<>();
 
 
@@ -100,5 +101,11 @@ public class Spremnik {
 
     public String getSetServiceAddress() {
         return _url.get() + "/" + _setServiceAddress.get();
+    }
+    public String getPreviousActivity() {
+        return _previousActivity.get();
+    }
+    public void setPreviousActivity(String previousActivity) {
+        this._previousActivity.getAndSet(previousActivity);
     }
 }

@@ -57,7 +57,7 @@ public class DemoMain extends Activity // implements
         btnStart.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArActivity.startWithSetup(DemoMain.this, new ModelLoaderSetup());
+                ArActivity.startWithSetup(DemoMain.this, new ModelLoaderSetup(null));
             }
         });
         btnSettings.setOnClickListener(new OnClickListener() {

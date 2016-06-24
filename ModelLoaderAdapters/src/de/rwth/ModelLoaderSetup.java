@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.ColorInt;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -118,17 +119,20 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     Obj _selectedLightObject;
     MeshComponent _selectedMesh;
+    Command _openInfoView,
+            _openUputeCommand;
 
     //endregion
 
     //region CONSTRUCTORS
 
-    public ModelLoaderSetup() {
+    public ModelLoaderSetup(Command openInfoView) {
         _targetMoveWrapper = new Wrapper();
 
         //instantiated light here, since the method _a2_initLightning() is no longer overridden
         spotLight = LightSource.newDefaultDefuseLight(GL10.GL_LIGHT1, new Vec(0, 0, 0));
-
+        _openInfoView = openInfoView;
+        Spremnik.getInstance().setPreviousActivity("ModelLoadersSetup");
     }
 
 
@@ -148,10 +152,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
         ErrorHandler.enableEmailReports("miniprogrammerme@gmail.com", "Error in SarajevoCloud App");
         EventManager.getInstance().setMaxNrOfBufferedLocations(30);
 
-        _viewPosCalcer = new ViewPosCalcerComp(camera, 150, 0.1f) {
+        _viewPosCalcer = new ViewPosCalcerComp(camera, 110, 0.1f) {
             @Override
             public void onPositionUpdate(worldData.Updateable parent,
                                          Vec targetVec) {
+                targetVec.z = -90;
                 if (parent instanceof Obj) {
                     Obj obj = (Obj) parent;
                     MoveComp m = obj.getComp(MoveComp.class);
@@ -651,7 +656,10 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().startActivity(new Intent(getActivity(), AboutActivity.class));//TODO: open from ba.cloud.sarajevo
+                if(_openInfoView!=null)
+                    _openInfoView.execute();
+                else
+                    Log.e(LOG_TAG, "OpenInfoView not defined!");
             }
         });
 
@@ -686,9 +694,10 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), Swipes.class);
-                getActivity().startActivity(i);
-                getActivity().finish();
+                if (_openUputeCommand != null) {
+                    _openUputeCommand.execute();
+                    getActivity().finish();
+                }
             }
         });
 
@@ -917,7 +926,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
                         tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_tekstura"));
                         final String finalThumbnail_1 = Utility.downloadAndSaveFile(ctx, set.getInt("id"), 1, tmp, LOG_TAG);
-                        final String finalThumbnail_2 = Utility.downloadAndSaveFile(ctx, set.getInt("id"), 2, tmp, LOG_TAG);
+                        final String finalThumbnail_2 = ""; //Utility.downloadAndSaveFile(ctx, set.getInt("id"), 2, tmp, LOG_TAG);
 
                         final float W = getScreenHeigth();
                         if (i % 5 == 0) {
@@ -931,7 +940,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
                             });
                         }
                         final ImageView btnImage = createImageWithTransparentBackground(getActivity(),
-                                finalThumbnail_1, finalThumbnail_2,
+                                finalThumbnail_1, getActivity().getResources().getColor(R.color.zuta),
+                                getActivity().getResources().getColor(R.color.zelena),
                                 new Command() {
                                     @Override
                                     public boolean execute() {
@@ -1028,10 +1038,11 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 Log.d(LOG_TAG, "CAMERA LOCATION: " + camera.getGPSLocation().toString());
                 world.add(lightObject);
                 _targetMoveWrapper.setTo(lightObject);
+                /*lightObject.setPosition(new Vec(0, 0, -50));
                 if (_targetMoveWrapper.getObject() instanceof Obj) {
                     ((Obj) _targetMoveWrapper.getObject())
-                            .getComp(MoveComp.class).myTargetPos.z = -20f;
-                }
+                            .getComp(MoveComp.class).myTargetPos.z = -55f;
+                }*/
 
             }
         };
@@ -1199,9 +1210,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                     @Override
                                     public boolean execute() {
                                         try {
-                                            new AsyncTask<Void, Void, Void>() {
+                                            new AsyncTask<String, Void, Void>() {
                                                 @Override
-                                                protected Void doInBackground(Void... params) {
+                                                protected Void doInBackground(String... params) {
                                                     try {
                                                         String str = Utility.POST(Spremnik.getInstance().getUploadPictureServiceAddress(), new ArrayList<NameValuePair>(0));
                                                     } catch (Throwable thr) {
@@ -1209,7 +1220,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                                     }
                                                     return null;
                                                 }
-                                            };
+                                            }.execute("");
                                         }catch (Throwable t){
                                             Log.w("UploadPicture", t.toString());
                                         }
@@ -1409,7 +1420,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
         return imgButton;
     }
 
-    public ImageView createImageWithTransparentBackground(Context context, String normalImagePath, String clickedImagePath,
+    public ImageView createImageWithTransparentBackground(Context context, String normalImagePath,
+                                                          @ColorInt final int normalImageBackgroundColor,
+                                                          @ColorInt final int clickedImageBackgroundColor,
                                                           final Command command) {
         final ImageView imgButton = new ImageView(context);
         try {
@@ -1417,35 +1430,29 @@ public class ModelLoaderSetup extends DefaultARSetup {
             System.gc();
             final Bitmap normalBmp = BitmapFactory.decodeFile(normalImagePath);
             System.gc();
-            //Bitmap clickedBitmap = null;
-            //try {
-            //    clickedBitmap = BitmapFactory.decodeFile(clickedImagePath);
-            //} catch (Throwable t) {
-            //    clickedBitmap = normalBmp;
-            //}
-            //final Bitmap finalClickedBitmap = clickedBitmap;
             imgButton.setImageBitmap(normalBmp);
+            imgButton.setBackgroundColor(normalImageBackgroundColor);
             imgButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //imgButton.setImageBitmap(finalClickedBitmap);
+                    imgButton.setBackgroundColor(clickedImageBackgroundColor);
                     if (vibrateCommand != null)
                         vibrateCommand.execute();
                     if (command != null)
                         command.execute();
-                    //new Handler().postDelayed(
-                    //        new Runnable() {
-                    //            @Override
-                    //            public void run() {
-                    //                getActivity().runOnUiThread(
-                    //                        new Runnable() {
-                    //                            @Override
-                    //                            public void run() {
-                    //                                imgButton.setImageBitmap(normalBmp);
-                    //                            }
-                    //                        });
-                    //            }
-                    //        }, 500);
+                    new Handler().postDelayed(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    getActivity().runOnUiThread(
+                                            new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    imgButton.setBackgroundColor(normalImageBackgroundColor);
+                                                }
+                                            });
+                                }
+                            }, 500);
                 }
             });
         } catch (Throwable t) {

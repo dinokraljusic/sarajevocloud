@@ -7,9 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 /**
  * Created by dinok on 6/21/2016.
@@ -72,7 +70,7 @@ public class AboutActivity extends FragmentActivity {
         public Fragment getItem(int position) {
             switch (position){
                 case 0:{
-                    return new FragmentAbout1();
+                    return new FragmentAbout11();
                 }
                 case 1:{
                     return new FragmentAbout2();
@@ -81,7 +79,7 @@ public class AboutActivity extends FragmentActivity {
                     return new FragmentAbout3();
                 }
                 default:{
-                    return new FragmentAbout1();
+                    return new FragmentAbout11();
                 }
             }
         }

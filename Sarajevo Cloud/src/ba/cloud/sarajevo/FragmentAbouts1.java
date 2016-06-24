@@ -28,13 +28,13 @@ public class FragmentAbouts1 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(de.rwth.R.layout.fragment_about1, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_about1, container, false);
 
         /*TextView tvPrvi = (TextView) rootView.findViewById(R.id.tvPrvi);
 
         Typeface type = Typeface.createFromAsset(getActivity().getAssets(),"fonts/ACTOPOLIS.otf");
         if(tvPrvi != null) tvPrvi.setTypeface(type);*/
-        TextView tv = (TextView) rootView.findViewById(de.rwth.R.id.tv_vise_fragment_about1);
+        TextView tv = (TextView) rootView.findViewById(R.id.tv_vise_fragment_about1);
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

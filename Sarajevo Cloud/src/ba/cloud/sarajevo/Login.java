@@ -21,11 +21,8 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.rwth.ModelLoaderSetup;
 import de.rwth.Spremnik;
-import de.rwth.UsloviKoristenja;
 import de.rwth.Utility;
-import system.ArActivity;
 
 /**
  * Created by dinok on 5/3/2016.
@@ -46,14 +43,12 @@ public class Login extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
 
         final String userName = settings.getString("userName", "");
         if(!userName.isEmpty() && !userName.equals("")){
-            Spremnik.getInstance().setUserName(userName);
+            /*Spremnik.getInstance().setUserName(userName);
             String userId = "";
             try {
                 userId = new GetUserIdAsync().execute(userName).get();
@@ -64,9 +59,20 @@ public class Login extends Activity {
                 showMessage("KORISNIK NIJE LOGOVAN! MOLIMO REGISTRUJTE SE.");
             } else {
                 Spremnik.getInstance().setUserId(userId);
-                ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
-            }
+                ArActivity.startWithSetup(Login.this, new ModelLoaderSetup(new Command() {
+                    @Override
+                    public boolean execute() {
+                        startActivity(new Intent(Login.this, AboutActivity.class));
+                        return true;
+                    }
+                }));
+            }*/
+            Intent i = new Intent(Login.this, FragmentAbouts3.class);
+            startActivity(i);
+            finish();
         }
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.login);
 
 
         final EditText etIme = (EditText) findViewById(R.id.etIme);
@@ -119,6 +125,7 @@ public class Login extends Activity {
                 RegisterUser(userName);
             }
         });
+        Spremnik.getInstance().setPreviousActivity(getLocalClassName());
     }
 
     public void updateL1(){
@@ -155,13 +162,15 @@ public class Login extends Activity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        finish();
+        if(!Spremnik.getInstance().getPreviousActivity().equals(getLocalClassName()))
+            finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //finish();
+        if(!Spremnik.getInstance().getPreviousActivity().equals(getLocalClassName()))
+            finish();
     }
 
     private void RegisterUser(final String userName){
@@ -228,7 +237,6 @@ public class Login extends Activity {
             return "";
         }
     }
-
     class GetUserIdAsync extends AsyncTask<String, String, String> {
 
         @Override
@@ -237,3 +245,4 @@ public class Login extends Activity {
         }
     }
 }
+

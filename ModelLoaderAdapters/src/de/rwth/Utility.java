@@ -112,7 +112,7 @@ public class Utility {
             fileName = file.getAbsolutePath() + "/" + fileName;
             if (new File(fileName).exists()) {
                 Log.i(LOG_TAG, "returning existing file");
-                return fileName;
+               // return fileName;
             }
 
             URL url = new URL(url_string + "?id=" + id + "&slika=" + Integer.toString(slika));

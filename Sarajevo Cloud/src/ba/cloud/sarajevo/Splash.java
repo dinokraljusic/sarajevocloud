@@ -2,6 +2,7 @@ package ba.cloud.sarajevo;
 
 //import android.app.Activity;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -10,6 +11,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,11 +32,17 @@ public class Splash extends Activity {
     //private String _url = "http://192.168.1.5";
     public static String LOG_TAG = "ModelLoader";
     Location l1;
+    PowerManager.WakeLock wl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
+
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
+        wl.acquire();
+
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -66,7 +74,7 @@ public class Splash extends Activity {
             public void run() {
                 Intent i = new Intent(Splash.this, Login.class);
                 startActivity(i);
-               // finish();
+                finish();
             }
         };
 
@@ -74,6 +82,7 @@ public class Splash extends Activity {
 
         l1=null;
         //updateL1();
+        Spremnik.getInstance().setPreviousActivity(getLocalClassName());
     }
 
     @Override
@@ -118,5 +127,11 @@ public class Splash extends Activity {
     protected void onRestart() {
         super.onRestart();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        wl.release();
     }
 }
