@@ -55,7 +55,7 @@ public class FragmentAbouts3 extends Activity {
                         new Command() {
                             @Override
                             public boolean execute() {
-                                Intent i = new Intent(FragmentAbouts3.this, Swipes.class);
+                                Intent i = new Intent(FragmentAbouts3.this, Activity9_12.class);
                                 startActivity(i);
                                 return true;
                             }

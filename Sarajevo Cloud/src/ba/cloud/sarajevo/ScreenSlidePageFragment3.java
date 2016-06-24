@@ -48,7 +48,7 @@ public class ScreenSlidePageFragment3 extends Fragment {
                                 new Command() {
                                     @Override
                                     public boolean execute() {
-                                        Intent i = new Intent(getActivity(), Swipes.class);
+                                        Intent i = new Intent(getActivity(), Activity9_12.class);
                                         startActivity(i);
                                         return true;
                                     }
@@ -73,7 +73,7 @@ public class ScreenSlidePageFragment3 extends Fragment {
                 new Command() {
                     @Override
                     public boolean execute() {
-                        Intent i = new Intent(getActivity(), Swipes.class);
+                        Intent i = new Intent(getActivity(), Activity9_12.class);
                         startActivity(i);
                         return true;
                     }

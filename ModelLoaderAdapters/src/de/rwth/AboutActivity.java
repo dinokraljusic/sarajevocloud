@@ -16,7 +16,7 @@ public class AboutActivity extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private static final int NUM_PAGES = 3;
+    private static final int NUM_PAGES = 2;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -79,7 +79,7 @@ public class AboutActivity extends FragmentActivity {
                     return new FragmentAbout3();
                 }
                 default:{
-                    return new FragmentAbout11();
+                    return new FragmentAbout2();
                 }
             }
         }
