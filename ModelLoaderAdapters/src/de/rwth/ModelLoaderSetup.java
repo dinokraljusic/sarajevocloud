@@ -120,18 +120,19 @@ public class ModelLoaderSetup extends DefaultARSetup {
     Obj _selectedLightObject;
     MeshComponent _selectedMesh;
     Command _openInfoView,
-            _openUputeCommand;
+            _openUputeView;
 
     //endregion
 
     //region CONSTRUCTORS
 
-    public ModelLoaderSetup(Command openInfoView) {
+    public ModelLoaderSetup(Command openInfoView, Command openUputeView) {
         _targetMoveWrapper = new Wrapper();
 
         //instantiated light here, since the method _a2_initLightning() is no longer overridden
         spotLight = LightSource.newDefaultDefuseLight(GL10.GL_LIGHT1, new Vec(0, 0, 0));
         _openInfoView = openInfoView;
+        _openUputeView = openUputeView;
         Spremnik.getInstance().setPreviousActivity("ModelLoadersSetup");
     }
 
@@ -694,8 +695,8 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (_openUputeCommand != null) {
-                    _openUputeCommand.execute();
+                if (_openUputeView  != null) {
+                    _openUputeView.execute();
                     getActivity().finish();
                 }
             }

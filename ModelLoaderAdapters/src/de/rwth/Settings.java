@@ -27,7 +27,7 @@ public class Settings extends Activity {
             public void onClick(View view) {
                 if(txtURL.getText().toString().trim().length() > 0)
                     Spremnik.getInstance().setURL(txtURL.getText().toString());
-                ArActivity.startWithSetup(Settings.this, new ModelLoaderSetup(null));
+                ArActivity.startWithSetup(Settings.this, new ModelLoaderSetup(null, null));
                 finish();
             }
         });

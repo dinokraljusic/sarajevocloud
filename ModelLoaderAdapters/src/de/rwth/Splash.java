@@ -3,7 +3,6 @@ package de.rwth;
 //import android.app.Activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
@@ -16,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import commands.Command;
 import system.ArActivity;
 
 /**
@@ -68,13 +66,15 @@ public class Splash extends Activity {
             public void run() {
                 //Intent i = new Intent(Splash.this, Login.class);
                 //startActivity(i);
-                ArActivity.startWithSetup(Splash.this, new ModelLoaderSetup(new Command() {
+                ArActivity.startWithSetup(Splash.this, new ModelLoaderSetup(null, null
+/*                        new Command() {
                     @Override
                     public boolean execute() {
                         startActivity(new Intent(Splash.this, AboutActivity.class));
                         return  true;
                     }
-                }));
+               } */
+                ));
                 finish();
             }
         };

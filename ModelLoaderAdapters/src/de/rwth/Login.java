@@ -62,7 +62,7 @@ public class Login extends Activity {
                 showMessage("KORISNIK NIJE LOGOVAN! MOLIMO REGISTRUJTE SE.");
             } else {
                 Spremnik.getInstance().setUserId(userId);
-                ArActivity.startWithSetup(Login.this, new ModelLoaderSetup(null));
+                ArActivity.startWithSetup(Login.this, new ModelLoaderSetup(null, null));
             }
         }
 

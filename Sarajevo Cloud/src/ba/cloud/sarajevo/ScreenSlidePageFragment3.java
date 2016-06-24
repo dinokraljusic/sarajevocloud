@@ -20,7 +20,7 @@ import system.ArActivity;
 public class ScreenSlidePageFragment3 extends Fragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_screen_slide_page3, container, false);
 
         TextView tvFotografisanje = (TextView) rootView.findViewById(R.id.tvFotografisanje);
@@ -37,14 +37,22 @@ public class ScreenSlidePageFragment3 extends Fragment {
         ivOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ModelLoaderSetup setup = new ModelLoaderSetup(new Command() {
-                    @Override
-                    public boolean execute() {
-                        startActivity(new Intent(getParentFragment().getActivity(), AboutActivity.class));
-                        return  true;
-                    }
-                });
-                ArActivity.startWithSetup(getActivity(), setup);
+                        ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup(
+                                new Command() {
+                                    @Override
+                                    public boolean execute() {
+                                        startActivity(new Intent(getActivity(), AboutActivity.class));
+                                        return true;
+                                    }
+                                },
+                                new Command() {
+                                    @Override
+                                    public boolean execute() {
+                                        Intent i = new Intent(getActivity(), Swipes.class);
+                                        startActivity(i);
+                                        return true;
+                                    }
+                                }));
                 //Intent i = new Intent(getContext(), Login.class);
                 //startActivity(i);
             }
@@ -54,12 +62,21 @@ public class ScreenSlidePageFragment3 extends Fragment {
     }
 
     public void StartAR(View view){
-        ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup(new Command() {
-            @Override
-            public boolean execute() {
-                startActivity(new Intent(getParentFragment().getActivity(), AboutActivity.class));
-                return  true;
-            }
-        }));
+        ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup(
+                new Command() {
+                    @Override
+                    public boolean execute() {
+                        startActivity(new Intent(getActivity(), AboutActivity.class));
+                        return true;
+                    }
+                },
+                new Command() {
+                    @Override
+                    public boolean execute() {
+                        Intent i = new Intent(getActivity(), Swipes.class);
+                        startActivity(i);
+                        return true;
+                    }
+                }));
     }
 }

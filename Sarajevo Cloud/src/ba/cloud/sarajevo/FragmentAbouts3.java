@@ -28,12 +28,12 @@ public class FragmentAbouts3 extends Activity {
         SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
 
         final String userName = settings.getString("userName", "");
-        if(!userName.isEmpty() && !userName.equals("")){
+        if (!userName.isEmpty() && !userName.equals("")) {
             Spremnik.getInstance().setUserName(userName);
             String userId = "";
             try {
                 userId = new GetUserIdAsync().execute(userName).get();
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 Intent i = new Intent(this, Login.class);
                 startActivity(i);
                 finish();
@@ -44,13 +44,22 @@ public class FragmentAbouts3 extends Activity {
                 finish();
             } else {
                 Spremnik.getInstance().setUserId(userId);
-                ArActivity.startWithSetup(this, new ModelLoaderSetup(new Command() {
-                    @Override
-                    public boolean execute() {
-                        startActivity(new Intent(FragmentAbouts3.this, AboutActivity.class));
-                        return true;
-                    }
-                }));
+                ArActivity.startWithSetup(this, new ModelLoaderSetup(
+                        new Command() {
+                            @Override
+                            public boolean execute() {
+                                startActivity(new Intent(FragmentAbouts3.this, AboutActivity.class));
+                                return true;
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public boolean execute() {
+                                Intent i = new Intent(FragmentAbouts3.this, Swipes.class);
+                                startActivity(i);
+                                return true;
+                            }
+                        }));
             }
         }
     }
