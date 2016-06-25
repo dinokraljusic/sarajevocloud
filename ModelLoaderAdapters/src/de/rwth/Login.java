@@ -209,7 +209,7 @@ public class Login extends Activity {
                 args.add(new BasicNameValuePair("ime", params[0]));
                 String userID = Utility.registerUser(Spremnik.getInstance().getUserServiceAddress(), args);
                 return userID;
-            } catch (java.io.IOException ioe) {
+            } catch (Exception ioe) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

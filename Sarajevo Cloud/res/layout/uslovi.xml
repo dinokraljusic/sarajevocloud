@@ -6,7 +6,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:text="USLOVI KORISTENJA APLIKACIJE"
+        android:text="USLOVI KORIŠTENJA APLIKACIJE"
         android:textColor="@color/black"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"

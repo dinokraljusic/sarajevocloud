@@ -54,6 +54,8 @@ public class Login extends Activity {
         _llCredentials = (LinearLayout) findViewById(R.id.login_credentials);
         _llWait = (LinearLayout) findViewById(R.id.login_wait);
 
+        findViewById(R.id.messageBox).setVisibility(View.INVISIBLE);
+
         final String userName = settings.getString("userName", "");
         if(!userName.isEmpty() && !userName.equals("")){
             /*Spremnik.getInstance().setUserName(userName);
@@ -111,9 +113,12 @@ public class Login extends Activity {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
                             final String userName = etIme.getText().toString().toUpperCase();
-                            _llCredentials.setVisibility(View.GONE);
-                            _llWait.setVisibility(View.VISIBLE);
-                            RegisterUser(userName);
+                            if(userName.length()>0){
+                                _llCredentials.setVisibility(View.GONE);
+                                _llWait.setVisibility(View.VISIBLE);
+                                RegisterUser(userName);
+                            }
+                            else showMessage("Korisnicko ime mora sadržavati bar jedan znak. Molimo izaberite drugo.");
                             return true;
                         default:
                             break;
@@ -130,9 +135,12 @@ public class Login extends Activity {
             @Override
             public void onClick(View v) {
                 final String userName = etIme.getText().toString().toUpperCase();
-                _llCredentials.setVisibility(View.GONE);
-                _llWait.setVisibility(View.VISIBLE);
-                RegisterUser(userName);
+                if(userName.length()>0){
+                    _llCredentials.setVisibility(View.GONE);
+                    _llWait.setVisibility(View.VISIBLE);
+                    RegisterUser(userName);
+                }
+                else showMessage("Korisnicko ime mora sadržavati bar jedan znak. Molimo izaberite drugo.");
             }
         });
         Spremnik.getInstance().setPreviousActivity(getLocalClassName());
@@ -190,7 +198,7 @@ public class Login extends Activity {
             try {
                 userId = new RegisterUserIdAsync().execute(userName).get();
             } catch (Throwable t) {
-
+                showMessage(t.getMessage());
             }
             if (userId == null || userId.equals("") || userId.isEmpty()) {
                 showMessage("Korisnicko ime zauzeto. Molimo izaberite drugo.");
@@ -226,7 +234,7 @@ public class Login extends Activity {
                     }
                 });
             }
-        }, 3000);
+        }, 4000);
     }
 
     class RegisterUserIdAsync extends AsyncTask<String, String, String> {
@@ -238,11 +246,14 @@ public class Login extends Activity {
                 args.add(new BasicNameValuePair("ime", params[0]));
                 String userID = Utility.registerUser(Spremnik.getInstance().getUserServiceAddress(), args);
                 return userID;
-            } catch (java.io.IOException ioe) {
+            } catch (final Exception ioe) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        showMessage("PROBLEMI SA KONEKCIJOM!");
+                        if(ioe.getClass().toString().toUpperCase().contains("NULLPOINTER"))
+                            showMessage("Internet konekcija nije dostupna.");
+                        else
+                            showMessage(ioe.getMessage());
                     }
                 });
             }

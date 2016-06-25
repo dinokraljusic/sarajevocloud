@@ -437,17 +437,20 @@ public class Utility {
         return 0;
     }
 
-    public static String registerUser(String url, List<NameValuePair> params) throws java.io.IOException{
+    public static String registerUser(String url, List<NameValuePair> params) throws Exception {
         try {
             String tmp = Utility.POST(Spremnik.getInstance().getUserServiceAddress(), params);
             JSONObject response = new JSONObject(tmp);
             if(response!=null && response.length() > 0 && response.has("id")){
                 return  response.getString("id");
             }
+            else if (response!=null && response.length() > 0 && response.has("error"))
+                throw new Exception(response.getString("error"));
         }catch (JSONException je){
             return "";
         }catch(Throwable ex){
             ex.printStackTrace();
+            throw ex;
         }
         return "";
     }
