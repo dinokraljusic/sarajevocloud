@@ -146,7 +146,7 @@ POMOĆU VIRTUELNIH PORUKA I EMOTIKONA"/>
             android:layout_width="0dp"
             android:layout_weight="25"
             android:src="@drawable/arrow_right"
-            android:id="@+id/ivOK"
+            android:id="@+id/ivOK_fragment_abouts1"
             android:gravity="right"
             android:layout_height="match_parent" />
     </LinearLayout>

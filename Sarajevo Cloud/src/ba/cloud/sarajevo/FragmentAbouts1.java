@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.rwth.AboutActivity;
@@ -29,7 +30,15 @@ public class FragmentAbouts1 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_about1, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_abouts1, container, false);
+
+        ImageView ivOk = (ImageView) rootView.findViewById(R.id.ivOK_fragment_abouts1);
+        ivOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ba.cloud.sarajevo.AboutActivity.mPager.setCurrentItem(1);
+            }
+        });
 
         /*TextView tvPrvi = (TextView) rootView.findViewById(R.id.tvPrvi);
 
