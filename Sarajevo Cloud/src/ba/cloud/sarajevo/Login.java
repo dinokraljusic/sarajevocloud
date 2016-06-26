@@ -44,7 +44,7 @@ public class Login extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(ba.cloud.sarajevo.R.layout.login);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
@@ -211,10 +211,8 @@ public class Login extends Activity {
                 editor.putString("userName", userName);
                 editor.commit();
 
-                //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
                 Intent i = new Intent(Login.this, Abouts_1Activity.class);
                 startActivity(i);
-                //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
             }
         }
     }

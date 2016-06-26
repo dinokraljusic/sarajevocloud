@@ -72,8 +72,6 @@
 
         <activity android:name=".Login" android:theme="@android:style/Theme.NoTitleBar" />
 
-        <activity android:name=".Swipes" android:theme="@android:style/Theme.NoTitleBar" />
-
         <activity android:name=".Abouts_1Activity" android:theme="@android:style/Theme.NoTitleBar" />
         <activity android:name=".Abouts_2Activity" android:theme="@android:style/Theme.NoTitleBar"/>
         <activity android:name=".Uslovi" android:theme="@android:style/Theme.NoTitleBar" />

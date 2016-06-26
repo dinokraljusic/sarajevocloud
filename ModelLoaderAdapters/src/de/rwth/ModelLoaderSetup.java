@@ -585,17 +585,6 @@ public class ModelLoaderSetup extends DefaultARSetup {
         }, " > ");
         */
 
-        /*guiSetup.addButtonToLeftView(new Command() {
-
-            @Override
-            public boolean execute() {
-                Intent intent = new Intent(getActivity().getApplicationContext(), chooser.class);
-                getActivity().startActivityForResult(intent, 0);
-                return true;
-            }
-
-        }, " + ");
-*/
         /*guiSetup.addButtonToBottomView(new Command() {
 
                @Override
