@@ -38,7 +38,7 @@ public class FragmentAbout3 extends Fragment {
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup(null, null));
+                ArActivity.startWithSetup(getActivity(), new ModelLoaderSetup(null));
                 getActivity().finish();
             }
         });

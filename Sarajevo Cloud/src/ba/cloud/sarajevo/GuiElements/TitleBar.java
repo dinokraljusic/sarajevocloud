@@ -1,4 +1,4 @@
-package de.rwth.GuiElements;
+package ba.cloud.sarajevo.GuiElements;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -44,33 +44,18 @@ public class TitleBar extends LinearLayout implements IGuiElement {
         setOrientation(VERTICAL);
         addView(_firstRow);
 
+        _txtNaslov = new TextView(context);
+        _txtNaslov.setText("SARAJEVO CLOUD");
+        _txtNaslov.setTypeface(_defaultFont);
+        _txtNaslov.setTextColor(getResources().getColor(R.color.zuta));
+        _txtNaslov.setTextSize(19);
+
         RelativeLayout.LayoutParams lp_l = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp_l.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
-
-        _txtNaslov = new TextView(context);
-        _txtNaslov.setText("SARAJEVO CLOUD");
-        _txtNaslov.setTypeface(_defaultFont);
-        _txtNaslov.setTextColor(getResources().getColor(R.color.zuta));
-        _txtNaslov.setTextSize(21);
-        _txtNaslov.setPadding(25, 19, 9, 15);
-        //_txtNaslov.setLayoutParams(lp_l);
-
-        _txtUserName = new TextView(context);
-        _txtUserName.setText(Spremnik.getInstance().getUserName());
-        _txtUserName.setTextColor(getResources().getColor(R.color.zuta));
-        _txtUserName.setTextSize(15);
-        _txtUserName.setPadding(15, 9, 0, 11);
-        _txtUserName.setVisibility(View.GONE);
-        //_txtUserName.setLayoutParams(lp_l);
-
-        LinearLayout pomLyt = new LinearLayout(context);
-        pomLyt.setOrientation(HORIZONTAL);
-        pomLyt.addView(_txtNaslov);
-        pomLyt.addView(_txtUserName);
-        pomLyt.setLayoutParams(lp_l);
+        _txtNaslov.setLayoutParams(lp_l);
 
         _rightButton = new ImageWithTransparentBackground(context, R.drawable.gornji_desni_meni_zuto,
                 R.drawable.gornji_desni_meni_zelen, null);
@@ -80,8 +65,16 @@ public class TitleBar extends LinearLayout implements IGuiElement {
         lp_l.addRule(RelativeLayout.CENTER_VERTICAL);
         _rightButton.setLayoutParams(lp_l);
 
-        _firstRow.addView(pomLyt);
+        _txtUserName = new TextView(context);
+        _txtUserName.setTextColor(getResources().getColor(R.color.zuta));
+        _txtUserName.setTextSize(17);
+        _txtUserName.setPadding(105, 9, 0, 11);
+        _txtUserName.setVisibility(View.GONE);
+        _txtUserName.setText(Spremnik.getInstance().getUserName());
+
+        _firstRow.addView(_txtNaslov);
         _firstRow.addView(_rightButton);
+        _firstRow.addView(_txtUserName);
 
         _txtPiktogramChooserInfo = new TextView(context);
         _txtPiktogramChooserInfo.setTextSize(17);
@@ -90,7 +83,7 @@ public class TitleBar extends LinearLayout implements IGuiElement {
         _txtPiktogramChooserInfo.setPadding(45, 19, 0, 105);
         _txtPiktogramChooserInfo.setVisibility(View.GONE);
         addView(_txtPiktogramChooserInfo);
-    }
+        }
 
     //endregion
 
@@ -118,7 +111,7 @@ public class TitleBar extends LinearLayout implements IGuiElement {
     }
     public void hideBackground() {
         super.setBackgroundColor(Color.argb(0, 0, 0, 0));
-        _backgroundShown=false;
+    _backgroundShown=false;
     }
 
     public boolean isBackgroundShown() {
@@ -151,8 +144,8 @@ public class TitleBar extends LinearLayout implements IGuiElement {
     //region ==== Overrides ====
 
     /**
-     * @deprecated use {@link #showBackground()} and {@link #hideBackground()} instead
-     */
+    * @deprecated use {@link #showBackground()} and {@link #hideBackground()} instead
+    */
     @Deprecated
     @Override
     public void setBackgroundColor(int color) { }

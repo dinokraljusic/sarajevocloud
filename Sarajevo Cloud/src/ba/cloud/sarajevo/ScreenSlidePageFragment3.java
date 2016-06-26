@@ -41,15 +41,7 @@ public class ScreenSlidePageFragment3 extends Fragment {
                                 new Command() {
                                     @Override
                                     public boolean execute() {
-                                        startActivity(new Intent(getActivity(), AboutActivity.class));
-                                        return true;
-                                    }
-                                },
-                                new Command() {
-                                    @Override
-                                    public boolean execute() {
-                                        Intent i = new Intent(getActivity(), Activity9_12.class);
-                                        startActivity(i);
+                                        startActivity(new Intent(getActivity(), Abouts_1Activity.class));
                                         return true;
                                     }
                                 }));
@@ -66,15 +58,7 @@ public class ScreenSlidePageFragment3 extends Fragment {
                 new Command() {
                     @Override
                     public boolean execute() {
-                        startActivity(new Intent(getActivity(), AboutActivity.class));
-                        return true;
-                    }
-                },
-                new Command() {
-                    @Override
-                    public boolean execute() {
-                        Intent i = new Intent(getActivity(), Activity9_12.class);
-                        startActivity(i);
+                        startActivity(new Intent(getActivity(), Abouts_1Activity.class));
                         return true;
                     }
                 }));

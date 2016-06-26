@@ -17,7 +17,7 @@ public class ViseOProjektuActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.vise_o_projektu);
+        setContentView(R.layout.abouts_2);
 
         TextView tv4 = (TextView) findViewById(R.id.tv4_vise_o);
         tv4.setText(Html.fromHtml("SARAJEVO CLOUD JE DIO <font color=\"blue\">  ACTOPOLIS SARAJEVO LABORATORIJA </font>, U ORGANIZACIJI GOETHE INSTITUTA U BIH") );

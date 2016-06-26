@@ -1,4 +1,4 @@
-package de.rwth.GuiElements;
+package ba.cloud.sarajevo.GuiElements;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -60,7 +60,7 @@ public class MojCloudCommands extends RelativeLayout implements IGuiElement {
         _buttons.addView(_cameraButton);
         _buttons.addView(_reloadButton);
 
-        RelativeLayout.LayoutParams rlp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        LayoutParams rlp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 

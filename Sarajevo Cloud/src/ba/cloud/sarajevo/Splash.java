@@ -43,9 +43,9 @@ public class Splash extends Activity {
         wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
         wl.acquire();
 
+        Spremnik.getInstance().setPreviousActivity(getLocalClassName());
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 
         TextView tvSarajevo = (TextView)findViewById(R.id.tvSarajevo);
         TextView tvCloud = (TextView)findViewById(R.id.tvCloud);
@@ -124,9 +124,17 @@ public class Splash extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(!Spremnik.getInstance().getPreviousActivity().equals(getLocalClassName()))
+            finish();
+    }
+
+    @Override
     protected void onRestart() {
         super.onRestart();
-        finish();
+        if(!Spremnik.getInstance().getPreviousActivity().equals(getLocalClassName()))
+            finish();
     }
 
     @Override

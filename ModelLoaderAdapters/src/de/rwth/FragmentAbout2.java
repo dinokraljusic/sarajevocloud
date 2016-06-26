@@ -1,17 +1,13 @@
 package de.rwth;
 
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import commands.Command;
 import system.ArActivity;
@@ -48,7 +44,7 @@ public class FragmentAbout2 extends Fragment {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.goethe.de/ins/ba/bs/sar/ver.cfm?fuseaction=events.detail&event_id=20764379") ));
             }
         });*/
-        ImageView imgview = (ImageView) rootView.findViewById(R.id.about2_2_iv);
+        ImageView imgview = (ImageView) rootView.findViewById(R.id.ivOK);
         imgview.setScaleType(ImageView.ScaleType.FIT_XY);
 
         imgview.setOnClickListener(new View.OnClickListener() {
@@ -59,14 +55,6 @@ public class FragmentAbout2 extends Fragment {
                             @Override
                             public boolean execute() {
                                 startActivity(new Intent(getActivity(), AboutActivity.class));
-                                return true;
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public boolean execute() {
-                                Intent i = new Intent(getActivity(), Swipes.class);
-                                startActivity(i);
                                 return true;
                             }
                         }));

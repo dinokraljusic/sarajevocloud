@@ -1,4 +1,4 @@
-package de.rwth.GuiElements;
+package ba.cloud.sarajevo.GuiElements;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,12 +37,10 @@ public class ClickableTextView extends TextView {
         if(command!=null)_command = command;
         setText(text);
         setTypeface(typeface);
-        setTextColor(getResources().getColor(normalColor));
-        super.setOnClickListener(new View.OnClickListener() {
+        super.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 setTextColor(getResources().getColor(clickedColor));
-                invalidate();
                 if (_vibrateCommand != null) _vibrateCommand.execute();
 
                 for (Command command : _preExecuteCommands) {
@@ -65,7 +63,7 @@ public class ClickableTextView extends TextView {
                                             }
                                         });
                             }
-                        }, 500);
+                        }, 150);
             }
         });
     }

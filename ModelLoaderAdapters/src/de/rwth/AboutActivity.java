@@ -39,7 +39,7 @@ public class AboutActivity extends FragmentActivity {
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager_about);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
+    mPager.setAdapter(mPagerAdapter);
         //PagerTabStrip ptsMain = (PagerTabStrip) findViewById(R.id.pts_about);
         //ptsMain.setDrawFullUnderline(false);
         //ptsMain.setTabIndicatorColorResource(R.color.zuta);

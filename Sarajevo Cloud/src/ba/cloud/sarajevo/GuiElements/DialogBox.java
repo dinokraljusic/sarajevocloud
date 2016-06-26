@@ -1,4 +1,4 @@
-package de.rwth.GuiElements;
+package ba.cloud.sarajevo.GuiElements;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -48,10 +48,9 @@ public class DialogBox extends LinearLayout implements IGuiElement {
         _defaultFont = Typeface.createFromAsset(context.getApplicationContext().getAssets(), "fonts/ACTOPOLIS.otf");
 
         _textBox = new TextView(context);
-        //_textBox.setTypeface(_defaultFont);
+        _textBox.setTypeface(_defaultFont);
         _textBox.setPadding(10, 13, 0, 17);
         _textBox.setTextColor(getResources().getColor(R.color.zuta));
-        _textBox.setGravity(Gravity.CENTER);
 
         _buttons = new LinearLayout(context);
         _buttons.setOrientation(HORIZONTAL);

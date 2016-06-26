@@ -74,10 +74,11 @@
 
         <activity android:name=".Swipes" android:theme="@android:style/Theme.NoTitleBar" />
 
-        <activity android:name="AboutActivity" android:theme="@android:style/Theme.NoTitleBar" />
+        <activity android:name=".Abouts_1Activity" android:theme="@android:style/Theme.NoTitleBar" />
+        <activity android:name=".Abouts_2Activity" android:theme="@android:style/Theme.NoTitleBar"/>
         <activity android:name=".Uslovi" android:theme="@android:style/Theme.NoTitleBar" />
-        <activity android:name=".FragmentAbouts3" android:theme="@android:style/Theme.NoTitleBar" />
-        <activity android:name=".Activity9_12" android:theme="@android:style/Theme.NoTitleBar"/>
+        <activity android:name=".PostLoginActivity" android:theme="@android:style/Theme.NoTitleBar" />
+        <activity android:name=".Abouts_3Activity" android:theme="@android:style/Theme.NoTitleBar"/>
         <activity android:name=".ViseOProjektuActivity" android:theme="@android:style/Theme.NoTitleBar"/>
 
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />

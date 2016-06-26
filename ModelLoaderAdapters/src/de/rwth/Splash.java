@@ -66,7 +66,7 @@ public class Splash extends Activity {
             public void run() {
                 //Intent i = new Intent(Splash.this, Login.class);
                 //startActivity(i);
-                ArActivity.startWithSetup(Splash.this, new ModelLoaderSetup(null, null
+                ArActivity.startWithSetup(Splash.this, new ModelLoaderSetup(null
 /*                        new Command() {
                     @Override
                     public boolean execute() {

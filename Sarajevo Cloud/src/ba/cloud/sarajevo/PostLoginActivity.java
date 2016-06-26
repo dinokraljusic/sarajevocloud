@@ -17,7 +17,7 @@ import system.ArActivity;
 /**
  * Created by dinok on 6/21/2016.
  */
-public class FragmentAbouts3 extends Activity {
+public class PostLoginActivity extends Activity {
 
     public static final String CREDENTIALS = "credentials.sc";
 
@@ -26,6 +26,10 @@ public class FragmentAbouts3 extends Activity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         SharedPreferences settings = getSharedPreferences(CREDENTIALS, 0);
+        Bundle b = getIntent().getExtras();
+        int loginPokusaj = 0;
+        if(b != null)
+            loginPokusaj = b.getInt("loginPokusaj");
 
         final String userName = settings.getString("userName", "");
         if (!userName.isEmpty() && !userName.equals("")) {
@@ -35,11 +39,17 @@ public class FragmentAbouts3 extends Activity {
                 userId = new GetUserIdAsync().execute(userName).get();
             } catch (Exception ex) {
                 Intent i = new Intent(this, Login.class);
+                b.clear();
+                b.putInt("loginPokusaj", loginPokusaj + 1);
+                i.putExtras(b);
                 startActivity(i);
                 finish();
             }
             if (userId == null || userId.isEmpty() || userId.equals("0")) {
                 Intent i = new Intent(this, Login.class);
+                b.clear();
+                b.putInt("loginPokusaj", loginPokusaj+1);
+                i.putExtras(b);
                 startActivity(i);
                 finish();
             } else {
@@ -48,22 +58,28 @@ public class FragmentAbouts3 extends Activity {
                         new Command() {
                             @Override
                             public boolean execute() {
-                                startActivity(new Intent(FragmentAbouts3.this, AboutActivity.class));
+                                startActivity(new Intent(PostLoginActivity.this, Abouts_1Activity.class));
                                 return true;
                             }
-                        },
-                        new Command() {
-                            @Override
-                            public boolean execute() {
-                                Intent i = new Intent(FragmentAbouts3.this, Activity9_12.class);
-                                startActivity(i);
-                                return true;
-                            }
-                        }));
+                        })
+                );
                 //finish();
             }
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        finish();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        finish();
+    }
+
     class GetUserIdAsync extends AsyncTask<String, String, String> {
 
         @Override

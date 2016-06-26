@@ -1,4 +1,4 @@
-package de.rwth.GuiElements;
+package ba.cloud.sarajevo.GuiElements;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -21,6 +21,7 @@ public class MessageBox extends LinearLayout implements IGuiElement {
 
     // region -- Fields --
 
+    private final int _width;
     private final Typeface _defaultFont;
     private final TextView _txtBox;
     List<Command> _onShownEvents, _onHideCommands;
@@ -29,8 +30,10 @@ public class MessageBox extends LinearLayout implements IGuiElement {
 
     //region == Constructors ==
 
-    public MessageBox(Context context) {
+    public MessageBox(Context context, int width) {
         super(context);
+
+        _width = width;
 
         _onShownEvents = new ArrayList<>();
         _onHideCommands = new ArrayList<>();
@@ -38,8 +41,9 @@ public class MessageBox extends LinearLayout implements IGuiElement {
 
         _txtBox = new TextView(context);
         _txtBox.setPadding(0, 13, 0, 17);
+        _txtBox.setTypeface(_defaultFont);
         _txtBox.setTextColor(getResources().getColor(R.color.zuta));
-        _txtBox.setMaxLines(100);
+        _txtBox.setWidth(width);
 
         addView(_txtBox);
         setBackgroundColor(Color.argb(128, 0, 0, 0));
@@ -84,7 +88,7 @@ public class MessageBox extends LinearLayout implements IGuiElement {
                 public void run() {
                     hideMessage();
                 }
-            }, 2000);
+            }, 4500);
         }
         _txtBox.setText(text);
     }

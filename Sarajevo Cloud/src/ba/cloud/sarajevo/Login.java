@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import de.rwth.Spremnik;
 import de.rwth.Utility;
+import util.Log;
 
 /**
  * Created by dinok on 5/3/2016.
@@ -32,15 +34,11 @@ public class Login extends Activity {
     /**
      * Called when the activity is first created.
      */
-    //private String _url = "http://192.168.0.112:33";
-    //private String _url = "http://192.168.1.6:33";
-    //private String _url = "http://192.168.0.110";
-    //private String _url = "http://192.168.137.14";
     public static final String CREDENTIALS = "credentials.sc";
-    private String _url = "http://192.168.1.5";
     public static String LOG_TAG = "Login";
     public Location l1;
     private LinearLayout _llCredentials, _llWait;
+    private int _timesBackPressed = 0;
 
 
     @Override
@@ -57,29 +55,24 @@ public class Login extends Activity {
         findViewById(R.id.messageBox).setVisibility(View.INVISIBLE);
 
         final String userName = settings.getString("userName", "");
-        if(!userName.isEmpty() && !userName.equals("")){
-            /*Spremnik.getInstance().setUserName(userName);
-            String userId = "";
-            try {
-                userId = new GetUserIdAsync().execute(userName).get();
-            }catch (Exception ex) {
-                showMessage(ex.getMessage());
-            }
-            if (userId == null || userId.isEmpty() || userId.equals("0")) {
-                showMessage("KORISNIK NIJE LOGOVAN! MOLIMO REGISTRUJTE SE.");
-            } else {
-                Spremnik.getInstance().setUserId(userId);
-                ArActivity.startWithSetup(Login.this, new ModelLoaderSetup(new Command() {
-                    @Override
-                    public boolean execute() {
-                        startActivity(new Intent(Login.this, AboutActivity.class));
-                        return true;
-                    }
-                }));
-            }*/
-            Intent i = new Intent(Login.this, FragmentAbouts3.class);
+
+        Bundle b = getIntent().getExtras();
+        int loginPokusaj = 0;
+        if(b != null)
+            loginPokusaj = b.getInt("loginPokusaj");
+        else
+            b = new Bundle();
+        if(loginPokusaj > 5) {
+            showMessage("TRENUTNO NIJE MOGUCE LOGOVATI SE. POKUSAJTE KASNIJE");
+        }else if(!userName.isEmpty() && !userName.equals("")){
+            Intent i = new Intent(Login.this, PostLoginActivity.class);
+            b.clear();
+            b.putInt("loginPokusaj", loginPokusaj + 1);
+            i.putExtras(b);
+            Log.i(LOG_TAG, "loginPokusaj: " + loginPokusaj);
             startActivity(i);
             finish();
+            return;
         }
 
 
@@ -95,7 +88,7 @@ public class Login extends Activity {
             @Override
             public void onClick(View v) {
                 //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.goethe.de/ins/ba/bs/sar/ver.cfm?fuseaction=events.detail&event_id=20764379"));
-                startActivity(new Intent(Login.this,Uslovi.class));
+                startActivity(new Intent(Login.this, Uslovi.class));
             }
         });
 
@@ -174,7 +167,12 @@ public class Login extends Activity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        if (_timesBackPressed > 1){
+            finish();// return super.onKeyDown(a, keyCode, event);
+            return;
+        }
+        Toast.makeText(getApplicationContext(), "Press back once more to exit", Toast.LENGTH_SHORT).show();
+        _timesBackPressed++;
     }
 
     @Override
@@ -214,7 +212,7 @@ public class Login extends Activity {
                 editor.commit();
 
                 //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
-                Intent i = new Intent(Login.this, AboutActivity.class);
+                Intent i = new Intent(Login.this, Abouts_1Activity.class);
                 startActivity(i);
                 //ArActivity.startWithSetup(Login.this, new ModelLoaderSetup());
             }
