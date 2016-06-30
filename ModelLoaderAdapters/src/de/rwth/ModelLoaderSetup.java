@@ -104,7 +104,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
     protected MessageBox _messageBox;
     protected LoaderBar _loader;
     private DialogBox _uploadPictureDialogBox,
-                     _albumDialog;
+            _albumDialog;
     private CommandBar _commandBar;
 
     private ClickableTextView _rightInfo, _rightFotografije, _rightAbout;
@@ -128,7 +128,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
     MeshComponent _selectedMesh;
     Command _openInfoView;
 
-    AsyncTask<Void, Void, Void> _dobaviPiktogrameAsync;
+    AsyncTask<Void, Object, Void> _dobaviPiktogrameAsync;
     //endregion
 
     //region CONSTRUCTORS
@@ -246,6 +246,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
     }
 
     int _previousRotation;
+
     @Override
     public void _c_addActionsToEvents(EventManager eventManager,
                                       CustomGLSurfaceView arView, SystemUpdater updater) {
@@ -334,7 +335,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
         _loader = new LoaderBar(getActivity(), defaultFont);
         guiSetup.getBottomView().addView(_loader);
-        _loader.getLayoutParams().width = (int)getScreenHeigth();
+        _loader.getLayoutParams().width = (int) getScreenHeigth();
 
         _uploadPictureDialogBox = new DialogBox(getActivity(), R.drawable.yes_first, R.drawable.yes_second, R.drawable.no_first, R.drawable.no_second);
         _uploadPictureDialogBox.registerOnShowCommand(new Command() {
@@ -357,7 +358,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
             }
         });
         _uploadPictureDialogBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        _uploadPictureDialogBox.getLayoutParams().width = (int)getScreenHeigth();
+        _uploadPictureDialogBox.getLayoutParams().width = (int) getScreenHeigth();
         guiSetup.getBottomView().addView(_uploadPictureDialogBox);
 
         _albumDialog = new DialogBox(getActivity(), R.drawable.yes_first, R.drawable.yes_second,
@@ -366,7 +367,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
             @Override
             public boolean execute() {
                 _commandBar.hide();
-                return  true;
+                return true;
             }
         });
         _albumDialog.registerOnHideCommand(new Command() {
@@ -377,7 +378,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
             }
         });
         _albumDialog.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        _albumDialog.getLayoutParams().width = (int)getScreenHeigth();
+        _albumDialog.getLayoutParams().width = (int) getScreenHeigth();
         guiSetup.getBottomView().addView(_albumDialog);
 
         guiSetup.getTopView().setOrientation(LinearLayout.VERTICAL);
@@ -394,7 +395,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         _rightMenu.setOrientation(LinearLayout.VERTICAL);
         _rightMenu.setBackgroundColor(Color.argb(128, 0, 0, 0));
 
-        _commandBar = new CommandBar(getActivity(), (int)getScreenHeigth());
+        _commandBar = new CommandBar(getActivity(), (int) getScreenHeigth());
         guiSetup.addViewToBottom(_commandBar);
         _commandBar.show(true);
 
@@ -726,7 +727,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         }
                 , defaultFont
                 , R.color.zuta
-        ,R.color.zelena);
+                , R.color.zelena);
         _rightFotografije.setPadding(15, 15, 15, 10);
         _rightFotografije.setGravity(Gravity.LEFT);
 
@@ -734,19 +735,19 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 getActivity()
                 , "UPUTE"
                 , new Command() {
-                    @Override
-                    public boolean execute() {
-                        _titleBar.hideBar();
-                        _commandBar.hide();
-                        _rightMenu.setVisibility(View.GONE);
-                        _fullScreenImage.setVisibility(View.VISIBLE);
-                        _titleBar.showBackground();
-                        return false;
-                    }
-                }
+            @Override
+            public boolean execute() {
+                _titleBar.hideBar();
+                _commandBar.hide();
+                _rightMenu.setVisibility(View.GONE);
+                _fullScreenImage.setVisibility(View.VISIBLE);
+                _titleBar.showBackground();
+                return false;
+            }
+        }
                 , defaultFont
                 , R.color.zuta
-                ,R.color.zelena
+                , R.color.zelena
         );
         _rightInfo.setPadding(15, 15, 15, 10);
         _rightInfo.setGravity(Gravity.LEFT);
@@ -755,20 +756,20 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 getActivity()
                 , "O PROJEKTU"
                 , new Command() {
-                    @Override
-                    public boolean execute() {
-                        _rightMenu.setVisibility(View.GONE);
-                        if (_openInfoView != null) {
-                            _openInfoView.execute();
-                        } else {
-                            Log.e(LOG_TAG, "OpenInfoView not defined!");
-                        }
-                        return true;
-                    }
+            @Override
+            public boolean execute() {
+                _rightMenu.setVisibility(View.GONE);
+                if (_openInfoView != null) {
+                    _openInfoView.execute();
+                } else {
+                    Log.e(LOG_TAG, "OpenInfoView not defined!");
                 }
-               , defaultFont
-                ,R.color.zuta
-                ,R.color.zelena
+                return true;
+            }
+        }
+                , defaultFont
+                , R.color.zuta
+                , R.color.zelena
         );
         _rightAbout.setPadding(15, 15, 15, 10);
         _rightAbout.setGravity(Gravity.LEFT);
@@ -783,7 +784,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
         final SharedPreferences settings = getActivity().getSharedPreferences(CREDENTIALS, 0);
         final Boolean firstTimeHere = settings.getBoolean("seenIntroInfo", false);
 
-        if(firstTimeHere) {
+        if (firstTimeHere) {
             _titleBar.hideBar();
             _titleBar.hideBackground();
             _commandBar.hide();
@@ -802,7 +803,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 }
             });
             _fullScreenImage.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             _fullScreenImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -846,7 +847,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
 
     private void showPiktogramChooser() {
         boolean thereAreVisibleSiblings = false;
-        ViewGroup row = (ViewGroup)_piktogramChooser.getParent();
+        ViewGroup row = (ViewGroup) _piktogramChooser.getParent();
         for (int itemPos = 0; itemPos < row.getChildCount(); itemPos++) {
             if (row.getChildAt(itemPos).getVisibility() == View.VISIBLE) {
                 thereAreVisibleSiblings = true;
@@ -862,207 +863,273 @@ public class ModelLoaderSetup extends DefaultARSetup {
             }, 500);
             return;
         }
-        final List<Set> _setovi_lista = new ArrayList<>();
         //getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(128, 0, 0, 0));
         //if (_messageBox.getVisibility() != View.VISIBLE) _messageBox.setVisibility(View.VISIBLE);
         _commandBar.hide();
 
-        _dobaviPiktogrameAsync = new AsyncTask<Void, Void, Void>() {
-            final AsyncTask<Void, Void, Void> dobaviPiktogrameAsync = this;
-            final StopFlag stopFlag = new StopFlag();
-            @Override
-            protected void onPreExecute() {
-                _titleBar.showPiktogramChooserInfo(true);
-                _titleBar.hideBackground();
-                getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(128, 0, 0, 0));
-                _piktogramChooser_piktogramRows.removeAllViews();
-                _piktogramChooser_loader.setVisibility(View.VISIBLE);
-                _piktogramChooser.getLayoutParams().height = (int) (getScreenWidth() * 0.7);
-                _piktogramChooser.getLayoutParams().width = (int) (getScreenHeigth());
-                _piktogramChooser.setLayoutParams(
-                        new LinearLayout.LayoutParams(
-                                (int) (getScreenHeigth()),
-                                (int) (getScreenWidth() * 0.6)
-                        )
-                );
-                _piktogramChooser.setVisibility(View.VISIBLE);
-                _titleBar.setEnabled(false);
-            }
+        _titleBar.showPiktogramChooserInfo(true);
+        _titleBar.hideBackground();
+        getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(128, 0, 0, 0));
+        _piktogramChooser_piktogramRows.removeAllViews();
+        _piktogramChooser_loader.setVisibility(View.VISIBLE);
+        _piktogramChooser.getLayoutParams().height = (int) (getScreenWidth() * 0.7);
+        _piktogramChooser.getLayoutParams().width = (int) (getScreenHeigth());
+        _piktogramChooser.setLayoutParams(
+                new LinearLayout.LayoutParams(
+                        (int) (getScreenHeigth()),
+                        (int) (getScreenWidth() * 0.6)
+                )
+        );
+        _piktogramChooser.setVisibility(View.VISIBLE);
+        _titleBar.setEnabled(false);
 
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    String json = Utility.GET(Spremnik.getInstance().getSetServiceAddress());
-                    android.util.Log.d(LOG_TAG, "json: " + json);
-                    JSONArray setovi = new JSONArray(json);
-                    for (int i = 0; i < setovi.length() && !stopFlag.podigunta() &&!isCancelled(); i++) {
-                        JSONObject set = setovi.getJSONObject(i);
-                        android.util.Log.d(LOG_TAG, "set(" + i + "): " + set.toString());
-                        _setovi_lista.add(new Set(set.getInt("id"), set.getString("naziv")));
+        final StopFlag stopFlag = new StopFlag();
 
-                        if(isCancelled()) break;
-
-                        dobaviPiktograme(getActivity(), set.getString("naziv"), Integer.toString(set.getInt("id")));
-                    }
-                } catch (org.json.JSONException je) {
-                    Log.e("LOG_piktogramchooser", je.toString());
-                } catch (Throwable ex) {
-                    android.util.Log.d(LOG_TAG, "error: " + ex.getMessage(), ex);
-                }
-                return null;
-            }
-
-
-            @Override
-            protected void onProgressUpdate(Void... values) {
-                super.onProgressUpdate(values);
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-
-            }
-
-            void dobaviPiktograme(Context ctx, final String setName, String setId) {
-                List<Piktogram> _piktogram_lista = new ArrayList<Piktogram>();
-                try {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView naslovSeta = new TextView(getActivity());
-                            naslovSeta.setTypeface(defaultFont);
-                            naslovSeta.setText(setName);
-                            naslovSeta.setTextSize(19);
-                            naslovSeta.setPadding(25, 7, 0, 7);
-                            naslovSeta.setTextColor(Color.rgb(242, 229, 0));
-                            _piktogramChooser_piktogramRows.addView(naslovSeta);
-                        }
-                    });
-                    String json = Utility.GET(Spremnik.getInstance().getPiktogramServiceAddress() + "?setid=" + setId);
-                    android.util.Log.d(LOG_TAG, "json: " + json);
-                    JSONArray setovi = new JSONArray(json);
-                    for (int i = 0; i < setovi.length()&& !stopFlag.podigunta() && !isCancelled(); i++) {
-
-                        JSONObject set = setovi.getJSONObject(i);
-                        android.util.Log.d(LOG_TAG, "set(" + i + "): " + set.toString());
-                        final Piktogram newPiktogram = new Piktogram(set.getInt("id"),
-                                set.getString("naziv"),
-                                set.getString("put_piktogram"),
-                                set.getString("put_tekstura"),
-                                set.getInt("color_red"),
-                                set.getInt("color_green"),
-                                set.getInt("color_blue"));
-                        _piktogram_lista.add(newPiktogram);
-                        String tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_piktogram"));
-                        final String finalFileName = Utility.downloadAndSaveFile(ctx, set.getInt("id"), 0, tmp, LOG_TAG);
-
-                        tmp = set.getString("naziv") + "." + Utility.getEkstension(set.getString("put_tekstura"));
-                        final String finalThumbnail_1 = Utility.downloadAndSaveFile(ctx, set.getInt("id"), 1, tmp, LOG_TAG);
-                        final String finalThumbnail_2 = ""; //Utility.downloadAndSaveFile(ctx, set.getInt("id"), 2, tmp, LOG_TAG);
-
-                        final float W = getScreenHeigth();
-                        if (i % 5 == 0) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    LinearLayout noviRed = new LinearLayout(getActivity());
-                                    noviRed.setOrientation(LinearLayout.HORIZONTAL);
-                                    _piktogramChooser_piktogramRows.addView(noviRed);
-                                }
-                            });
-                        }
-                        final ImageView btnImage = createImageWithTransparentBackground(getActivity(),
-                                finalThumbnail_1, getActivity().getResources().getColor(R.color.zuta),
-                                getActivity().getResources().getColor(R.color.zelena),
-                                new Command() {
-                                    @Override
-                                    public boolean execute() {
-                                        cancel(true);
-                                        dobaviPiktogrameAsync.cancel(true);
-                                        stopFlag.podigni();
-
-                                        String defaultTextureName = Spremnik.getInstance().getUrl() + "/teksture/default.jpg";
-                                        _piktogramChooser.setVisibility(View.GONE);
-                                        _titleBar.showPiktogramChooserInfo(false);
-                                        getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
-                                        newObject(finalFileName, defaultTextureName, newPiktogram);
-                                        _titleBar.setTitle("POSTAVLJANJE OBJEKATA");
-                                        _commandBar.show(modeSarajevoCloud);
-                                        showPiktogramInfoIfNeeded();
-                                        return false;
-                                    }
-
-                                    private void showPiktogramInfoIfNeeded() {
-                                        final SharedPreferences settings = getActivity().getSharedPreferences(CREDENTIALS, 0);
-                                        final Boolean seenPiktogramInfo = settings.getBoolean("seenPiktogramInfo", false);
-                                        if(!seenPiktogramInfo){
-                                            _fullScreenImage.setImageResource(R.drawable.screen_12);
-                                            _fullScreenImage.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    _fullScreenImage.setImageResource(R.drawable.screen_9);
-                                                    _fullScreenImageIndex = 0;
-                                                    _fullScreenImage.setVisibility(View.GONE);
-                                                    _titleBar.showBar();
-                                                    _titleBar.showBackground();
-                                                    _commandBar.show(modeSarajevoCloud);
-                                                    SharedPreferences.Editor editor = settings.edit();
-                                                    editor.putBoolean("seenPiktogramInfo", true);
-                                                    editor.commit();
-                                                }
-                                            });
-                                            _fullScreenImage.setVisibility(View.VISIBLE);
-                                            _titleBar.hideBar();
-                                            _titleBar.hideBackground();
-                                            _commandBar.hide();
-                                        }
-                                    }
-                                });
-                        btnImage.setMaxWidth((int) (W * 0.18));
-                        btnImage.setMaxHeight((int) (W * 0.18));
-                        //btnImage.setPadding((int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01));
-
-                        final TableRow.LayoutParams mlp = new TableRow.LayoutParams((int) (W * 0.18), (int) (W * 0.18));
-                        mlp.setMargins((int) (W * 0.01),(int) (W * 0.01),(int) (W * 0.01),(int) (W * 0.01));
-
-                        getActivity().runOnUiThread(new Runnable() {
+        try {
+                final Index j = new Index();
+                final RunnableWithParams runnable_pokaziPiktogramGaleriju =
+                        new RunnableWithParams() {
                             @Override
                             public void run() {
-                                if(_piktogramChooser_piktogramRows == null ||
-                                        _piktogramChooser_piktogramRows.getChildCount() == 0)
-                                    return;
-                                ((LinearLayout) (_piktogramChooser_piktogramRows
-                                        .getChildAt(_piktogramChooser_piktogramRows.getChildCount() - 1)))
-                                        .addView(btnImage);
-                                btnImage.setLayoutParams(mlp);
-                                //btnImage.getLayoutParams().height = (int) (W * 0.18);
-                                //btnImage.getLayoutParams().width = (int) (W * 0.18);
-                                btnImage.requestLayout();
+                                try {
+                                    JSONArray piktogrami = (JSONArray) m_args[0];
+                                    JSONObject piktogram = piktogrami.getJSONObject(j.getIndex());
+                                    final Piktogram newPiktogram = new Piktogram(piktogram.getInt("id"),
+                                            piktogram.getString("naziv"),
+                                            piktogram.getString("put_piktogram"),
+                                            piktogram.getString("put_tekstura"),
+                                            piktogram.getInt("color_red"),
+                                            piktogram.getInt("color_green"),
+                                            piktogram.getInt("color_blue"));
+                                    String tmp = piktogram.getString("naziv") + "." + Utility.getEkstension(piktogram.getString("put_piktogram"));
+                                    final String finalFileName = Utility.downloadAndSaveFile(getActivity(), piktogram.getInt("id"), 0, tmp, LOG_TAG);
+
+                                    tmp = piktogram.getString("naziv") + "." + Utility.getEkstension(piktogram.getString("put_tekstura"));
+                                    final String finalThumbnail_1 = Utility.downloadAndSaveFile(getActivity(), piktogram.getInt("id"), 1, tmp, LOG_TAG);
+
+                                    final float W = getScreenHeigth();
+                                    if (j.getIndex() % 5 == 0) {
+                                        publishProgress();
+                                    }
+                                    final ImageView btnImage = createImageWithTransparentBackground(getActivity(), finalThumbnail_1,
+                                            getActivity().getResources().getColor(R.color.zuta),
+                                            getActivity().getResources().getColor(R.color.zelena),
+                                            new Command() {
+                                                @Override
+                                                public boolean execute() {
+                                                    stopFlag.podigni();
+                                                    Log.i(LOG_TAG, "canceled: " + stopFlag.podignuta());
+
+                                                    String defaultTextureName = Spremnik.getInstance().getUrl() + "/teksture/default.jpg";
+                                                    _piktogramChooser.setVisibility(View.GONE);
+                                                    _titleBar.showPiktogramChooserInfo(false);
+                                                    getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
+                                                    newObject(finalFileName, defaultTextureName, newPiktogram);
+                                                    _titleBar.setTitle("POSTAVLJANJE OBJEKATA");
+                                                    _commandBar.show(modeSarajevoCloud);
+                                                    showPiktogramInfoIfNeeded();
+                                                    return false;
+                                                }
+
+                                                private void showPiktogramInfoIfNeeded() {
+                                                    final SharedPreferences settings = getActivity().getSharedPreferences(CREDENTIALS, 0);
+                                                    final Boolean seenPiktogramInfo = settings.getBoolean("seenPiktogramInfo", false);
+                                                    if (!seenPiktogramInfo) {
+                                                        _fullScreenImage.setImageResource(R.drawable.screen_12);
+                                                        _fullScreenImage.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                _fullScreenImage.setImageResource(R.drawable.screen_9);
+                                                                _fullScreenImageIndex = 0;
+                                                                _fullScreenImage.setVisibility(View.GONE);
+                                                                _titleBar.showBar();
+                                                                _titleBar.showBackground();
+                                                                _commandBar.show(modeSarajevoCloud);
+                                                                SharedPreferences.Editor editor = settings.edit();
+                                                                editor.putBoolean("seenPiktogramInfo", true);
+                                                                editor.commit();
+                                                            }
+                                                        });
+                                                        _fullScreenImage.setVisibility(View.VISIBLE);
+                                                        _titleBar.hideBar();
+                                                        _titleBar.hideBackground();
+                                                        _commandBar.hide();
+                                                    }
+                                                }
+                                            });
+
+                                    final TableRow.LayoutParams mlp = new TableRow.LayoutParams((int) (W * 0.18), (int) (W * 0.18));
+                                    mlp.setMargins((int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01), (int) (W * 0.01));
+
+                                    publishProgress(btnImage, mlp, (int) (W * 0.18));
+                                    j.increment();
+                                    if (j.getIndex() < piktogrami.length() && !stopFlag.podignuta())
+                                        new Handler().postDelayed(this, 1);
+                                    else
+                                        j.reset();
+                                } catch (Throwable t) {
+
+                                }
                             }
-                        });
+                        };
+            String json = new AsyncTask<String, Void, String>() {
+                @Override
+                protected String doInBackground(String... params) {
+                    return Utility.GET(params[0]);
+                }
+            }.execute(Spremnik.getInstance().getSetServiceAddress()).get();
+
+            android.util.Log.d(LOG_TAG, "json: " + json);
+            final JSONArray setovi = new JSONArray(json);
+            //for (int i = 0; i < setovi.length() && !stopFlag.podignuta(); i++) {
+            final Index i = new Index();
+            RunnableWithParams runnable_dobaviSetove = new RunnableWithParams() {
+                @Override
+                public void run() {
+                    try {
+                        if(j.getIndex() != 0) {
+                            new Handler().postDelayed(this, 250);
+                            return;
+                        }
+                    JSONObject set = setovi.getJSONObject(i.getIndex());
+                    android.util.Log.d(LOG_TAG, "set(" + i.getIndex() + "): " + set.toString());
+                    //if(isCancelled()) break;
+
+                    publishProgress(set.getString("naziv"));
+                        //String json_piktogrami = Utility.GET(Spremnik.getInstance().getPiktogramServiceAddress() + "?setid=" + Integer.toString(set.getInt("id")));
+                        String json_piktogrami = new AsyncTask<String, Void, String>() {
+                            @Override
+                            protected String doInBackground(String... params) {
+                                return Utility.GET(params[0]);
+                            }
+                        }.execute(Spremnik.getInstance().getPiktogramServiceAddress() + "?setid=" + Integer.toString(set.getInt("id")))
+                                .get();
+                        //android.util.Log.d(LOG_TAG, "json: " + json_piktogrami);
+                        final JSONArray piktogrami = new JSONArray(json_piktogrami);
+                        //for (int j = 0; j < piktogrami.length()&& !stopFlag.podigunta(); j++) {
+                        RunnableWithParams copy = (RunnableWithParams) runnable_pokaziPiktogramGaleriju.clone();
+                        copy.setArguments(piktogrami);
+                        new Handler().postDelayed(copy, 0);
+                    } catch (org.json.JSONException je) {
+                        Log.e("PiktogramChooser", je.toString());
+                    } catch (Throwable ex) {
+                        android.util.Log.d("PiktogramChooser", ex.getMessage(), ex);
                     }
-                } catch (org.json.JSONException je) {
-                    Log.e("PiktogramChooser", je.toString());
-                } catch (Throwable ex) {
-                    android.util.Log.d("PiktogramChooser", ex.getMessage(), ex);
+                    i.increment();
+                    if(i.getIndex() < setovi.length() && !stopFlag.podignuta())
+                        new Handler().postDelayed(this, 100);
                 }
-            }
-
-            class StopFlag{
-                AtomicReference<Boolean> _podigunta = new AtomicReference<>(false);
-
-                public boolean podigunta(){
-                    return _podigunta.get();
-                }
-                public  void podigni(){
-                    _podigunta.getAndSet(true);
-                }
-            }
-        };
-        _dobaviPiktogrameAsync.execute();
-
+            };
+            new Handler().postDelayed(runnable_dobaviSetove, 0);
+        } catch (org.json.JSONException je) {
+            Log.e("LOG_piktogramchooser", je.toString());
+        } catch (Throwable ex) {
+            android.util.Log.d(LOG_TAG, "error: " + ex.getMessage(), ex);
+        }
     }
+
+    //protected void onProgressUpdate(Object... values) {
+    protected void publishProgress(final Object... values) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (values.length == 3) {
+                    ImageView btnImage = (ImageView) values[0];
+                    TableRow.LayoutParams mlp = (TableRow.LayoutParams) values[1];
+                    int wid = (int) values[2];
+
+                    btnImage.setMaxWidth(wid);
+                    btnImage.setMaxHeight(wid);
+
+                    if (_piktogramChooser_piktogramRows == null || _piktogramChooser_piktogramRows.getChildCount() == 0)
+                        return;
+                    ((LinearLayout) (_piktogramChooser_piktogramRows
+                            .getChildAt(_piktogramChooser_piktogramRows.getChildCount() - 1)))
+                            .addView(btnImage);
+                    btnImage.setLayoutParams(mlp);
+                    btnImage.requestLayout();
+                    //}else if(values[0]!=null) {
+                } else if (values.length == 1) {
+                    String setName = (String) values[0];
+                    TextView naslovSeta = new TextView(getActivity());
+                    naslovSeta.setTypeface(defaultFont);
+                    naslovSeta.setText(setName);
+                    naslovSeta.setTextSize(19);
+                    naslovSeta.setPadding(25, 7, 0, 7);
+                    naslovSeta.setTextColor(Color.rgb(242, 229, 0));
+                    _piktogramChooser_piktogramRows.addView(naslovSeta);
+                } else {
+                    LinearLayout noviRed = new LinearLayout(getActivity());
+                    noviRed.setOrientation(LinearLayout.HORIZONTAL);
+                    _piktogramChooser_piktogramRows.addView(noviRed);
+                }
+            }
+        });
+    }
+
+    class StopFlag {
+        AtomicReference<Boolean> _podigunta = new AtomicReference<>(false);
+
+        public boolean podignuta() {
+            return _podigunta.get();
+        }
+
+        public void podigni() {
+            _podigunta.getAndSet(true);
+        }
+    }
+
+    class Index {
+        int i = 0;
+
+        public int getIndex() {
+            return i;
+        }
+
+        public int increment() {
+            i++;
+            return i;
+        }
+
+        public int decrement() {
+            i--;
+            return i;
+        }
+
+        public void reset() {
+            i = 0;
+        }
+    }
+
+    abstract class RunnableWithParams implements Runnable, Cloneable {
+
+        Object[] m_args;
+
+        public RunnableWithParams() {
+        }
+
+        public void run(Object... args) {
+            m_args = args;
+            run();
+        }
+
+        public void setArguments(Object... args) {
+            m_args = args;
+        }
+
+        public Object clone() {
+            try {
+                return super.clone();
+            } catch (CloneNotSupportedException e) {
+                return null;
+            }
+        }
+    }
+    //};
+    //_dobaviPiktogrameAsync.execute();
+    //new Thread(runnable_dobaviPiktogrameAsync).run();
+
+    //}
 
     @Override
     public void _d_addElementsToUpdateThread(SystemUpdater updater) {
@@ -1305,7 +1372,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                                     return null;
                                                 }
                                             }.execute("");
-                                        }catch (Throwable t){
+                                        } catch (Throwable t) {
                                             Log.w("UploadPicture", t.toString());
                                         }
                                         hidePopup();
@@ -1390,7 +1457,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
                     _titleBar.showBackground();
 
-                    if(!modeSarajevoCloud) {
+                    if (!modeSarajevoCloud) {
                         if (_selectedMesh != null && _selectedLightObject != null) {
                             world.remove(_selectedLightObject);
                             _selectedMesh = null;
@@ -1402,7 +1469,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         }
                     }
 
-                    if(_fullScreenImage.getVisibility() == View.VISIBLE){
+                    if (_fullScreenImage.getVisibility() == View.VISIBLE) {
                         _fullScreenImage.setImageResource(R.drawable.screen_9);
                         _fullScreenImageIndex = 0;
                         _fullScreenImage.setVisibility(View.GONE);
@@ -1418,13 +1485,13 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     }
 
                     if (_piktogramChooser.isShown()) {
-                        if(_dobaviPiktogrameAsync != null)
+                        if (_dobaviPiktogrameAsync != null)
                             _dobaviPiktogrameAsync.cancel(true);
                         _titleBar.showPiktogramChooserInfo(false);
                         modeSarajevoCloud = true;
                         _commandBar.show(modeSarajevoCloud);
                         _piktogramChooser.setVisibility(View.GONE);
-                        getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0,0,0,0));
+                        getGuiSetup().getMainContainerView().setBackgroundColor(Color.argb(0, 0, 0, 0));
                         _timesBackPressed = 0;
                     }
 
