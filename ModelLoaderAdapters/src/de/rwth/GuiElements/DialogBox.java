@@ -142,7 +142,6 @@ public class DialogBox extends LinearLayout implements IGuiElement {
             }
             _yesButton.unRegisterAllPreExecutedCommands();
             _yesButton.unRegisterAllPostExecutedCommands();
-            _yesButton.registerPreExecutedCommand(yesCommand);
             _yesButton.registerPostExecutedCommand(new Command() {
                 @Override
                 public boolean execute() {

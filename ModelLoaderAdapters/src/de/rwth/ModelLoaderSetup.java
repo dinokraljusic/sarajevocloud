@@ -11,7 +11,6 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
@@ -35,7 +34,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -163,7 +161,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
             @Override
             public void onPositionUpdate(worldData.Updateable parent,
                                          Vec targetVec) {
-                targetVec.z = -45f;
+                targetVec.z = -25f;
                 if (parent instanceof Obj) {
                     Obj obj = (Obj) parent;
                     MoveComp m = obj.getComp(MoveComp.class);
@@ -348,15 +346,6 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 return true;
             }
         });
-        _uploadPictureDialogBox.registerOnHideCommand(new Command() {
-            @Override
-            public boolean execute() {
-                _messageBox.showMessage("FOTOGRAFIJA SNIMLJENA NA VAŠ UREDJAJ");
-                _titleBar.setEnabled(true);
-                _thumbnailImage.setVisibility(View.GONE);
-                return false;
-            }
-        });
         _uploadPictureDialogBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         _uploadPictureDialogBox.getLayoutParams().width = (int) getScreenHeigth();
         guiSetup.getBottomView().addView(_uploadPictureDialogBox);
@@ -406,7 +395,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                         new Command() {
                             @Override
                             public boolean execute() {
-                                Uri uri = Uri.parse("https://www.facebook.com/ACTSarajevo/photos/?tab=album&album_id=280657718934966"); // missing 'http://' will cause crashed
+                                Uri uri = Uri.parse("https://www.facebook.com/ACTSarajevo/photos/?tab=album&album_id=294590884208316"); // missing 'http://' will cause crashed
                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                 getActivity().startActivity(intent);
                                 return true;
@@ -902,10 +891,28 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                             piktogram.getInt("color_green"),
                                             piktogram.getInt("color_blue"));
                                     String tmp = piktogram.getString("naziv") + "." + Utility.getEkstension(piktogram.getString("put_piktogram"));
-                                    final String finalFileName = Utility.downloadAndSaveFile(getActivity(), piktogram.getInt("id"), 0, tmp, LOG_TAG);
+                                    final String finalFileName = new AsyncTask<Object, Void, String>() {
+                                        @Override
+                                        protected String doInBackground(Object... params) {
+                                            Activity ctx = (Activity)params[0];
+                                            int piktogramId = (int)params[1];
+                                            String fileName = params[2].toString();
+
+                                            return Utility.downloadAndSaveFile(ctx, piktogramId, 0, fileName, LOG_TAG);
+                                        }
+                                    }.execute(getActivity(), piktogram.getInt("id"), tmp).get();
 
                                     tmp = piktogram.getString("naziv") + "." + Utility.getEkstension(piktogram.getString("put_tekstura"));
-                                    final String finalThumbnail_1 = Utility.downloadAndSaveFile(getActivity(), piktogram.getInt("id"), 1, tmp, LOG_TAG);
+                                    final String finalThumbnail_1 = new AsyncTask<Object, Void, String>() {
+                                        @Override
+                                        protected String doInBackground(Object... params) {
+                                            Activity ctx = (Activity)params[0];
+                                            int piktogramId = Integer.parseInt(params[1].toString());
+                                            String fileName = params[2].toString();
+
+                                            return  Utility.downloadAndSaveFile(ctx, piktogramId, 1, fileName, LOG_TAG);
+                                        }
+                                    }.execute(getActivity(), piktogram.getInt("id"), tmp).get();
 
                                     final float W = getScreenHeigth();
                                     if (j.getIndex() % 5 == 0) {
@@ -917,6 +924,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                             new Command() {
                                                 @Override
                                                 public boolean execute() {
+                                                    if(stopFlag.podignuta()) return false;
                                                     stopFlag.podigni();
                                                     Log.i(LOG_TAG, "canceled: " + stopFlag.podignuta());
 
@@ -988,7 +996,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                 public void run() {
                     try {
                         if(j.getIndex() != 0) {
-                            new Handler().postDelayed(this, 250);
+                            new Handler().postDelayed(this, 100);
                             return;
                         }
                     JSONObject set = setovi.getJSONObject(i.getIndex());
@@ -1017,7 +1025,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                     }
                     i.increment();
                     if(i.getIndex() < setovi.length() && !stopFlag.podignuta())
-                        new Handler().postDelayed(this, 100);
+                        new Handler().postDelayed(this, 250);
                 }
             };
             new Handler().postDelayed(runnable_dobaviSetove, 0);
@@ -1245,28 +1253,6 @@ public class ModelLoaderSetup extends DefaultARSetup {
         return x;
     }
 
-    private void takeScreenshot() {
-        Date now = new Date();
-        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
-
-        try {
-            // image naming and path  to include sd card  appending name you choose for file
-            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpg";
-
-            // create bitmap screen capture
-            View v1 = getActivity().getWindow().getDecorView().getRootView();
-            v1.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-            v1.setDrawingCacheEnabled(false);
-
-            myCameraView.takePhoto(bitmap, Spremnik.getInstance().get_slikaPath());
-
-        } catch (Throwable e) {
-            // Several error may come out with file handling or OOM
-            e.printStackTrace();
-        }
-    }
-
     private void setComps(Obj obj) {
         if (_selectedObj != null) {
             _selectedObj.remove(_viewPosCalcer);
@@ -1321,9 +1307,10 @@ public class ModelLoaderSetup extends DefaultARSetup {
     Runnable pictureRunnable = new Runnable() {
         @Override
         public void run() {
-            final String slikaPath = Spremnik.getInstance().get_slikaPath().get();
+            final String slikaPath = Spremnik.getInstance().get_slikaPath().getAndSet("");
             if (slikaPath != null && !slikaPath.equals("")) {
-                Spremnik.getInstance().get_slikaPath().getAndSet("");
+                //Spremnik.getInstance().get_slikaPath().getAndSet("");
+                //pictureHandler.removeCallbacks(pictureRunnable);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1344,7 +1331,7 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                                     }
                                                     return null;
                                                 }
-                                            }.execute().get();
+                                            }.execute();
                                         } catch (Throwable t) {
                                         }
                                         hidePopup();
@@ -1376,6 +1363,9 @@ public class ModelLoaderSetup extends DefaultARSetup {
                                             Log.w("UploadPicture", t.toString());
                                         }
                                         hidePopup();
+                                        _messageBox.showMessage("FOTOGRAFIJA SNIMLJENA NA VAŠ UREDJAJ");
+                                        _titleBar.setEnabled(true);
+                                        _thumbnailImage.setVisibility(View.GONE);
                                         return false;
                                     }
                                 });
